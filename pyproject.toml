@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "aind-data-mcp"
 description = "Generated from aind-library-template"
 license = {text = "MIT"}
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     {name = "Allen Institute for Neural Dynamics"}
 ]
@@ -17,7 +17,16 @@ readme = "README.md"
 dynamic = ["version"]
 
 dependencies = [
+    "aind-data-access-api",
+    "fastmcp",
+    "hdmf-zarr>=0.11.1",
+    "langchain-core>=0.3.60",
+    "pydantic>=2.11.4",
+    "suffix-trees>=0.3.0",
 ]
+
+[project.scripts]
+aind-data-mcp = "aind_data_mcp.data_access_server:main"
 
 [dependency-groups]
 dev = [
@@ -38,7 +47,7 @@ version = {attr = "aind_data_mcp.__version__"}
 
 [tool.black]
 line-length = 79
-target_version = ['py310']
+target_version = ['py311']
 exclude = '''
 
 (

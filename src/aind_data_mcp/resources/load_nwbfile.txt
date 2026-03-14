@@ -1,0 +1,63 @@
+In order to download a nwb file to a python script in a code ocean repository, follow the code below.
+
+- Make sure to pip install imports if there are errors with excuting the script
+from pathlib import Path
+import re
+from hdmf_zarr import NWBZarrIO
+
+
+- Downloads NWBfile from /data folder in repository given subject and date
+def identify_nwb_contents_in_code_ocean(subject_id, date):
+    """
+    Searches the /data directory in a code ocean repository for a folder 
+    and subfolder containing the subject_id and date,
+    and loads the corresponding NWB file.
+
+    Parameters:
+    - subject_id (str): Subject identifier to search for in directory names
+    - date (str): Date string (e.g. '2023-05-09') to search for in directory names
+
+    Returns:
+    - nwbfile: Loaded NWBFile object if found, else None
+    """
+
+
+    # Create pattern for matching
+    pattern = rf".*{subject_id}.*{date}.*"
+    base_path = Path('/data')
+    
+    # Find matching first-level directories
+    first_matches = [d for d in base_path.iterdir() 
+                     if d.is_dir() and re.search(pattern, d.name)]
+    
+    if not first_matches:
+        #print(f"Directory matching subject_id={subject_id} and date={date} not found in /data.")
+        return None
+    
+    first_dir = first_matches[0]
+    #print(f"Found first-level directory: {first_dir.name}")
+    
+    # Find matching second-level directories
+    second_matches = [d for d in first_dir.iterdir() 
+                      if d.is_dir() and re.search(pattern, d.name)]
+    
+    if not second_matches:
+        #print(f"No second-level directory matching subject_id={subject_id} and date={date} found.")
+        return None
+    
+    nwb_path = second_matches[0]
+    print(f"Found second-level directory: {nwb_path.name}")
+    
+    # Check if path exists and load NWB file
+    try:
+        with NWBZarrIO(str(nwb_path), 'r') as io:
+            nwbfile = io.read()
+            print('Loaded NWB file from:', nwb_path)
+            print(nwbfile)
+            # to find fields and locations of data in nwbfile, print nwbfile.allchildren()
+            return nwbfile # NWBfile object
+    except Exception as e:
+        print(f'Error loading file from {nwb_path}: {e}')
+        return None
+
+Note that the NWBfile doesn't expose all relevant fields needed to find data nested within the file. To expose that information print nwbfile.allchildren()
