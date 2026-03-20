@@ -1,0 +1,147 @@
+## Using zombie_squirrel for Python Script Generation
+
+When a user asks for a Python script that queries data assets, prefer the
+zombie_squirrel approach over a raw MongoDB query whenever the filter criteria
+only involve fields available in the cached tables (modality, project_name,
+data_level, subject_id, acquisition dates, genotype, asset name).
+
+The zombie_squirrel package loads pre-built Parquet tables from S3 and is
+much faster than querying MongoDB for large-scale filtering. Full MongoDB
+records are only fetched for the final small set of matching assets.
+
+---
+
+### Decision logic for Python script generation
+
+1. Can the filtering be done entirely with zombie_squirrel table fields?
+   - YES → Use zombie_squirrel to get matching asset names, then optionally
+     fetch full records from aind-data-access-api using $in.
+   - NO (e.g. filter on deep nested fields not in the tables) → Fall back to
+     a direct MongoDB aggregation/filter query.
+
+2. How many matching assets are expected?
+   - <= 100 → Single $in query with the full list of asset names.
+   - > 100  → Batch the $in queries (BATCH_SIZE = 50) to avoid hitting the
+     REST API's URL length limit.
+
+---
+
+### Standard Python script template
+
+```python
+import json
+
+import pandas as pd
+from aind_data_access_api.document_db import MetadataDbClient
+from zombie_squirrel import asset_basics  # import whichever tables are needed
+
+# ── Step 1: fast table lookup ────────────────────────────────────────────────
+df = asset_basics()
+
+# Apply whatever filters match the user's request, e.g.:
+filtered = df[
+    (df["project_name"] == "My Project") &
+    (df["data_level"] == "raw")
+]
+asset_names = filtered["name"].tolist()
+print(f"Found {len(asset_names)} matching assets in the table")
+
+if not asset_names:
+    print("No assets found.")
+else:
+    # ── Step 2: fetch full records from MongoDB only for the matching set ────
+    client = MetadataDbClient(
+        host="api.allenneuraldynamics.org",
+        version="v2",
+    )
+
+    BATCH_SIZE = 50  # keep $in lists short for the REST API
+    records = []
+
+    for i in range(0, len(asset_names), BATCH_SIZE):
+        batch = asset_names[i : i + BATCH_SIZE]
+        batch_records = client.retrieve_docdb_records(
+            filter_query={"name": {"$in": batch}},
+            projection={
+                "name": 1,
+                "subject": 1,
+                # add other fields you actually need
+                "_id": 0,
+            },
+        )
+        records.extend(batch_records)
+
+    print(json.dumps(records[:5], indent=2))  # show first 5 for brevity
+```
+
+---
+
+### Field availability cheat-sheet
+
+Use zombie_squirrel FIRST when filtering/selecting by any of these fields:
+
+| Table                | Key columns                                                     |
+|----------------------|-----------------------------------------------------------------|
+| asset_basics         | _id, name, modalities, project_name, data_level, subject_id,   |
+|                      | acquisition_start_time, acquisition_end_time, code_ocean,       |
+|                      | process_date, genotype, location                                |
+| source_data          | name (derived), source_data (raw), pipeline_name, processing_time |
+| raw_to_derived       | raw asset name → list of derived names                          |
+| quality_control      | name, stage, modality, value, status, asset_name               |
+|                      | (partitioned by subject_id)                                     |
+| unique_project_names | project_name                                                    |
+| unique_subject_ids   | subject_id                                                      |
+| assets_smartspim     | subject_id, genotype, institution, stitched_link, processed,   |
+|                      | channel_1/2/3, segmentation/quantification links               |
+
+Use MongoDB directly (get_records / aggregation_retrieval) when you need
+fields NOT in the table above, such as detailed subject metadata,
+procedures, instrument configs, processing pipeline details, etc.
+
+---
+
+### Additional patterns
+
+#### QC script for a subject
+```python
+from zombie_squirrel import qc
+
+qc_df = qc("738942")          # subject_id as string
+print(qc_df.columns.tolist())
+# Filter to a specific metric
+fails = qc_df[qc_df["status"] == "fail"]
+print(fails[["asset_name", "name", "modality", "value"]])
+```
+
+#### Find derived assets from a raw asset
+```python
+from zombie_squirrel import raw_to_derived
+
+derived = raw_to_derived("ecephys_716870_2024-07-09_15-39-28", latest=True)
+print(derived)
+```
+
+#### Combine zombie_squirrel filter with aggregation for richer results
+```python
+from zombie_squirrel import asset_basics
+from aind_data_access_api.document_db import MetadataDbClient
+import json
+
+df = asset_basics()
+names = df[df["modalities"].str.contains("ecephys", na=False)]["name"].tolist()
+
+client = MetadataDbClient(host="api.allenneuraldynamics.org", version="v2")
+BATCH_SIZE = 50
+records = []
+for i in range(0, len(names), BATCH_SIZE):
+    batch = names[i : i + BATCH_SIZE]
+    result = client.aggregate_docdb_records(pipeline=[
+        {"$match": {"name": {"$in": batch}}},
+        {"$project": {"name": 1, "subject.subject_id": 1,
+                      "acquisition.data_streams.modalities": 1, "_id": 0}},
+    ])
+    records.extend(result)
+
+print(f"Total: {len(records)} records")
+print(json.dumps(records[:3], indent=2))
+```

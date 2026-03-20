@@ -18,6 +18,7 @@ dynamic = ["version"]
 
 dependencies = [
     "aind-data-access-api",
+    "zombie-squirrel>=0.15.2",
     "fastmcp",
     "hdmf-zarr>=0.11.1",
     "langchain-core>=0.3.60",

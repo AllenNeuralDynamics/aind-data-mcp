@@ -1,0 +1,241 @@
+{
+  "acorns": [
+    {
+      "name": "unique_project_names",
+      "description": "Unique project names across all assets",
+      "location": "s3://allen-data-views/data-asset-cache/zs_unique_project_names.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "project_name",
+          "description": "Project name"
+        }
+      ]
+    },
+    {
+      "name": "unique_subject_ids",
+      "description": "Unique subject_ids across all assets",
+      "location": "s3://allen-data-views/data-asset-cache/zs_unique_subject_ids.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "subject_id",
+          "description": "Subject ID from subject.subject_id field"
+        }
+      ]
+    },
+    {
+      "name": "asset_basics",
+      "description": "Commonly used asset metadata, one row per data asset",
+      "location": "s3://allen-data-views/data-asset-cache/zs_asset_basics.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "_id",
+          "description": "DocDB record ID for the asset"
+        },
+        {
+          "name": "_last_modified",
+          "description": "DocDB last modified timestamp for the asset record"
+        },
+        {
+          "name": "modalities",
+          "description": "Modalities present in the asset, comma-separated if multiple"
+        },
+        {
+          "name": "project_name",
+          "description": "Project name associated with the asset"
+        },
+        {
+          "name": "data_level",
+          "description": "Data level of the asset (e.g. raw, derived)"
+        },
+        {
+          "name": "subject_id",
+          "description": "Subject ID"
+        },
+        {
+          "name": "acquisition_start_time",
+          "description": "Acquisition start time in ISO format"
+        },
+        {
+          "name": "acquisition_end_time",
+          "description": "Acquisition end time in ISO format"
+        },
+        {
+          "name": "code_ocean",
+          "description": "Code Ocean asset ID if available"
+        },
+        {
+          "name": "process_date",
+          "description": "Date of latest processing in YYYY-MM-DD format"
+        },
+        {
+          "name": "genotype",
+          "description": "Genotype information for the subject if available"
+        },
+        {
+          "name": "location",
+          "description": "Location of the asset in S3"
+        },
+        {
+          "name": "name",
+          "description": "Asset name"
+        }
+      ]
+    },
+    {
+      "name": "source_data",
+      "description": "Mapping from derived asset names to their source raw asset names",
+      "location": "s3://allen-data-views/data-asset-cache/zs_source_data.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "name",
+          "description": "Asset name"
+        },
+        {
+          "name": "source_data",
+          "description": "Asset name that this derived asset was generated from, if available"
+        },
+        {
+          "name": "pipeline_name",
+          "description": "Pipeline that created this asset"
+        },
+        {
+          "name": "processing_time",
+          "description": "Timestamp this asset was processed"
+        }
+      ]
+    },
+    {
+      "name": "raw_to_derived",
+      "description": "Mapping from raw asset names to their derived asset names",
+      "location": "s3://allen-data-views/data-asset-cache/zs_raw_to_derived.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": []
+    },
+    {
+      "name": "quality_control",
+      "description": "Quality control table with one row per QC metric, partitioned by subject_id",
+      "location": "s3://allen-data-views/data-asset-cache/zs_qc/",
+      "partitioned": true,
+      "partition_key": "subject_id",
+      "type": "asset",
+      "columns": [
+        {
+          "name": "name",
+          "description": "Metric name"
+        },
+        {
+          "name": "stage",
+          "description": "Stage: raw, processing, or analysis"
+        },
+        {
+          "name": "modality",
+          "description": "Modality abbreviation"
+        },
+        {
+          "name": "value",
+          "description": "Metric value, converted to string if not already a string"
+        },
+        {
+          "name": "status",
+          "description": "Latest metric status (fail, pass, pending)"
+        },
+        {
+          "name": "asset_name",
+          "description": "Asset name the metric is associated with"
+        }
+      ]
+    },
+    {
+      "name": "assets_smartspim",
+      "description": "SmartSPIM assets including processing status and neuroglancer links",
+      "location": "s3://allen-data-views/data-asset-cache/zs_assets_smartspim.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "subject_id",
+          "description": "Subject for the asset"
+        },
+        {
+          "name": "genotype",
+          "description": "Subject genotype"
+        },
+        {
+          "name": "institution",
+          "description": "Institution abbreviation"
+        },
+        {
+          "name": "acquisition_start_time",
+          "description": "Acquisition start time"
+        },
+        {
+          "name": "processing_end_time",
+          "description": "Processing end time for stitched asset"
+        },
+        {
+          "name": "stitched_link",
+          "description": "Neuroglancer link to stitched asset"
+        },
+        {
+          "name": "processed",
+          "description": "Whether a stitched derived asset exists"
+        },
+        {
+          "name": "name",
+          "description": "Asset name (stitched if available, otherwise raw)"
+        },
+        {
+          "name": "channel_1",
+          "description": "First channel name"
+        },
+        {
+          "name": "segmentation_link_1",
+          "description": "Neuroglancer segmentation link for channel 1"
+        },
+        {
+          "name": "quantification_link_1",
+          "description": "Neuroglancer quantification link for channel 1"
+        },
+        {
+          "name": "channel_2",
+          "description": "Second channel name"
+        },
+        {
+          "name": "segmentation_link_2",
+          "description": "Neuroglancer segmentation link for channel 2"
+        },
+        {
+          "name": "quantification_link_2",
+          "description": "Neuroglancer quantification link for channel 2"
+        },
+        {
+          "name": "channel_3",
+          "description": "Third channel name"
+        },
+        {
+          "name": "segmentation_link_3",
+          "description": "Neuroglancer segmentation link for channel 3"
+        },
+        {
+          "name": "quantification_link_3",
+          "description": "Neuroglancer quantification link for channel 3"
+        }
+      ]
+    }
+  ]
+}
