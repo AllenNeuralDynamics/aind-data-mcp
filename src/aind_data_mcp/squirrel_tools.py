@@ -165,10 +165,10 @@ def get_unique_subject_ids() -> list[str] | str:
     Returns
     -------
     list[str]
-        Sorted list of unique subject ID strings.
+        List of unique subject ID strings.
     """
     try:
-        return sorted(s for s in unique_subject_ids() if s is not None)
+        return [str(s) for s in unique_subject_ids() if pd.notna(s)]
     except Exception as ex:
         return f"Error in get_unique_subject_ids: {type(ex).__name__}: {ex}"
 
