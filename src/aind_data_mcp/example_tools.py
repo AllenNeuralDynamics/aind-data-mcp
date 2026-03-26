@@ -1,7 +1,5 @@
 """Schema example tools for each top-level document type."""
 
-import json
-
 from .mcp_instance import mcp
 
 
@@ -14,8 +12,7 @@ def get_acquisition_example() -> dict:
     subject_details, manipulations, calibrations, and maintenance.
     Access fields like this - acquisition.<field_name>
     """
-    sample_acquisition = json.dumps(
-        {
+    sample_acquisition = {
             "acquisition": {
                 "subject_id": "730945",
                 "specimen_id": None,
@@ -92,7 +89,6 @@ def get_acquisition_example() -> dict:
                 "notes": None,
             }
         }
-    )
     return sample_acquisition
 
 
@@ -103,8 +99,7 @@ def get_data_description_example():
     Contains modalities (plural), investigators as Person objects, and tags.
     Access fields like this - data_description.<field_name>
     """
-    sample_data_description = json.dumps(
-        {
+    sample_data_description = {
             "data_description": {
                 "license": "CC-BY-4.0",
                 "subject_id": "662616",
@@ -161,7 +156,6 @@ def get_data_description_example():
                 "data_summary": None,
             },
         }
-    )
     return sample_data_description
 
 
@@ -173,8 +167,7 @@ def get_instrument_example():
     Contains 'connections', 'coordinate_system', 'modalities', 'modification_date'.
     Access fields like this - instrument.<field_name>
     """
-    sample_instrument = json.dumps(
-        {
+    sample_instrument = {
             "instrument": {
                 "instrument_id": "SmartSPIM1-2",
                 "location": "615 Westlake",
@@ -278,7 +271,6 @@ def get_instrument_example():
                 "notes": None,
             },
         }
-    )
     return sample_instrument
 
 
@@ -288,8 +280,7 @@ def get_procedures_example():
     Example of the procedures schema.
     Access fields like this - procedures.<field_name>
     """
-    sample_procedures = json.dumps(
-        {
+    sample_procedures = {
             "procedures": {
                 "subject_id": "662616",
                 "subject_procedures": [
@@ -440,7 +431,6 @@ def get_procedures_example():
                 "notes": None,
             },
         }
-    )
     return sample_procedures
 
 
@@ -452,8 +442,7 @@ def get_subject_example():
     'subject_details' (MouseSubject/HumanSubject/CalibrationObject).
     Access fields like this - subject.<field_name>
     """
-    sample_subject = json.dumps(
-        {
+    sample_subject = {
             "subject": {
                 "subject_id": "662616",
                 "subject_details": {
@@ -495,7 +484,6 @@ def get_subject_example():
                 "notes": None,
             }
         }
-    )
     return sample_subject
 
 
@@ -506,8 +494,7 @@ def get_processing_example():
     Contains 'data_processes' and 'pipelines' lists.
     Access fields like this - processing.<field_name>
     """
-    sample_processing = json.dumps(
-        {
+    sample_processing = {
             "processing": {
                 "data_processes": [
                     {
@@ -537,7 +524,6 @@ def get_processing_example():
                 "notes": None,
             }
         }
-    )
 
     return sample_processing
 
@@ -549,8 +535,7 @@ def get_model_example() -> dict:
     Describes a machine learning model including architecture, training, and evaluation.
     Access fields like this - model.<field_name>
     """
-    sample_model = json.dumps(
-        {
+    sample_model = {
             "model": {
                 "name": "Example segmentation model",
                 "version": "1.0.0",
@@ -569,6 +554,5 @@ def get_model_example() -> dict:
                 "notes": None,
             }
         }
-    )
     return sample_model
 

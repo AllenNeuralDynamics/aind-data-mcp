@@ -29,6 +29,12 @@ dependencies = [
 [project.scripts]
 aind-data-mcp = "aind_data_mcp.data_access_server:main"
 
+[project.optional-dependencies]
+benchmark = [
+    "strands-agents",         # agent framework (Bedrock + MCP)
+    "boto3",                  # Bedrock Converse API for the judge
+]
+
 [dependency-groups]
 dev = [
     'black',
