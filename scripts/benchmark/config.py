@@ -33,3 +33,18 @@ AGENT_TIMEOUT_SECONDS = 180
 # Maximum number of raw DB result records forwarded to the judge LLM.
 # Keeps the judge prompt within a reasonable context window.
 MAX_JUDGE_RAW_RECORDS = 10
+
+# Seconds to pause between judge calls to reduce sustained throttling risk.
+JUDGE_INTER_QUESTION_PAUSE_SECONDS = 1
+
+# ── Scoring ───────────────────────────────────────────────────────────────────
+# Ordered list of judge criteria.  data_match is optional (omitted when no raw
+# DB records are available), so it must remain last.
+CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity", "data_match")
+
+# ── Bedrock pricing (USD per 1 000 tokens, on-demand) ────────────────────────
+# Update when AWS changes list prices.
+SONNET_INPUT_COST_PER_1K = 0.003    # $3 / M tokens
+SONNET_OUTPUT_COST_PER_1K = 0.015   # $15 / M tokens
+HAIKU_INPUT_COST_PER_1K = 0.0008    # $0.80 / M tokens
+HAIKU_OUTPUT_COST_PER_1K = 0.004    # $4 / M tokens

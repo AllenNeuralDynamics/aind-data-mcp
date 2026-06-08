@@ -41,8 +41,6 @@ import config  # noqa: E402
 # Summary helpers
 # ---------------------------------------------------------------------------
 
-_CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity", "data_match")
-
 
 def _compute_summary(
     questions: list[dict],
@@ -74,7 +72,7 @@ def _compute_summary(
                 "judge_error": scored.get("error"),
                 "criteria_scores": {
                     k: scored.get("scores", {}).get(k, {}).get("score")
-                    for k in _CRITERIA
+                    for k in config.CRITERIA
                 },
             }
         )
@@ -89,7 +87,7 @@ def _compute_summary(
 
     # Aggregate: per criterion
     criteria_means = {}
-    for crit in _CRITERIA:
+    for crit in config.CRITERIA:
         vals = [
             r["criteria_scores"][crit]
             for r in rows
@@ -131,6 +129,28 @@ def _compute_summary(
     agent_errors = sum(1 for r in rows if r["agent_error"])
     judge_errors = sum(1 for r in rows if r["judge_error"])
 
+    # Token / cost totals across all answered questions.
+    agent_in = sum(
+        a.get("usage", {}).get("input_tokens") or 0 for a in agent_answers
+    )
+    agent_out = sum(
+        a.get("usage", {}).get("output_tokens") or 0 for a in agent_answers
+    )
+    judge_in = sum(
+        s.get("usage", {}).get("input_tokens") or 0 for s in judge_scores
+    )
+    judge_out = sum(
+        s.get("usage", {}).get("output_tokens") or 0 for s in judge_scores
+    )
+    agent_cost = (
+        agent_in / 1000 * config.SONNET_INPUT_COST_PER_1K
+        + agent_out / 1000 * config.SONNET_OUTPUT_COST_PER_1K
+    )
+    judge_cost = (
+        judge_in / 1000 * config.HAIKU_INPUT_COST_PER_1K
+        + judge_out / 1000 * config.HAIKU_OUTPUT_COST_PER_1K
+    )
+
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "sonnet_model_id": config.SONNET_MODEL_ID,
@@ -144,6 +164,15 @@ def _compute_summary(
         "by_complexity": complexity_means,
         "by_query_type": type_means,
         "tool_call_stats": tool_stats,
+        "token_usage": {
+            "agent_input": agent_in,
+            "agent_output": agent_out,
+            "agent_cost_usd": round(agent_cost, 4),
+            "judge_input": judge_in,
+            "judge_output": judge_out,
+            "judge_cost_usd": round(judge_cost, 4),
+            "total_cost_usd": round(agent_cost + judge_cost, 4),
+        },
         "per_question": rows,
     }
 
@@ -264,6 +293,12 @@ def run(
     print(f"\nCriteria means  :")
     for crit, val in summary["criteria_means"].items():
         print(f"  {crit:<20}: {val}")
+    tu = summary.get("token_usage", {})
+    if tu.get("total_cost_usd"):
+        print(f"\nToken usage     :")
+        print(f"  Agent  : {tu['agent_input']} in / {tu['agent_output']} out  (~${tu['agent_cost_usd']:.4f})")
+        print(f"  Judge  : {tu['judge_input']} in / {tu['judge_output']} out  (~${tu['judge_cost_usd']:.4f})")
+        print(f"  Total  : ~${tu['total_cost_usd']:.4f}")
     print(f"\nResults written to {run_dir}/")
 
 

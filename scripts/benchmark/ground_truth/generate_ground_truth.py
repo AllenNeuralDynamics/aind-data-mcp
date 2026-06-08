@@ -1,7 +1,7 @@
 """Ground truth generator.
 
-Reads questions/questions.json, runs the mongodb_query for each question
-against the live database, and writes raw results to ground_truth/raw/.
+Reads questions/questions.json, runs the query for each question against the
+live database, and writes raw results to ground_truth/raw/.
 
 Usage (one-time, or when the question set changes):
 
@@ -19,8 +19,8 @@ Each output file is ground_truth/raw/{question_id:03d}.json with the shape:
       "error": null              // or an error string
     }
 
-Questions where manual_only=true (no parseable mongodb_query) still get a
-stub file so the judge pipeline doesn't need special-casing.
+Questions where manual_only=true (no parseable query) still get a stub file
+so the judge pipeline does not need special-casing.
 """
 
 import json
@@ -43,17 +43,19 @@ def _make_client() -> MetadataDbClient:
     return MetadataDbClient(host=_DB_HOST, version=_DB_VERSION)
 
 
-def _run_query(client: MetadataDbClient, mongodb_query: dict) -> list:
-    """Execute a query dict and return raw records."""
-    if "agg_pipeline" in mongodb_query:
-        return client.aggregate_docdb_records(mongodb_query["agg_pipeline"])
+def _run_query(client: MetadataDbClient, q: dict) -> list:
+    """Execute a question's query and return raw records.
 
-    # Simple filter / projection query.
-    filter_q = mongodb_query.get("filter", {})
-    projection = mongodb_query.get("projection", {})
-    # Use a generous limit so we capture complete result sets.  Very large
-    # result sets (>500) are unlikely for the benchmark questions.
-    limit = mongodb_query.get("limit", 500)
+    Dispatches on whether the question has an agg_pipeline or a filter.
+    """
+    agg_pipeline = q.get("agg_pipeline")
+    if agg_pipeline:
+        return client.aggregate_docdb_records(agg_pipeline)
+
+    filter_q = q.get("filter", {})
+    projection = q.get("projection", {})
+    # Use a generous limit so we capture complete result sets.
+    limit = 500
     return client.retrieve_docdb_records(
         filter_query=filter_q,
         projection=projection,
@@ -102,9 +104,9 @@ def generate(
             out_path.write_text(json.dumps(stub, indent=2, default=str))
             continue
 
-        print(f"[{i}/{total}] #{q_id} — running query …", end="", file=sys.stderr)
+        print(f"[{i}/{total}] #{q_id} — running query ...", end="", file=sys.stderr)
         try:
-            records = _run_query(client, q["mongodb_query"])
+            records = _run_query(client, q)
             stub["records"] = records
             stub["record_count"] = len(records)
             print(f" {len(records)} records", file=sys.stderr)

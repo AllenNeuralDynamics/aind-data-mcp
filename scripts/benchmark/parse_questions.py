@@ -21,7 +21,8 @@ def _try_parse_json(raw: str) -> tuple[dict | list | None, bool]:
     """Attempt to parse a string as JSON.
 
     Returns (parsed_value, success).  Returns (None, False) if the string is
-    blank, looks like Python code, or is invalid JSON.
+    blank, looks like Python code, or is invalid JSON.  Handles double-encoded
+    JSON strings by re-parsing once.
     """
     if not raw:
         return None, False
@@ -31,9 +32,40 @@ def _try_parse_json(raw: str) -> tuple[dict | list | None, bool]:
     if any(stripped.startswith(h) for h in python_hints):
         return None, False
     try:
-        return json.loads(stripped), True
+        parsed = json.loads(stripped)
+        # Handle double-encoded JSON (the column value was a JSON-encoded string).
+        if isinstance(parsed, str):
+            try:
+                parsed = json.loads(parsed)
+            except json.JSONDecodeError:
+                return None, False
+        return parsed, True
     except json.JSONDecodeError:
         return None, False
+
+
+def _normalize_query(parsed: dict | list | None) -> tuple[dict, dict, list | None]:
+    """Normalize a parsed mongodb_query value into (filter, projection, agg_pipeline).
+
+    Accepts all historical formats:
+      - None                                   -> no machine-runnable query
+      - list                                   -> bare aggregation pipeline
+      - {"agg_pipeline": [...]}                -> wrapped aggregation pipeline
+      - {"filter": {...}, "projection": {...}} -> wrapped filter + projection
+      - bare dict (other keys)                 -> bare filter dict, no projection
+    """
+    if parsed is None:
+        return {}, {}, None
+    if isinstance(parsed, list):
+        return {}, {}, parsed
+    if isinstance(parsed, dict):
+        if "agg_pipeline" in parsed:
+            return {}, {}, parsed["agg_pipeline"]
+        if "filter" in parsed or "projection" in parsed:
+            return parsed.get("filter", {}), parsed.get("projection", {}), None
+        # Bare filter dict (no wrapper keys).
+        return parsed, {}, None
+    return {}, {}, None
 
 
 def parse_questions(csv_path: Path = CSV_PATH, output_path: Path = OUTPUT_PATH) -> list[dict]:
@@ -47,7 +79,8 @@ def parse_questions(csv_path: Path = CSV_PATH, output_path: Path = OUTPUT_PATH) 
             if not question_text:
                 continue
 
-            mongodb_query, has_query = _try_parse_json(row.get("output_mongodb_query", ""))
+            parsed, has_query = _try_parse_json(row.get("output_mongodb_query", ""))
+            filter_q, projection, agg_pipeline = _normalize_query(parsed if has_query else None)
 
             q = {
                 "id": q_id,
@@ -55,9 +88,10 @@ def parse_questions(csv_path: Path = CSV_PATH, output_path: Path = OUTPUT_PATH) 
                 "expected_answer": row.get("output_answer", "").strip(),
                 # Stored for reference but not used as authoritative ground truth.
                 "python_query": row.get("output_python", "").strip(),
-                # Parsed MongoDB query dict; None when the column contains
-                # Python code or is blank.
-                "mongodb_query": mongodb_query,
+                # Flat query fields — use these directly; no nested wrapper.
+                "filter": filter_q,
+                "projection": projection,
+                "agg_pipeline": agg_pipeline,
                 # True when no machine-runnable query is available — judge
                 # will compare against the expected_answer text only.
                 "manual_only": not has_query,
@@ -72,7 +106,7 @@ def parse_questions(csv_path: Path = CSV_PATH, output_path: Path = OUTPUT_PATH) 
     with open(output_path, "w", encoding="utf-8") as fh:
         json.dump(questions, fh, indent=2)
 
-    print(f"Parsed {len(questions)} questions → {output_path}", file=sys.stderr)
+    print(f"Parsed {len(questions)} questions -> {output_path}", file=sys.stderr)
     return questions
 
 

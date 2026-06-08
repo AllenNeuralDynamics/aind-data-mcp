@@ -1,18 +1,18 @@
-"""LLM judge — scores each agent answer using Claude Haiku 4.5 via Bedrock.
+"""LLM judge -- scores each agent answer using Claude Haiku 4.5 via Bedrock.
 
 The judge reads agent_answers.json and the ground_truth/raw/ files and
 produces judge_scores.json.
 
-Scoring criteria (each 1–5, 5 = best):
+Scoring criteria (each 1-5, 5 = best):
 
-  factual_accuracy  — Key facts (counts, names, dates, values) match
-                      the ground-truth data.
-  completeness      — All relevant aspects of the question are addressed.
-  relevance         — Answer is focused; no significant off-topic content.
-  clarity           — Well-structured and appropriately formatted.
-  data_match        — (Only when raw DB records are available and non-empty)
-                      The agent's answer correctly reflects the actual DB
-                      results (right numbers, listed items, etc.).
+  factual_accuracy  -- Key facts (counts, names, dates, values) match
+                       the ground-truth data.
+  completeness      -- All relevant aspects of the question are addressed.
+  relevance         -- Answer is focused; no significant off-topic content.
+  clarity           -- Well-structured and appropriately formatted.
+  data_match        -- (Only when raw DB records are available and non-empty)
+                       The agent's answer correctly reflects the actual DB
+                       results (right numbers, listed items, etc.).
 
 Output schema (one element of judge_scores.json):
 
@@ -27,6 +27,7 @@ Output schema (one element of judge_scores.json):
         "data_match":       {"score": 3, "reasoning": "..."}   // optional
       },
       "overall": 4.25,   // mean of present criteria scores
+      "usage": {"input_tokens": 800, "output_tokens": 120},
       "error": null
     }
 """
@@ -57,7 +58,7 @@ You will be shown:
 2. The agent's answer to evaluate
 3. An expected/reference answer written by a domain expert
 4. (Optionally) a sample of the actual raw database records returned for this
-   question — use this as the authoritative factual source
+   question -- use this as the authoritative factual source
 
 Score each applicable criterion from 1 (very poor) to 5 (excellent).
 Be critical: only award 5 when the answer is essentially perfect for that
@@ -73,7 +74,7 @@ Criteria:
   clarity          : Is the answer well-structured and appropriately formatted
                      (tables where useful, no walls of repetitive text)?
   data_match       : (Only when raw DB records are present) Does the answer
-                     correctly reflect the actual database results — right
+                     correctly reflect the actual database results -- right
                      record counts, correct listed items, accurate values?
 
 Return ONLY a valid JSON object with EXACTLY this structure (no markdown, no
@@ -99,7 +100,7 @@ def _build_user_prompt(
 ) -> str:
     parts = [
         f"## Question\n{question}",
-        f"## Agent Answer\n{agent_answer or '(no answer — agent returned an error)'}",
+        f"## Agent Answer\n{agent_answer or '(no answer -- agent returned an error)'}",
         f"## Expected Answer (reference, written by a domain expert)\n{expected_answer or '(none provided)'}",
     ]
     if raw_records:
@@ -116,21 +117,57 @@ def _build_user_prompt(
 # Bedrock Converse call
 # ---------------------------------------------------------------------------
 
-def _invoke_judge(
-    prompt: str,
-    bedrock_client,
-) -> dict:
-    response = bedrock_client.converse(
-        modelId=config.HAIKU_MODEL_ID,
-        system=[{"text": _SYSTEM_PROMPT}],
-        messages=[{"role": "user", "content": [{"text": prompt}]}],
-        inferenceConfig={
-            "maxTokens": 1024,
-            "temperature": 0.0,
-        },
-    )
-    raw_text: str = response["output"]["message"]["content"][0]["text"]
-    return json.loads(raw_text)
+def _strip_markdown_fence(text: str) -> str:
+    """Remove optional ```json ... ``` fences that the LLM sometimes adds."""
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        # Drop the opening fence line and trailing fence.
+        stripped = stripped.split("\n", 1)[1] if "\n" in stripped else stripped[3:]
+        stripped = stripped.rsplit("```", 1)[0]
+    return stripped.strip()
+
+
+def _invoke_judge(prompt: str, bedrock_client) -> tuple[dict, dict]:
+    """Call the judge model and return (scores_dict, usage_dict).
+
+    Retries up to 3 times with exponential backoff on transient errors
+    (throttling, service errors).
+    """
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = bedrock_client.converse(
+                modelId=config.HAIKU_MODEL_ID,
+                system=[{"text": _SYSTEM_PROMPT}],
+                messages=[{"role": "user", "content": [{"text": prompt}]}],
+                inferenceConfig={
+                    "maxTokens": 1024,
+                    "temperature": 0.0,
+                },
+            )
+            raw_text: str = response["output"]["message"]["content"][0]["text"]
+            cleaned = _strip_markdown_fence(raw_text)
+            scores = json.loads(cleaned)
+
+            usage_raw = response.get("usage", {})
+            usage = {
+                "input_tokens": usage_raw.get("inputTokens"),
+                "output_tokens": usage_raw.get("outputTokens"),
+            }
+            return scores, usage
+
+        except Exception as exc:
+            if attempt == max_attempts:
+                raise
+            wait = 2 ** attempt  # 2s, 4s
+            print(
+                f" [retry {attempt}/{max_attempts - 1} after {wait}s: {exc}]",
+                end="",
+                file=sys.stderr,
+            )
+            time.sleep(wait)
+
+    raise RuntimeError("unreachable")  # satisfies type checkers
 
 
 def _overall_score(scores: dict) -> float:
@@ -186,6 +223,9 @@ def judge(
     pending = [a for a in agent_answers if a["id"] not in existing_ids]
     total = len(pending)
 
+    total_input_tokens = 0
+    total_output_tokens = 0
+
     for i, answer in enumerate(pending, 1):
         q_id = answer["id"]
         question_meta = questions_by_id.get(q_id, {})
@@ -201,7 +241,7 @@ def judge(
             raw_records = gt.get("records") or None  # treat empty list as None
 
         print(
-            f"[{i}/{total}] judging #{q_id} [{question_meta.get('complexity', '?')}] …",
+            f"[{i}/{total}] judging #{q_id} [{question_meta.get('complexity', '?')}] ...",
             end="",
             file=sys.stderr,
         )
@@ -211,6 +251,7 @@ def judge(
             "question": question_text,
             "scores": {},
             "overall": 0.0,
+            "usage": {},
             "error": None,
         }
 
@@ -229,22 +270,50 @@ def judge(
         )
 
         try:
-            scores = _invoke_judge(prompt, bedrock)
+            scores, usage = _invoke_judge(prompt, bedrock)
             # Validate structure minimally.
-            for key in ("factual_accuracy", "completeness", "relevance", "clarity"):
+            for key in config.CRITERIA[:-1]:  # all except data_match (optional)
                 if key not in scores:
                     raise ValueError(f"Missing criterion '{key}' in judge response")
             stub["scores"] = scores
             stub["overall"] = _overall_score(scores)
-            print(f" overall={stub['overall']}", file=sys.stderr)
+            stub["usage"] = usage
+
+            if usage.get("input_tokens"):
+                total_input_tokens += usage["input_tokens"]
+            if usage.get("output_tokens"):
+                total_output_tokens += usage["output_tokens"]
+
+            token_str = ""
+            if usage.get("input_tokens") or usage.get("output_tokens"):
+                token_str = (
+                    f"  in={usage.get('input_tokens', '?')} "
+                    f"out={usage.get('output_tokens', '?')} tokens"
+                )
+            print(f" overall={stub['overall']}{token_str}", file=sys.stderr)
+
         except Exception as exc:
             stub["error"] = str(exc)
             print(f" ERROR: {exc}", file=sys.stderr)
-            # Back off briefly to avoid hammering Bedrock on repeated failures.
-            time.sleep(2)
 
         results.append(stub)
         _persist(results, output_path)
+
+        # Brief pause between questions to avoid sustained throttling.
+        if i < total:
+            time.sleep(config.JUDGE_INTER_QUESTION_PAUSE_SECONDS)
+
+    # Print token totals.
+    if total_input_tokens or total_output_tokens:
+        cost = (
+            total_input_tokens / 1000 * config.HAIKU_INPUT_COST_PER_1K
+            + total_output_tokens / 1000 * config.HAIKU_OUTPUT_COST_PER_1K
+        )
+        print(
+            f"\nJudge tokens  : {total_input_tokens} in / {total_output_tokens} out"
+            f"  (~${cost:.4f})",
+            file=sys.stderr,
+        )
 
     return results
 
