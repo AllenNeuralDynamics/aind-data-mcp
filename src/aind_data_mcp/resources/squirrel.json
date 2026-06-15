@@ -3,7 +3,7 @@
     {
       "name": "unique_project_names",
       "description": "Unique project names across all assets",
-      "location": "s3://allen-data-views/data-asset-cache/zs_unique_project_names.pqt",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/unique_project_names.pqt",
       "partitioned": false,
       "partition_key": null,
       "type": "metadata",
@@ -17,7 +17,7 @@
     {
       "name": "unique_subject_ids",
       "description": "Unique subject_ids across all assets",
-      "location": "s3://allen-data-views/data-asset-cache/zs_unique_subject_ids.pqt",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/unique_subject_ids.pqt",
       "partitioned": false,
       "partition_key": null,
       "type": "metadata",
@@ -31,7 +31,7 @@
     {
       "name": "asset_basics",
       "description": "Commonly used asset metadata, one row per data asset",
-      "location": "s3://allen-data-views/data-asset-cache/zs_asset_basics.pqt",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/asset_basics.pqt",
       "partitioned": false,
       "partition_key": null,
       "type": "metadata",
@@ -81,19 +81,51 @@
           "description": "Genotype information for the subject if available"
         },
         {
+          "name": "age",
+          "description": "Age of the subject at time of acquisition"
+        },
+        {
+          "name": "acquisition_type",
+          "description": "Type of acquisition (e.g. in-vivo, ex-vivo)"
+        },
+        {
           "name": "location",
           "description": "Location of the asset in S3"
         },
         {
           "name": "name",
           "description": "Asset name"
+        },
+        {
+          "name": "experimenters",
+          "description": "List of experimenter names associated with the asset"
+        },
+        {
+          "name": "experimenters_normalized",
+          "description": "Normalized experimenter identifier string"
+        },
+        {
+          "name": "instrument_id",
+          "description": "Instrument ID used for acquisition"
+        },
+        {
+          "name": "instrument_id_normalized",
+          "description": "Normalized instrument ID string"
+        },
+        {
+          "name": "investigators",
+          "description": "List of investigator names for the project"
+        },
+        {
+          "name": "investigators_normalized",
+          "description": "Normalized investigator identifier string"
         }
       ]
     },
     {
       "name": "source_data",
       "description": "Mapping from derived asset names to their source raw asset names",
-      "location": "s3://allen-data-views/data-asset-cache/zs_source_data.pqt",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/source_data.pqt",
       "partitioned": false,
       "partition_key": null,
       "type": "metadata",
@@ -119,7 +151,7 @@
     {
       "name": "raw_to_derived",
       "description": "Mapping from raw asset names to their derived asset names",
-      "location": "s3://allen-data-views/data-asset-cache/zs_raw_to_derived.pqt",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/raw_to_derived.pqt",
       "partitioned": false,
       "partition_key": null,
       "type": "metadata",
@@ -128,7 +160,7 @@
     {
       "name": "quality_control",
       "description": "Quality control table with one row per QC metric, partitioned by subject_id",
-      "location": "s3://allen-data-views/data-asset-cache/zs_qc/",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/qc/",
       "partitioned": true,
       "partition_key": "subject_id",
       "type": "asset",
@@ -161,27 +193,23 @@
     },
     {
       "name": "assets_smartspim",
-      "description": "SmartSPIM assets including processing status and neuroglancer links",
-      "location": "s3://allen-data-views/data-asset-cache/zs_assets_smartspim.pqt",
+      "description": "SmartSPIM assets with processing status and neuroglancer links, one row per (asset, channel)",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/platform_smartspim.pqt",
       "partitioned": false,
       "partition_key": null,
       "type": "metadata",
       "columns": [
         {
-          "name": "subject_id",
-          "description": "Subject for the asset"
+          "name": "name",
+          "description": "Asset name (stitched if available, otherwise raw)"
         },
         {
-          "name": "genotype",
-          "description": "Subject genotype"
+          "name": "raw_name",
+          "description": "Raw asset name"
         },
         {
-          "name": "institution",
-          "description": "Institution abbreviation"
-        },
-        {
-          "name": "acquisition_start_time",
-          "description": "Acquisition start time"
+          "name": "processed",
+          "description": "Whether a stitched derived asset exists"
         },
         {
           "name": "processing_end_time",
@@ -192,49 +220,206 @@
           "description": "Neuroglancer link to stitched asset"
         },
         {
-          "name": "processed",
-          "description": "Whether a stitched derived asset exists"
+          "name": "raw_link",
+          "description": "Neuroglancer link to raw asset"
         },
+        {
+          "name": "channel",
+          "description": "Channel name"
+        },
+        {
+          "name": "segmentation_link",
+          "description": "Neuroglancer segmentation link for this channel"
+        },
+        {
+          "name": "quantification_link",
+          "description": "Neuroglancer quantification link for this channel"
+        }
+      ]
+    },
+    {
+      "name": "unique_genotypes",
+      "description": "Unique genotypes across all assets where subject.subject_details.genotype is present",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/unique_genotypes.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "genotype",
+          "description": "Genotype string"
+        }
+      ]
+    },
+    {
+      "name": "platform_qc",
+      "description": "Tag-level QC statuses aggregated per platform, one row per asset/tag combination",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/platform_qc/",
+      "partitioned": true,
+      "partition_key": "platform",
+      "type": "platform",
+      "columns": [
+        {
+          "name": "asset_name",
+          "description": "Asset name"
+        },
+        {
+          "name": "tag",
+          "description": "QC tag name"
+        },
+        {
+          "name": "status",
+          "description": "QC status: pass, fail, or pending"
+        },
+        {
+          "name": "timestamp",
+          "description": "Timestamp of QC evaluation"
+        },
+        {
+          "name": "instrument_id_normalized",
+          "description": "Normalized instrument ID"
+        },
+        {
+          "name": "experimenters_normalized",
+          "description": "Normalized experimenter identifier"
+        }
+      ]
+    },
+    {
+      "name": "platform_exaspim",
+      "description": "ExaSPIM assets with processing status and neuroglancer links, one row per asset",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/platform_exaspim.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
         {
           "name": "name",
-          "description": "Asset name (stitched if available, otherwise raw)"
+          "description": "Asset name (fused if available, otherwise raw)"
         },
         {
-          "name": "channel_1",
-          "description": "First channel name"
+          "name": "raw_name",
+          "description": "Raw asset name"
         },
         {
-          "name": "segmentation_link_1",
-          "description": "Neuroglancer segmentation link for channel 1"
+          "name": "processed",
+          "description": "Whether a fused derived asset exists"
         },
         {
-          "name": "quantification_link_1",
-          "description": "Neuroglancer quantification link for channel 1"
+          "name": "raw_link",
+          "description": "Neuroglancer link to raw asset"
         },
         {
-          "name": "channel_2",
-          "description": "Second channel name"
-        },
-        {
-          "name": "segmentation_link_2",
-          "description": "Neuroglancer segmentation link for channel 2"
-        },
-        {
-          "name": "quantification_link_2",
-          "description": "Neuroglancer quantification link for channel 2"
-        },
-        {
-          "name": "channel_3",
-          "description": "Third channel name"
-        },
-        {
-          "name": "segmentation_link_3",
-          "description": "Neuroglancer segmentation link for channel 3"
-        },
-        {
-          "name": "quantification_link_3",
-          "description": "Neuroglancer quantification link for channel 3"
+          "name": "fused_link",
+          "description": "Neuroglancer link to fused asset"
         }
+      ]
+    },
+    {
+      "name": "platform_fib",
+      "description": "Fiber photometry assets in long form, one row per asset/fiber/channel combination",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/platform_fib.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {
+          "name": "asset_name",
+          "description": "Asset name"
+        },
+        {
+          "name": "fiber",
+          "description": "Fiber identifier"
+        },
+        {
+          "name": "patch_cord",
+          "description": "Patch cord identifier"
+        },
+        {
+          "name": "channel",
+          "description": "Channel name"
+        },
+        {
+          "name": "intended_measurement",
+          "description": "Intended measurement type"
+        },
+        {
+          "name": "targeted_structure",
+          "description": "Targeted brain structure"
+        }
+      ]
+    },
+    {
+      "name": "foraging_sessions",
+      "description": "Foraging behavior sessions with key performance metrics, one row per session",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/foraging_sessions.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {"name": "subject_id", "description": "Subject ID"},
+        {"name": "session_date", "description": "Date of the session"},
+        {"name": "session", "description": "Session number"},
+        {"name": "nwb_suffix", "description": "NWB file suffix"},
+        {"name": "rig", "description": "Rig identifier"},
+        {"name": "trainer", "description": "Trainer name"},
+        {"name": "trainer_normalized", "description": "Normalized trainer identifier"},
+        {"name": "task", "description": "Task name"},
+        {"name": "curriculum_name", "description": "Curriculum name"},
+        {"name": "curriculum_version", "description": "Curriculum version"},
+        {"name": "current_stage_actual", "description": "Current training stage"},
+        {"name": "foraging_eff", "description": "Foraging efficiency"},
+        {"name": "foraging_eff_random_seed", "description": "Foraging efficiency (random seed baseline)"},
+        {"name": "finished_trials", "description": "Number of finished trials"},
+        {"name": "finished_rate", "description": "Rate of finished trials"},
+        {"name": "total_trials", "description": "Total number of trials"},
+        {"name": "bias_naive", "description": "Naive bias metric"}
+      ]
+    },
+    {
+      "name": "behavior_curriculum",
+      "description": "Behavior assets with curriculum name and stage, one row per behavior asset",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/behavior_curriculum.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "asset",
+      "columns": [
+        {"name": "asset_name", "description": "Asset name"},
+        {"name": "curriculum_name", "description": "Curriculum name"},
+        {"name": "stage_name", "description": "Training stage name"},
+        {"name": "stage_node_id", "description": "Stage node identifier in the curriculum graph"}
+      ]
+    },
+    {
+      "name": "time_to_qc",
+      "description": "Time from processing completion to QC completion for derived assets",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/time_to_qc.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {"name": "name", "description": "Asset name"},
+        {"name": "process_end_time", "description": "Timestamp when processing completed"},
+        {"name": "qc_time", "description": "Timestamp when QC was completed"}
+      ]
+    },
+    {
+      "name": "metadata_upgrade",
+      "description": "Metadata upgrade status for each asset across schema versions",
+      "location": "s3://allen-data-views/data-asset-cache/bdc-v{version}/metadata_upgrade.pqt",
+      "partitioned": false,
+      "partition_key": null,
+      "type": "metadata",
+      "columns": [
+        {"name": "_id", "description": "DocDB record ID"},
+        {"name": "name", "description": "Asset name"},
+        {"name": "project_name", "description": "Project name"},
+        {"name": "data_level", "description": "Data level (raw or derived)"},
+        {"name": "v2_id", "description": "v2 schema record ID if upgraded"},
+        {"name": "upgrader_version", "description": "Version of the upgrader tool used"},
+        {"name": "last_modified", "description": "Last modified timestamp"},
+        {"name": "status", "description": "Upgrade status: success, failed, or pending"},
+        {"name": "upgrade_datetime", "description": "Datetime when upgrade was performed"}
       ]
     }
   ]

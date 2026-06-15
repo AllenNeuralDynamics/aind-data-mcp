@@ -1,11 +1,11 @@
-## Using zombie_squirrel for Python Script Generation
+## Using biodata_cache for Python Script Generation
 
 When a user asks for a Python script that queries data assets, prefer the
-zombie_squirrel approach over a raw MongoDB query whenever the filter criteria
+biodata_cache approach over a raw MongoDB query whenever the filter criteria
 only involve fields available in the cached tables (modality, project_name,
 data_level, subject_id, acquisition dates, genotype, asset name).
 
-The zombie_squirrel package loads pre-built Parquet tables from S3 and is
+The biodata_cache package loads pre-built Parquet tables from S3 and is
 much faster than querying MongoDB for large-scale filtering. Full MongoDB
 records are only fetched for the final small set of matching assets.
 
@@ -13,8 +13,8 @@ records are only fetched for the final small set of matching assets.
 
 ### Decision logic for Python script generation
 
-1. Can the filtering be done entirely with zombie_squirrel table fields?
-   - YES → Use zombie_squirrel to get matching asset names, then optionally
+1. Can the filtering be done entirely with biodata_cache table fields?
+   - YES → Use biodata_cache to get matching asset names, then optionally
      fetch full records from aind-data-access-api using $in.
    - NO (e.g. filter on deep nested fields not in the tables) → Fall back to
      a direct MongoDB aggregation/filter query.
@@ -33,7 +33,7 @@ import json
 
 import pandas as pd
 from aind_data_access_api.document_db import MetadataDbClient
-from zombie_squirrel import asset_basics  # import whichever tables are needed
+from biodata_cache import asset_basics  # import whichever tables are needed
 
 # ── Step 1: fast table lookup ────────────────────────────────────────────────
 df = asset_basics()
@@ -78,21 +78,36 @@ else:
 
 ### Field availability cheat-sheet
 
-Use zombie_squirrel FIRST when filtering/selecting by any of these fields:
+Use biodata_cache FIRST when filtering/selecting by any of these fields:
 
-| Table                | Key columns                                                     |
-|----------------------|-----------------------------------------------------------------|
-| asset_basics         | _id, name, modalities, project_name, data_level, subject_id,   |
-|                      | acquisition_start_time, acquisition_end_time, code_ocean,       |
-|                      | process_date, genotype, location                                |
-| source_data          | name (derived), source_data (raw), pipeline_name, processing_time |
-| raw_to_derived       | raw asset name → list of derived names                          |
-| quality_control      | name, stage, modality, value, status, asset_name               |
-|                      | (partitioned by subject_id)                                     |
-| unique_project_names | project_name                                                    |
-| unique_subject_ids   | subject_id                                                      |
-| assets_smartspim     | subject_id, genotype, institution, stitched_link, processed,   |
-|                      | channel_1/2/3, segmentation/quantification links               |
+| Table                 | Key columns                                                          |
+|-----------------------|----------------------------------------------------------------------|
+| asset_basics          | _id, name, modalities, project_name, data_level, subject_id,         |
+|                       | acquisition_start_time, acquisition_end_time, code_ocean,            |
+|                       | process_date, genotype, age, acquisition_type, location,             |
+|                       | experimenters, experimenters_normalized, instrument_id,              |
+|                       | instrument_id_normalized, investigators, investigators_normalized    |
+| source_data           | name (derived), source_data (raw), pipeline_name, processing_time    |
+| raw_to_derived        | raw asset name → list of derived names                               |
+| quality_control       | name, stage, modality, value, status, asset_name                     |
+|                       | (partitioned by subject_id)                                          |
+| platform_qc           | asset_name, tag, status, timestamp, instrument_id_normalized,        |
+|                       | experimenters_normalized (partitioned by platform)                   |
+| unique_project_names  | project_name                                                         |
+| unique_subject_ids    | subject_id                                                           |
+| unique_genotypes      | genotype                                                             |
+| assets_smartspim      | name, raw_name, processed, processing_end_time, stitched_link,       |
+|                       | raw_link, channel, segmentation_link, quantification_link            |
+| platform_exaspim      | name, raw_name, processed, raw_link, fused_link                      |
+| platform_fib          | asset_name, fiber, patch_cord, channel, intended_measurement,        |
+|                       | targeted_structure                                                   |
+| foraging_sessions     | subject_id, session_date, session, nwb_suffix, rig, trainer,         |
+|                       | task, curriculum_name, curriculum_version, current_stage_actual,     |
+|                       | foraging_eff, finished_trials, finished_rate, total_trials, bias_naive|
+| behavior_curriculum   | asset_name, curriculum_name, stage_name, stage_node_id              |
+| time_to_qc            | name, process_end_time, qc_time                                      |
+| metadata_upgrade      | _id, name, project_name, data_level, v2_id, upgrader_version,        |
+|                       | last_modified, status, upgrade_datetime                              |
 
 Use MongoDB directly (get_records / aggregation_retrieval) when you need
 fields NOT in the table above, such as detailed subject metadata,
@@ -104,7 +119,7 @@ procedures, instrument configs, processing pipeline details, etc.
 
 #### QC script for a subject
 ```python
-from zombie_squirrel import qc
+from biodata_cache import qc
 
 qc_df = qc("738942")          # subject_id as string
 print(qc_df.columns.tolist())
@@ -115,15 +130,15 @@ print(fails[["asset_name", "name", "modality", "value"]])
 
 #### Find derived assets from a raw asset
 ```python
-from zombie_squirrel import raw_to_derived
+from biodata_cache import raw_to_derived
 
 derived = raw_to_derived("ecephys_716870_2024-07-09_15-39-28", latest=True)
 print(derived)
 ```
 
-#### Combine zombie_squirrel filter with aggregation for richer results
+#### Combine biodata_cache filter with aggregation for richer results
 ```python
-from zombie_squirrel import asset_basics
+from biodata_cache import asset_basics
 from aind_data_access_api.document_db import MetadataDbClient
 import json
 

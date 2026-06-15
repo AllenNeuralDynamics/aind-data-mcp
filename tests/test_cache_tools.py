@@ -1,6 +1,6 @@
-"""Tests for squirrel_tools MCP tools.
+"""Tests for cache_tools MCP tools.
 
-Run directly with:  python tests/test_squirrel_tools.py
+Run directly with:  python tests/test_cache_tools.py
 """
 
 import sys
@@ -8,14 +8,22 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from aind_data_mcp.squirrel_tools import (
+from aind_data_mcp.cache_tools import (
     get_asset_basics,
     get_unique_project_names,
     get_unique_subject_ids,
+    get_unique_genotypes,
     get_source_data_table,
     get_raw_to_derived,
     get_qc_metrics,
     get_assets_smartspim,
+    get_platform_qc,
+    get_assets_exaspim,
+    get_assets_fib,
+    get_foraging_sessions,
+    get_behavior_curriculum,
+    get_time_to_qc,
+    get_metadata_upgrade,
 )
 
 # ── get_unique_project_names ─────────────────────────────────────────────────
@@ -280,7 +288,7 @@ def test_json_serialisable():
 
 
 def run_all():
-    print("\n=== zombie_squirrel MCP tool tests ===\n")
+    print("\n=== biodata_cache MCP tool tests ===\n")
 
     # Discover live data to use as fixtures
     subjects = get_unique_subject_ids()

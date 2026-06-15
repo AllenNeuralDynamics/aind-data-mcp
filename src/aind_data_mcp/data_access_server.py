@@ -8,7 +8,7 @@ from . import example_tools  # noqa: F401
 from . import nwb_tools  # noqa: F401
 from . import query_tools  # noqa: F401
 from . import schema_tools  # noqa: F401
-from . import squirrel_tools  # noqa: F401
+from . import cache_tools  # noqa: F401
 
 
 @mcp.resource("resource://aind_api")
@@ -37,7 +37,7 @@ def get_nwbfile_download_script() -> str:
 @mcp.resource("resource://squirrel_tables")
 def get_squirrel_tables() -> str:
     """
-    Schema for the zombie_squirrel cached tables (title and description for
+    Schema for the biodata_cache cached tables (title and description for
     every column in every table). Use this resource to understand what data
     is available in the fast S3-backed tables before deciding whether to use
     squirrel tools or fall back to MongoDB queries.
@@ -51,7 +51,7 @@ def get_squirrel_tables() -> str:
 @mcp.resource("resource://squirrel_api")
 def get_squirrel_api_prompt() -> str:
     """
-    Guidance on how to use zombie_squirrel in Python scripts alongside
+    Guidance on how to use biodata_cache in Python scripts alongside
     aind-data-access-api. Covers the fast-table-first pattern, $in query
     batching for large result sets, and example scripts.
     """
