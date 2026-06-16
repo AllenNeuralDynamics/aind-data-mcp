@@ -39,7 +39,7 @@ def get_additional_schema_help():
 
 Key Requirements when creating MongoDB queries:
 Always unwind procedures field
-Use data_description.modalities.name for modality queries
+Use data_description.modalities.abbreviation for modality queries
 For questions on modalities, always unwind the modalities field.
 Use $regex over $elemMatch
 
