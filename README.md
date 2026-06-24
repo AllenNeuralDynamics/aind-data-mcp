@@ -11,13 +11,17 @@ An MCP (Model Context Protocol) server that provides access to AIND (Allen Insti
 
 ## Installation
 
-Each IDE/client has its own configuration method, look at their documentation for instructions on MCP configuration/setup.
-
-You can either use the command `uvx aind-data-mcp` to launch the server, or install it locally with `uv tool install aind-data-mcp` and then launch it with just `aind-data-mcp`.
-
-### For use in Code Ocean
-
-* Refer to the [code ocean MCP server](https://github.com/codeocean/codeocean-mcp-server) for additional support
+```json
+{
+    "servers": {
+        "aind-data-mcp": {
+            "url": "https://metadata-portal.allenneuraldynamics.org/mcp/",
+            "type": "http"
+        }
+    },
+    "inputs": []
+}
+```
 
 ## Features
 
