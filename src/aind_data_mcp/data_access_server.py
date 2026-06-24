@@ -34,29 +34,29 @@ def get_nwbfile_download_script() -> str:
     return file_content
 
 
-@mcp.resource("resource://squirrel_tables")
-def get_squirrel_tables() -> str:
+@mcp.resource("resource://cache_tables")
+def get_cache_tables() -> str:
     """
     Schema for the biodata_cache cached tables (title and description for
     every column in every table). Use this resource to understand what data
     is available in the fast S3-backed tables before deciding whether to use
-    squirrel tools or fall back to MongoDB queries.
+    cache tools or fall back to MongoDB queries.
     """
-    resource_path = Path(__file__).parent / "resources" / "squirrel.json"
-    with open(resource_path, "r") as file:
-        file_content = file.read()
-    return file_content
+    from biodata_cache import get_cache_registry
+
+    registry = get_cache_registry()
+    return registry.model_dump_json(indent=2)
 
 
-@mcp.resource("resource://squirrel_api")
-def get_squirrel_api_prompt() -> str:
+@mcp.resource("resource://cache_api")
+def get_cache_api_prompt() -> str:
     """
     Guidance on how to use biodata_cache in Python scripts alongside
     aind-data-access-api. Covers the fast-table-first pattern, $in query
     batching for large result sets, and example scripts.
     """
     resource_path = (
-        Path(__file__).parent / "resources" / "squirrel_api_prompt.txt"
+        Path(__file__).parent / "resources" / "cache_api_prompt.txt"
     )
     with open(resource_path, "r") as file:
         file_content = file.read()

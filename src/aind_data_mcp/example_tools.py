@@ -6,553 +6,497 @@ from .mcp_instance import mcp
 @mcp.tool()
 def get_acquisition_example() -> dict:
     """
-    Example of the acquisition schema.
+    Example of the acquisition schema (V2).
     ALL data collection uses 'acquisition' regardless of modality
     (imaging or physiology). Contains data_streams, stimulus_epochs,
-    subject_details, manipulations, calibrations, and maintenance.
+    calibrations, and maintenance.
     Access fields like this - acquisition.<field_name>
     """
     sample_acquisition = {
-            "acquisition": {
-                "subject_id": "730945",
-                "specimen_id": None,
-                "instrument_id": "447-2-B_20240827",
-                "acquisition_start_time": "2024-09-03T15:49:53-07:00",
-                "acquisition_end_time": "2024-09-03T17:04:59-07:00",
-                "acquisition_type": "Behavior",
-                "experimenters": ["Bowen Tan"],
-                "protocol_id": ["dx.doi.org/10.17504/protocols.io.example"],
-                "calibrations": [],
-                "maintenance": [],
-                "coordinate_system": None,
-                "subject_details": {
-                    "animal_weight_prior": None,
-                    "animal_weight_post": "23.6",
-                    "weight_unit": "gram",
-                    "anaesthesia": None,
-                    "mouse_platform_name": "mouse_tube_foraging",
-                    "reward_consumed_total": "372.0",
-                    "reward_consumed_unit": "microliter",
-                },
-                "data_streams": [
-                    {
-                        "stream_start_time": "2024-09-03T15:49:53-07:00",
-                        "stream_end_time": "2024-09-03T17:04:59-07:00",
-                        "modalities": [
-                            {"name": "Behavior", "abbreviation": "behavior"}
-                        ],
-                        "active_devices": [
-                            "Harp Behavior",
-                            "Harp Sound",
-                            "Lick Sensor Left",
-                            "Lick Sensor Right",
-                        ],
-                        "configurations": [],
-                        "connections": [],
-                        "code": [
-                            {
-                                "name": "dynamic-foraging-task",
-                                "version": "1.4.4",
-                                "url": "https://github.com/AllenNeuralDynamics/dynamic-foraging-task.git",
-                                "parameters": {},
-                            }
-                        ],
-                        "notes": None,
-                    }
-                ],
-                "stimulus_epochs": [
-                    {
-                        "stimulus_start_time": "2024-09-03T15:49:53-07:00",
-                        "stimulus_end_time": "2024-09-03T17:04:59-07:00",
-                        "stimulus_name": "auditory go cue",
-                        "stimulus_modalities": ["Auditory"],
-                        "code": [
-                            {
-                                "name": "dynamic-foraging-task",
-                                "version": "1.4.4",
-                                "url": "https://github.com/AllenNeuralDynamics/dynamic-foraging-task.git",
-                                "parameters": {},
-                            }
-                        ],
-                        "performance_metrics": {
-                            "trials_total": 493,
-                            "trials_finished": 434,
-                            "trials_rewarded": 186,
-                            "foraging_efficiency": 0.593,
-                        },
-                        "active_devices": [],
-                        "configurations": [],
-                        "notes": None,
-                    }
-                ],
-                "manipulations": [],
+        "object_type": "Acquisition",
+        "schema_version": "2.5.1",
+        "subject_id": "664484",
+        "instrument_id": "EPHYS1",
+        "acquisition_start_time": "2023-04-25T02:35:00-07:00",
+        "acquisition_end_time": "2023-04-25T03:16:00-07:00",
+        "acquisition_type": "Receptive field mapping",
+        "experimenters": ["John Smith"],
+        "ethics_review_id": ["2109"],
+        "calibrations": [],
+        "maintenance": [],
+        "coordinate_system": {
+            "object_type": "Coordinate system",
+            "name": "BREGMA_ARID",
+            "origin": "Bregma",
+            "axes": [
+                {"object_type": "Axis", "name": "AP", "direction": "Posterior_to_anterior"},
+                {"object_type": "Axis", "name": "ML", "direction": "Left_to_right"},
+                {"object_type": "Axis", "name": "SI", "direction": "Superior_to_inferior"},
+                {"object_type": "Axis", "name": "Depth", "direction": "Up_to_down"},
+            ],
+            "axis_unit": "millimeter",
+        },
+        "data_streams": [
+            {
+                "object_type": "Data stream",
+                "stream_start_time": "2023-04-25T02:45:00-07:00",
+                "stream_end_time": "2023-04-25T03:16:00-07:00",
+                "modalities": [{"name": "Extracellular electrophysiology", "abbreviation": "ecephys"}],
+                "active_devices": ["Basestation Slot 3", "Ephys_assemblyA"],
+                "configurations": [],
+                "code": None,
                 "notes": None,
             }
-        }
+        ],
+        "stimulus_epochs": [
+            {
+                "object_type": "Stimulus epoch",
+                "stimulus_start_time": "2023-04-25T02:45:00-07:00",
+                "stimulus_end_time": "2023-04-25T03:16:00-07:00",
+                "stimulus_name": "visual",
+                "stimulus_modalities": ["Visual"],
+                "code": {
+                    "object_type": "Code",
+                    "url": "https://github.com/AllenNeuralDynamics/visual-stimulus-task",
+                    "version": "1.0.0",
+                    "parameters": {},
+                },
+                "performance_metrics": None,
+                "active_devices": [],
+                "configurations": [],
+                "notes": None,
+            }
+        ],
+        "notes": None,
+    }
     return sample_acquisition
 
 
 @mcp.tool()
 def get_data_description_example():
     """
-    Example of the data description schema.
-    Contains modalities (plural), investigators as Person objects, and tags.
+    Example of the data description schema (V2).
+    Contains modalities (plural), investigators as Person objects with ORCID, and tags.
     Access fields like this - data_description.<field_name>
     """
     sample_data_description = {
-            "data_description": {
-                "license": "CC-BY-4.0",
-                "subject_id": "662616",
-                "creation_time": "2023-04-14T15:11:04-07:00",
-                "name": "SmartSPIM_662616_2023-04-14_15-11-04",
-                "institution": {
-                    "name": "Allen Institute for Neural Dynamics",
-                    "abbreviation": "AIND",
-                    "registry": {
-                        "name": "Research Organization Registry",
-                        "abbreviation": "ROR",
-                    },
-                    "registry_identifier": "04szwah67",
+        "object_type": "Data description",
+        "schema_version": "2.4.0",
+        "license": "CC-BY-4.0",
+        "subject_id": "123456",
+        "creation_time": "2022-02-21T16:30:01Z",
+        "name": "123456_2022-02-21_16-30-01",
+        "institution": {
+            "name": "Allen Institute for Neural Dynamics",
+            "abbreviation": "AIND",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "04szwah67",
+        },
+        "funding_source": [
+            {
+                "object_type": "Funding",
+                "funder": {
+                    "name": "Allen Institute",
+                    "abbreviation": "AI",
+                    "registry": "Research Organization Registry (ROR)",
+                    "registry_identifier": "03cpe7c52",
                 },
-                "funding_source": [
-                    {
-                        "funder": {
-                            "name": "National Institute of Neurological Disorders and Stroke",
-                            "abbreviation": "NINDS",
-                            "registry": {
-                                "name": "Research Organization Registry",
-                                "abbreviation": "ROR",
-                            },
-                            "registry_identifier": "01s5ya894",
-                        },
-                        "grant_number": "NIH1U19NS123714-01",
-                        "fundee": "Jayaram Chandrashekar, Mathew Summers",
-                    }
-                ],
-                "data_level": "raw",
-                "group": "MSMA",
-                "investigators": [
-                    {
-                        "name": "Mathew Summers",
-                        "registry": None,
-                        "registry_identifier": None,
-                    },
-                    {
-                        "name": "Jayaram Chandrashekar",
-                        "registry": None,
-                        "registry_identifier": None,
-                    },
-                ],
-                "project_name": "Thalamus in the middle",
-                "restrictions": None,
-                "modalities": [
-                    {
-                        "name": "Selective plane illumination microscopy",
-                        "abbreviation": "SPIM",
-                    }
-                ],
-                "tags": [],
-                "source_data": None,
-                "data_summary": None,
-            },
-        }
+                "grant_number": None,
+                "fundee": None,
+            }
+        ],
+        "data_level": "raw",
+        "group": None,
+        "investigators": [
+            {
+                "object_type": "Person",
+                "name": "Daniel Birman",
+                "registry": "Open Researcher and Contributor ID (ORCID)",
+                "registry_identifier": "0000-0003-3748-6289",
+            }
+        ],
+        "project_name": "Example project",
+        "restrictions": None,
+        "modalities": [
+            {"name": "Extracellular electrophysiology", "abbreviation": "ecephys"},
+            {"name": "Behavior videos", "abbreviation": "behavior-videos"},
+        ],
+        "tags": ["Pilot data"],
+        "source_data": None,
+        "data_summary": None,
+    }
     return sample_data_description
 
 
 @mcp.tool()
 def get_instrument_example():
     """
-    Example of the instrument schema.
-    All devices are in a single 'components' list.
-    Contains 'connections', 'coordinate_system', 'modalities', 'modification_date'.
+    Example of the instrument schema (V2).
+    All devices are in a 'components' list. Contains 'connections',
+    'coordinate_system', 'modalities', 'calibrations', 'modification_date'.
     Access fields like this - instrument.<field_name>
     """
     sample_instrument = {
-            "instrument": {
-                "instrument_id": "SmartSPIM1-2",
-                "location": "615 Westlake",
-                "modification_date": "2023-01-15",
-                "temperature_control": None,
-                "modalities": [
+        "object_type": "Instrument",
+        "schema_version": "2.2.5",
+        "instrument_id": "EPHYS1",
+        "location": "323",
+        "modification_date": "2023-10-03",
+        "modalities": [{"name": "Extracellular electrophysiology", "abbreviation": "ecephys"}],
+        "calibrations": [
+            {
+                "object_type": "Calibration",
+                "device_name": "Red Laser",
+                "calibration_date": "2023-10-02T10:22:13Z",
+                "description": "Laser power calibration",
+                "input": [10.0, 20.0, 40.0],
+                "input_unit": "percent",
+                "output": [1.0, 3.0, 6.0],
+                "output_unit": "milliwatt",
+            }
+        ],
+        "coordinate_system": {
+            "object_type": "Coordinate system",
+            "name": "BREGMA_ARI",
+            "origin": "Bregma",
+            "axes": [
+                {"object_type": "Axis", "name": "AP", "direction": "Posterior_to_anterior"},
+                {"object_type": "Axis", "name": "ML", "direction": "Left_to_right"},
+                {"object_type": "Axis", "name": "SI", "direction": "Superior_to_inferior"},
+            ],
+            "axis_unit": "millimeter",
+        },
+        "temperature_control": None,
+        "connections": [
+            {
+                "object_type": "Connection",
+                "source_device": "Harp Behavior",
+                "source_port": "DO0",
+                "target_device": "Face Camera",
+                "target_port": None,
+                "send_and_receive": False,
+            }
+        ],
+        "components": [
+            {
+                "object_type": "Ephys assembly",
+                "name": "Ephys_assemblyA",
+                "manipulator": {
+                    "object_type": "Manipulator",
+                    "name": "Manipulator 1",
+                    "serial_number": "SN2938",
+                    "manufacturer": {"name": "New Scale Technologies"},
+                    "model": None,
+                },
+                "probes": [
                     {
-                        "name": "Selective plane illumination microscopy",
-                        "abbreviation": "SPIM",
+                        "object_type": "Ephys probe",
+                        "name": "Probe A",
+                        "serial_number": "9291019",
+                        "probe_model": "Neuropixels 1.0",
                     }
                 ],
-                "components": [
-                    {
-                        "device_type": "Objective",
-                        "name": "TL4X-SAP",
-                        "serial_number": "Unknown",
-                        "manufacturer": {
-                            "name": "Thorlabs",
-                            "abbreviation": None,
-                            "registry": {
-                                "name": "Research Organization Registry",
-                                "abbreviation": "ROR",
-                            },
-                            "registry_identifier": "04gsnvb07",
-                        },
-                        "model": "TL4X-SAP",
-                        "notes": "Thorlabs TL4X-SAP with LifeCanvas dipping cap and correction optics",
-                        "numerical_aperture": 0.2,
-                        "magnification": 3.6,
-                        "immersion": "multi",
-                    },
-                    {
-                        "device_type": "Detector",
-                        "name": "Camera",
-                        "serial_number": "220302-SYS-060443",
-                        "manufacturer": {
-                            "name": "Hamamatsu",
-                            "abbreviation": None,
-                            "registry": None,
-                            "registry_identifier": None,
-                        },
-                        "model": "C14440-20UP",
-                        "notes": None,
-                        "detector_type": "Camera",
-                        "data_interface": "USB",
-                        "cooling": "water",
-                    },
-                    {
-                        "device_type": "Laser",
-                        "name": "488nm Laser",
-                        "serial_number": "VL08223M03",
-                        "manufacturer": {
-                            "name": "Vortran",
-                            "abbreviation": None,
-                            "registry": None,
-                            "registry_identifier": None,
-                        },
-                        "model": "Stradus",
-                        "notes": "All lasers controlled via Vortran VersaLase System",
-                        "coupling": "Single-mode fiber",
-                        "wavelength": 488,
-                        "wavelength_unit": "nanometer",
-                        "max_power": 150,
-                        "power_unit": "milliwatt",
-                    },
-                    {
-                        "device_type": "Filter",
-                        "name": "469/35 Band Pass",
-                        "serial_number": "Unknown-0",
-                        "manufacturer": {
-                            "name": "Semrock",
-                            "abbreviation": None,
-                            "registry": None,
-                            "registry_identifier": None,
-                        },
-                        "model": "FF01-469/35-25",
-                        "notes": None,
-                        "filter_type": "Band pass",
-                        "diameter": 25,
-                        "diameter_unit": "millimeter",
-                        "filter_wheel_index": 0,
-                    },
-                    {
-                        "device_type": "Motorized stage",
-                        "name": "Focus stage",
-                        "serial_number": "Unknown-0",
-                        "manufacturer": {
-                            "name": "Applied Scientific Instrumentation",
-                            "abbreviation": None,
-                            "registry": None,
-                            "registry_identifier": None,
-                        },
-                        "model": "LS-100",
-                        "notes": "Focus stage",
-                        "travel": 100,
-                        "travel_unit": "millimeter",
-                    },
-                ],
-                "connections": [],
-                "coordinate_system": None,
-                "notes": None,
             },
-        }
+            {
+                "object_type": "Camera",
+                "name": "Face Camera",
+                "serial_number": "12345",
+                "manufacturer": {"name": "FLIR"},
+                "model": "Blackfly S BFS-U3-04S2M-CS",
+                "data_interface": "USB",
+                "frame_rate": 30.0,
+                "frame_rate_unit": "hertz",
+            },
+        ],
+        "notes": None,
+    }
     return sample_instrument
 
 
 @mcp.tool()
 def get_procedures_example():
     """
-    Example of the procedures schema.
+    Example of the procedures schema (V2).
+    subject_procedures is a list of Surgery objects, each with a procedures list
+    that can contain BrainInjection, Craniotomy, ProbeImplant, Perfusion, etc.
     Access fields like this - procedures.<field_name>
     """
     sample_procedures = {
-            "procedures": {
-                "subject_id": "662616",
-                "subject_procedures": [
+        "object_type": "Procedures",
+        "schema_version": "2.2.1",
+        "subject_id": "625100",
+        "subject_procedures": [
+            {
+                "object_type": "Surgery",
+                "protocol_id": "doi",
+                "start_date": "2022-07-12",
+                "experimenters": ["Scientist Smith"],
+                "ethics_review_id": "2109",
+                "animal_weight_prior": 22.6,
+                "animal_weight_post": 22.3,
+                "weight_unit": "gram",
+                "anaesthesia": {
+                    "object_type": "Anaesthetic",
+                    "anaesthetic_type": "Isoflurane",
+                    "duration": 1.0,
+                    "duration_unit": "minute",
+                    "level": 1.5,
+                },
+                "workstation_id": "SWS 3",
+                "procedures": [
                     {
-                        "procedure_type": "Surgery",
-                        "start_date": "2023-02-03",
-                        "experimenter_full_name": "30509",
-                        "iacuc_protocol": None,
-                        "animal_weight_prior": None,
-                        "animal_weight_post": None,
-                        "weight_unit": "gram",
-                        "anaesthesia": None,
-                        "workstation_id": None,
-                        "procedures": [
+                        "object_type": "Brain injection",
+                        "protocol_id": "5678",
+                        "injection_materials": [
                             {
-                                "procedure_type": "Perfusion",
-                                "protocol_id": "dx.doi.org/10.17504/protocols.io.bg5vjy66",
-                                "output_specimen_ids": ["662616"],
+                                "object_type": "Viral material",
+                                "name": "AAV2-Flex-ChrimsonR",
+                                "tars_identifiers": {
+                                    "virus_tars_id": "AiV222",
+                                    "prep_lot_number": "VT222",
+                                },
+                                "titer": 2300000000,
+                                "titer_unit": "gc/mL",
                             }
                         ],
-                        "notes": None,
-                    },
-                    {
-                        "procedure_type": "Surgery",
-                        "start_date": "2023-01-05",
-                        "experimenter_full_name": "NSB-5756",
-                        "iacuc_protocol": "2109",
-                        "animal_weight_prior": "16.6",
-                        "animal_weight_post": "16.7",
-                        "weight_unit": "gram",
-                        "anaesthesia": {
-                            "type": "isoflurane",
-                            "duration": "120.0",
-                            "duration_unit": "minute",
-                            "level": "1.5",
+                        "targeted_structure": {
+                            "atlas": "CCFv3",
+                            "name": "Primary visual area",
+                            "acronym": "VISp",
+                            "id": "385",
                         },
-                        "workstation_id": "SWS 1",
-                        "procedures": [
+                        "dynamics": [
                             {
-                                "injection_materials": [
-                                    {
-                                        "material_type": "Virus",
-                                        "name": "SL1-hSyn-Cre",
-                                        "tars_identifiers": {
-                                            "virus_tars_id": None,
-                                            "plasmid_tars_alias": None,
-                                            "prep_lot_number": "221118-11",
-                                            "prep_date": None,
-                                            "prep_type": None,
-                                            "prep_protocol": None,
-                                        },
-                                        "addgene_id": None,
-                                        "titer": {
-                                            "$numberLong": "37500000000000"
-                                        },
-                                        "titer_unit": "gc/mL",
-                                    }
-                                ],
-                                "recovery_time": "10.0",
-                                "recovery_time_unit": "minute",
-                                "injection_duration": None,
-                                "injection_duration_unit": "minute",
-                                "instrument_id": "NJ#2",
-                                "protocol_id": "dx.doi.org/10.17504/protocols.io.bgpujvnw",
-                                "injection_coordinate_ml": "0.35",
-                                "injection_coordinate_ap": "2.2",
-                                "injection_coordinate_depth": ["2.1"],
-                                "injection_coordinate_unit": "millimeter",
-                                "injection_coordinate_reference": "Bregma",
-                                "bregma_to_lambda_distance": "4.362",
-                                "bregma_to_lambda_unit": "millimeter",
-                                "injection_angle": "0",
-                                "injection_angle_unit": "degrees",
-                                "targeted_structure": "mPFC",
-                                "injection_hemisphere": "Right",
-                                "procedure_type": "Nanoject injection",
-                                "injection_volume": ["200"],
-                                "injection_volume_unit": "nanoliter",
-                            },
-                            {
-                                "injection_materials": [
-                                    {
-                                        "material_type": "Virus",
-                                        "name": "AAV-Syn-DIO-TVA66T-dTomato-CVS N2cG",
-                                        "tars_identifiers": {
-                                            "virus_tars_id": None,
-                                            "plasmid_tars_alias": None,
-                                            "prep_lot_number": "220916-4",
-                                            "prep_date": None,
-                                            "prep_type": None,
-                                            "prep_protocol": None,
-                                        },
-                                        "addgene_id": None,
-                                        "titer": {
-                                            "$numberLong": "18000000000000"
-                                        },
-                                        "titer_unit": "gc/mL",
-                                    }
-                                ],
-                                "recovery_time": "10.0",
-                                "recovery_time_unit": "minute",
-                                "injection_duration": None,
-                                "injection_duration_unit": "minute",
-                                "instrument_id": "NJ#2",
-                                "protocol_id": "dx.doi.org/10.17504/protocols.io.bgpujvnw",
-                                "injection_coordinate_ml": "2.9",
-                                "injection_coordinate_ap": "-0.6",
-                                "injection_coordinate_depth": ["3.6"],
-                                "injection_coordinate_unit": "millimeter",
-                                "injection_coordinate_reference": "Bregma",
-                                "bregma_to_lambda_distance": "4.362",
-                                "bregma_to_lambda_unit": "millimeter",
-                                "injection_angle": "30",
-                                "injection_angle_unit": "degrees",
-                                "targeted_structure": "VM",
-                                "injection_hemisphere": "Right",
-                                "procedure_type": "Nanoject injection",
-                                "injection_volume": ["200"],
-                                "injection_volume_unit": "nanoliter",
-                            },
-                        ],
-                        "notes": None,
-                    },
-                ],
-                "specimen_procedures": [
-                    {
-                        "procedure_type": "Fixation",
-                        "procedure_name": "SHIELD OFF",
-                        "specimen_id": "662616",
-                        "start_date": "2023-02-10",
-                        "end_date": "2023-02-12",
-                        "experimenter_full_name": "DT",
-                        "protocol_id": "none",
-                        "reagents": [
-                            {
-                                "name": "SHIELD Epoxy",
-                                "source": "LiveCanvas Technologies",
-                                "rrid": None,
-                                "lot_number": "unknown",
-                                "expiration_date": None,
+                                "object_type": "Injection dynamics",
+                                "profile": "Bolus",
+                                "volume": 200.0,
+                                "volume_unit": "nanoliter",
                             }
                         ],
-                        "hcr_series": None,
-                        "immunolabeling": None,
-                        "notes": "None",
+                    },
+                    {
+                        "object_type": "Craniotomy",
+                        "protocol_id": "1234",
+                        "craniotomy_type": "Circle",
+                        "size": 1.0,
+                        "size_unit": "millimeter",
                     },
                 ],
                 "notes": None,
             },
-        }
+            {
+                "object_type": "Surgery",
+                "protocol_id": "doi",
+                "start_date": "2022-09-23",
+                "experimenters": ["Scientist Smith"],
+                "ethics_review_id": "2109",
+                "procedures": [
+                    {
+                        "object_type": "Perfusion",
+                        "protocol_id": "doi_of_protocol",
+                        "output_specimen_ids": ["1", "2"],
+                    }
+                ],
+                "notes": None,
+            },
+        ],
+        "specimen_procedures": [],
+        "notes": None,
+    }
     return sample_procedures
 
 
 @mcp.tool()
 def get_subject_example():
     """
-    Example of the subject schema.
+    Example of the subject schema (V2).
     Species, sex, genotype, breeding_info, and housing are nested inside
-    'subject_details' (MouseSubject/HumanSubject/CalibrationObject).
+    'subject_details' (object_type: "Mouse subject").
     Access fields like this - subject.<field_name>
     """
     sample_subject = {
-            "subject": {
-                "subject_id": "662616",
-                "subject_details": {
-                    "species": {
-                        "name": "Mus musculus",
-                        "abbreviation": None,
-                        "registry": {
-                            "name": "National Center for Biotechnology Information",
-                            "abbreviation": "NCBI",
-                        },
-                        "registry_identifier": "10090",
-                    },
-                    "strain": {
-                        "name": "C57BL/6J",
-                        "registry": None,
-                        "registry_identifier": None,
-                    },
-                    "sex": "Male",
-                    "date_of_birth": "2022-11-29",
-                    "genotype": "Emx1-IRES-Cre/wt;Camk2a-tTA/wt;Ai93(TITL-GCaMP6f)/wt",
-                    "source": {
-                        "name": "Allen Institute",
-                        "abbreviation": "AI",
-                        "registry": None,
-                        "registry_identifier": None,
-                    },
-                    "breeding_info": {
-                        "breeding_group": "Emx1-IRES-Cre(ND)",
-                        "maternal_id": "546543",
-                        "maternal_genotype": "Emx1-IRES-Cre/wt; Camk2a-tTa/Camk2a-tTA",
-                        "paternal_id": "232323",
-                        "paternal_genotype": "Ai93(TITL-GCaMP6f)/wt",
-                    },
-                    "housing": {
-                        "home_cage_enrichment": ["Running wheel"],
-                        "cage_id": "123",
-                    },
-                },
-                "notes": None,
-            }
-        }
+        "object_type": "Subject",
+        "schema_version": "2.3.1",
+        "subject_id": "123456",
+        "subject_details": {
+            "object_type": "Mouse subject",
+            "sex": "Male",
+            "date_of_birth": "2022-11-22",
+            "strain": {
+                "name": "C57BL/6J",
+                "species": "Mus musculus",
+                "registry": "Mouse Genome Informatics (MGI)",
+                "registry_identifier": "MGI:3028467",
+            },
+            "species": {
+                "name": "Mus musculus",
+                "common_name": "House mouse",
+                "registry": "National Center for Biotechnology Information (NCBI)",
+                "registry_identifier": "NCBI:txid10090",
+            },
+            "alleles": [],
+            "genotype": "Emx1-IRES-Cre/wt;Camk2a-tTA/wt;Ai93(TITL-GCaMP6f)/wt",
+            "breeding_info": {
+                "object_type": "Breeding info",
+                "breeding_group": None,
+                "maternal_id": "546543",
+                "maternal_genotype": "Emx1-IRES-Cre/wt; Camk2a-tTa/Camk2a-tTA",
+                "paternal_id": "232323",
+                "paternal_genotype": "Ai93(TITL-GCaMP6f)/wt",
+            },
+            "housing": {
+                "object_type": "Housing",
+                "cage_id": "123",
+                "home_cage_enrichment": ["Running wheel"],
+                "cohoused_subjects": [],
+            },
+            "source": {
+                "name": "Allen Institute",
+                "abbreviation": "AI",
+                "registry": "Research Organization Registry (ROR)",
+                "registry_identifier": "03cpe7c52",
+            },
+            "restrictions": None,
+        },
+        "notes": None,
+    }
     return sample_subject
 
 
 @mcp.tool()
 def get_processing_example():
     """
-    Example of the processing schema.
-    Contains 'data_processes' and 'pipelines' lists.
+    Example of the processing schema (V2).
+    Contains 'data_processes' and 'pipelines' lists, plus a 'dependency_graph'.
+    Each data process has a 'code' object (not a list) and a 'pipeline_name'.
     Access fields like this - processing.<field_name>
     """
     sample_processing = {
-            "processing": {
-                "data_processes": [
-                    {
-                        "process_type": "Image tile fusing",
-                        "name": "Image tile fusing",
-                        "stage": "Processing",
-                        "code": {
-                            "url": "https://github.com/abcd",
-                            "version": "0.1",
-                            "parameters": {"size": 7},
-                        },
-                        "experimenters": ["Dr. Dan"],
-                        "start_date_time": "2022-11-22T08:43:00+00:00",
-                        "end_date_time": "2022-11-22T08:43:00+00:00",
-                        "output_path": "/path/to/outputs",
-                        "notes": None,
-                    }
-                ],
-                "pipelines": [
-                    {
-                        "name": "Imaging processing pipeline",
-                        "url": "https://url/for/pipeline",
-                        "version": "0.1.1",
-                    }
-                ],
-                "dependency_graph": None,
+        "object_type": "Processing",
+        "schema_version": "2.3.0",
+        "data_processes": [
+            {
+                "object_type": "Data process",
+                "process_type": "Image tile fusing",
+                "name": "Image tile fusing",
+                "stage": "Processing",
+                "pipeline_name": "Imaging processing pipeline",
+                "code": {
+                    "object_type": "Code",
+                    "url": "https://github.com/abcd",
+                    "version": "0.1",
+                    "parameters": {"size": 7},
+                },
+                "experimenters": ["Dr. Dan"],
+                "start_date_time": "2022-11-22T08:43:00Z",
+                "end_date_time": "2022-11-22T08:43:00Z",
+                "output_path": "path/to/outputs",
                 "notes": None,
+            },
+            {
+                "object_type": "Data process",
+                "process_type": "File format conversion",
+                "name": "File format conversion",
+                "stage": "Processing",
+                "pipeline_name": "Imaging processing pipeline",
+                "code": {
+                    "object_type": "Code",
+                    "url": "https://github.com/abcd",
+                    "version": "0.1",
+                    "parameters": {"u": 7, "z": True},
+                },
+                "experimenters": ["Dr. Dan"],
+                "start_date_time": "2022-11-22T08:43:00Z",
+                "end_date_time": "2022-11-22T08:43:00Z",
+                "output_path": "path/to/outputs",
+                "notes": None,
+            },
+        ],
+        "pipelines": [
+            {
+                "object_type": "Code",
+                "url": "https://url/for/pipeline",
+                "name": "Imaging processing pipeline",
+                "version": "0.1.1",
+                "input_data": [{"object_type": "Data asset", "name": "123456_2026-05-20_14-14-14", "url": None}],
             }
-        }
-
+        ],
+        "dependency_graph": {
+            "Image tile fusing": [],
+            "File format conversion": ["Image tile fusing"],
+        },
+        "notes": None,
+    }
     return sample_processing
 
 
 @mcp.tool()
 def get_model_example() -> dict:
     """
-    Example of the model schema.
+    Example of the model schema (V2).
     Describes a machine learning model including architecture, training, and evaluation.
+    training and evaluations are lists of ModelTraining/ModelEvaluation (subclass of DataProcess).
     Access fields like this - model.<field_name>
     """
     sample_model = {
-            "model": {
-                "name": "Example segmentation model",
-                "version": "1.0.0",
-                "example_run_code": {
-                    "url": "https://github.com/example/model",
-                    "version": "1.0.0",
-                    "parameters": {"input_shape": [256, 256, 3]},
+        "object_type": "Model",
+        "schema_version": "2.0.0",
+        "name": "2024_01_01_ResNet18_SmartSPIM",
+        "version": "0.1",
+        "architecture": "ResNet",
+        "software_framework": {"object_type": "Software", "name": "tensorflow", "version": "2.11.0"},
+        "architecture_parameters": {"layers": 18, "input_shape": [14, 14, 26]},
+        "intended_use": "Cell counting for 488 channel of SmartSPIM data",
+        "limitations": "Only trained on 488 channel",
+        "example_run_code": {
+            "object_type": "Code",
+            "url": "url for model code repo",
+            "run_script": "predict.py",
+        },
+        "training": [
+            {
+                "object_type": "Model training",
+                "process_type": "Model training",
+                "name": "Model training",
+                "stage": "Processing",
+                "code": {
+                    "object_type": "Code",
+                    "url": "url for model code repo",
+                    "run_script": "train.py",
+                    "input_data": [{"object_type": "Data asset", "url": "s3 path to training data"}],
+                    "parameters": {"learning_rate": 0.0001, "batch_size": 32, "augmentation": True},
                 },
-                "architecture": "UNet",
-                "software_framework": {"name": "PyTorch", "version": "2.0"},
-                "architecture_parameters": {"layers": 5, "filters": 64},
-                "intended_use": "Cell segmentation in calcium imaging data",
-                "limitations": "Trained only on mouse visual cortex data",
-                "training": [],
-                "evaluations": [],
-                "notes": None,
+                "experimenters": ["Dr. Dan"],
+                "output_path": "trained_model.h5",
+                "notes": "note on training data selection",
+                "train_performance": [
+                    {"object_type": "Performance metric", "name": "precision", "value": 0.9},
+                    {"object_type": "Performance metric", "name": "recall", "value": 0.85},
+                ],
+                "test_performance": [
+                    {"object_type": "Performance metric", "name": "precision", "value": 0.8},
+                    {"object_type": "Performance metric", "name": "recall", "value": 0.8},
+                ],
+                "test_evaluation_method": "random 4:1 train/test split",
             }
-        }
+        ],
+        "evaluations": [
+            {
+                "object_type": "Model evaluation",
+                "process_type": "Model evaluation",
+                "name": "Model evaluation",
+                "stage": "Processing",
+                "code": {
+                    "object_type": "Code",
+                    "url": "url for model code repo",
+                    "run_script": "eval.py",
+                    "input_data": [{"object_type": "Data asset", "url": "s3 path to eval data"}],
+                },
+                "experimenters": ["Dr. Dan"],
+                "performance": [{"object_type": "Performance metric", "name": "precision", "value": 0.8}],
+            }
+        ],
+        "notes": None,
+    }
     return sample_model
 

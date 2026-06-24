@@ -92,7 +92,7 @@ def get_asset_basics(
     - Richer nested fields are required (e.g. full subject, procedures, etc.)
     - The query involves fields not present in this table
 
-    Available columns (see resource://squirrel_tables for full schema):
+    Available columns (see resource://cache_tables for full schema):
         _id, name, modalities, project_name, data_level, subject_id,
         acquisition_start_time, acquisition_end_time, code_ocean,
         process_date, genotype, age, acquisition_type, location,
