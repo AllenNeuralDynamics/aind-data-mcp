@@ -9,9 +9,8 @@ answers with a Haiku 4.5 judge.
 ```
 scripts/benchmark/
 ├── config.py                          # Model IDs, AWS profile, timeouts
-├── parse_questions.py                 # CSV → questions/questions.json
 ├── questions/
-│   └── questions.json                 # 145 benchmark questions (generated)
+│   └── questions.json                 # 25 benchmark questions (hand-authored)
 ├── ground_truth/
 │   ├── generate_ground_truth.py       # Run official DB queries → raw results
 │   └── raw/
@@ -25,6 +24,34 @@ scripts/benchmark/
         ├── judge_scores.json
         └── summary.json
 ```
+
+## Question schema
+
+Each entry in `questions/questions.json` has the following shape:
+
+```json
+{
+  "id": 1,
+  "question": "...",
+  "filter": { ... },          // MongoDB-style filter; omit for aggregations
+  "projection": { ... },      // Aggressive projection; only the fields needed
+  "limit": 500,               // Optional, default 500
+  "agg_pipeline": [ ... ],    // Optional; use sparingly (see note below)
+  "complexity": "easy"        // easy | medium | hard
+}
+```
+
+Questions are designed to have **stable answers regardless of how the database
+grows over time**. They are scoped to specific asset names, subject IDs, or
+project + time-window filters with a fixed end date. Aggregations over the
+whole DB are used sparingly and only for inherently bounded sets (e.g. unique
+data_level values, top-N projects).
+
+The ground-truth pipeline favours `filter` + aggressive `projection` over
+server-side aggregation. The judge then verifies the agent's answer against
+the raw returned records. `$unwind` is not supported by the current backend,
+so array-distribution questions are expressed as filter+projection with
+deduplication in the agent or judge.
 
 ## Setup
 
@@ -50,18 +77,12 @@ Open [`config.py`](config.py) and verify `SONNET_MODEL_ID` and
 The defaults follow the cross-region inference prefix pattern
 (`us.anthropic.claude-*`).
 
-### 4. Generate questions (already done once, re-run to refresh)
-
-```bash
-python scripts/benchmark/parse_questions.py
-```
-
 ## Running the benchmark
 
 ### Quick smoke-test (3 easy questions)
 
 ```bash
-python scripts/benchmark/run_benchmark.py --ids 2 3 31 --run-id smoke-test
+python scripts/benchmark/run_benchmark.py --ids 1 2 21 --run-id smoke-test
 ```
 
 ### Full run
@@ -97,10 +118,10 @@ python scripts/benchmark/run_benchmark.py \
 [
   {
     "id": 1,
-    "question": "How many records are stored in the database?",
-    "agent_answer": "There are 15 734 records in the database.",
+    "question": "What instrument was used to acquire ...?",
+    "agent_answer": "The instrument was SmartSPIM1-7.",
     "tool_calls": [
-      {"tool_name": "count_records", "input_keys": ["filter"]}
+      {"tool_name": "get_records", "input_keys": ["filter", "projection"]}
     ],
     "elapsed_seconds": 8.3,
     "error": null
@@ -116,11 +137,10 @@ python scripts/benchmark/run_benchmark.py \
     "id": 1,
     "question": "...",
     "scores": {
-      "factual_accuracy": {"score": 5, "reasoning": "Count matches the DB."},
+      "factual_accuracy": {"score": 5, "reasoning": "Matches raw record."},
       "completeness":     {"score": 5, "reasoning": "Directly answers the question."},
       "relevance":        {"score": 5, "reasoning": "No off-topic content."},
-      "clarity":          {"score": 5, "reasoning": "Short and clear."},
-      "data_match":       {"score": 5, "reasoning": "Matches raw aggregate result."}
+      "clarity":          {"score": 5, "reasoning": "Short and clear."}
     },
     "overall": 5.0,
     "error": null
@@ -131,28 +151,26 @@ python scripts/benchmark/run_benchmark.py \
 ### `summary.json`
 
 Aggregate statistics: overall mean, per-criterion means, breakdown by
-complexity (`easy`/`medium`/`hard`) and query type (`asset`/`database`/
-`project`/`analysis`), tool-call statistics, and a per-question row table.
+complexity (`easy`/`medium`/`hard`), tool-call statistics, token usage
+and cost totals, and a per-question row table.
 
 ## Judging criteria
 
 | Criterion | Description |
 |---|---|
-| `factual_accuracy` | Key facts (counts, names, dates, values) match ground truth |
+| `factual_accuracy` | Key facts (counts, names, dates, values) match the raw DB records returned for the question |
 | `completeness` | All relevant aspects of the question addressed |
 | `relevance` | Answer focused; no significant off-topic content |
 | `clarity` | Well-structured and appropriately formatted |
-| `data_match` | Answer correctly reflects actual DB results *(only when raw records exist)* |
 
-All criteria are scored 1–5 (5 = best).
+All criteria are scored 1–5 (5 = best). The raw DB records returned by the
+official query for each question are the authoritative ground truth; the
+judge compares the agent's answer against them.
 
 ## Architecture
 
 ```
-CSV (145 questions)
-    │
-    ▼ parse_questions.py
-questions/questions.json
+questions/questions.json (hand-authored, ~25 V2-correct questions)
     │
     ├─► ground_truth/generate_ground_truth.py ──► ground_truth/raw/*.json
     │        (MetadataDbClient → live DB)

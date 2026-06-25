@@ -12,15 +12,11 @@ Each output file is ground_truth/raw/{question_id:03d}.json with the shape:
     {
       "id": 1,
       "question": "...",
-      "generated_at": "2026-03-23T...",
-      "manual_only": false,
+      "generated_at": "...",
       "records": [...],          // raw DB records (list)
       "record_count": N,
       "error": null              // or an error string
     }
-
-Questions where manual_only=true (no parseable query) still get a stub file
-so the judge pipeline does not need special-casing.
 """
 
 import json
@@ -52,14 +48,10 @@ def _run_query(client: MetadataDbClient, q: dict) -> list:
     if agg_pipeline:
         return client.aggregate_docdb_records(agg_pipeline)
 
-    filter_q = q.get("filter", {})
-    projection = q.get("projection", {})
-    # Use a generous limit so we capture complete result sets.
-    limit = 500
     return client.retrieve_docdb_records(
-        filter_query=filter_q,
-        projection=projection,
-        limit=limit,
+        filter_query=q.get("filter", {}),
+        projection=q.get("projection", {}),
+        limit=q.get("limit", 500),
     )
 
 
@@ -93,16 +85,10 @@ def generate(
             "id": q_id,
             "question": q["question"],
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "manual_only": q.get("manual_only", True),
             "records": [],
             "record_count": 0,
             "error": None,
         }
-
-        if q.get("manual_only"):
-            print(f"[{i}/{total}] #{q_id} — manual_only, writing stub", file=sys.stderr)
-            out_path.write_text(json.dumps(stub, indent=2, default=str))
-            continue
 
         print(f"[{i}/{total}] #{q_id} — running query ...", end="", file=sys.stderr)
         try:

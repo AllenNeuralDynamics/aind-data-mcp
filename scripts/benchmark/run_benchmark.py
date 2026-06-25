@@ -63,8 +63,6 @@ def _compute_summary(
             {
                 "id": q_id,
                 "complexity": q.get("complexity", ""),
-                "query_type": q.get("query_type", ""),
-                "ambiguous": q.get("ambiguous", False),
                 "agent_elapsed_s": agent.get("elapsed_seconds"),
                 "agent_error": agent.get("error"),
                 "tool_call_count": len(agent.get("tool_calls", [])),
@@ -102,15 +100,6 @@ def _compute_summary(
             by_complexity[r["complexity"]].append(r["overall_score"])
     complexity_means = {
         k: round(sum(v) / len(v), 3) for k, v in sorted(by_complexity.items())
-    }
-
-    # Aggregate: by query_type
-    by_type: dict[str, list[float]] = defaultdict(list)
-    for r in rows:
-        if r["overall_score"] is not None:
-            by_type[r["query_type"]].append(r["overall_score"])
-    type_means = {
-        k: round(sum(v) / len(v), 3) for k, v in sorted(by_type.items())
     }
 
     # Tool call stats
@@ -162,7 +151,6 @@ def _compute_summary(
         "overall_mean_score": overall_mean,
         "criteria_means": criteria_means,
         "by_complexity": complexity_means,
-        "by_query_type": type_means,
         "tool_call_stats": tool_stats,
         "token_usage": {
             "agent_input": agent_in,
@@ -289,7 +277,6 @@ def run(
     print(f"Judge errors    : {summary['judge_errors']}")
     print(f"Overall mean    : {summary['overall_mean_score']}")
     print(f"\nBy complexity   : {summary['by_complexity']}")
-    print(f"By query type   : {summary['by_query_type']}")
     print(f"\nCriteria means  :")
     for crit, val in summary["criteria_means"].items():
         print(f"  {crit:<20}: {val}")

@@ -38,9 +38,8 @@ MAX_JUDGE_RAW_RECORDS = 10
 JUDGE_INTER_QUESTION_PAUSE_SECONDS = 1
 
 # ── Scoring ───────────────────────────────────────────────────────────────────
-# Ordered list of judge criteria.  data_match is optional (omitted when no raw
-# DB records are available), so it must remain last.
-CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity", "data_match")
+# Ordered list of judge criteria.
+CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity")
 
 # ── Bedrock pricing (USD per 1 000 tokens, on-demand) ────────────────────────
 # Update when AWS changes list prices.
