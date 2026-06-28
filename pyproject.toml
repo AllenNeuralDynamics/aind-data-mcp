@@ -18,7 +18,7 @@ dynamic = ["version"]
 
 dependencies = [
     "aind-data-access-api",
-    "biodata-cache>=0.33.2",
+    "biodata-cache>=0.35.0",
     "fastmcp",
     "hdmf-zarr>=0.11.1",
     "langchain-core>=0.3.60",
@@ -35,7 +35,6 @@ benchmark = [
     "boto3",                  # Bedrock Converse API for the judge
 ]
 
-[dependency-groups]
 dev = [
     'black',
     'coverage',

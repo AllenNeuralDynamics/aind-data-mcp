@@ -23,13 +23,16 @@ from biodata_cache import (  # noqa: E402
     asset_basics,
     assets_smartspim,
     behavior_curriculum,
-    foraging_sessions,
     metadata_upgrade,
+    platform_dynamic_foraging_events,
+    platform_dynamic_foraging_sessions,
+    platform_dynamic_foraging_trials,
     platform_exaspim,
     platform_fib,
     platform_qc,
     qc,
     raw_to_derived,
+    scientist_rl_fib,
     source_data,
     time_to_qc,
     unique_genotypes,
@@ -565,16 +568,17 @@ def get_foraging_sessions(
     limit: int = 200,
 ) -> list[dict] | str:
     """
-    Query the biodata_cache foraging_sessions table.
+    Query the biodata_cache dynamic foraging session table.
 
-    Returns one row per foraging behavior session with key performance
-    metrics such as foraging efficiency, finished trials, and bias.
+    Returns one row per dynamic foraging session with key performance
+    metrics. Backed by platform_dynamic_foraging_sessions (~160 columns).
 
-    Columns: subject_id, session_date, session, nwb_suffix, rig,
-    trainer, trainer_normalized, task, curriculum_name,
-    curriculum_version, current_stage_actual, foraging_eff,
-    foraging_eff_random_seed, finished_trials, finished_rate,
-    total_trials, bias_naive
+    Key columns: _session_id, subject_id, session_date, nwb_suffix, task,
+    total_trials, finished_trials, finished_rate, foraging_eff,
+    foraging_performance, bias_naive, curriculum_name,
+    curriculum_version, current_stage_actual, foraging_eff_random_seed,
+    reaction_time_median, early_lick_rate, hardware, rig_type,
+    data_source, institute
 
     Parameters
     ----------
@@ -595,7 +599,7 @@ def get_foraging_sessions(
         Matching foraging session rows.
     """
     try:
-        df = foraging_sessions()
+        df = platform_dynamic_foraging_sessions()
 
         if subject_id is not None:
             df = df[df["subject_id"] == str(subject_id)]
@@ -765,3 +769,127 @@ def get_metadata_upgrade(
 
     except Exception as ex:
         return f"Error in get_metadata_upgrade: {type(ex).__name__}: {ex}"
+
+
+@mcp.tool()
+def get_foraging_trials(
+    subject_id: str,
+    limit: int = 500,
+) -> list[dict] | str:
+    """
+    Fetch dynamic foraging trial-level data for a single subject.
+
+    Returns one row per trial from the hive-partitioned trial table in the
+    upstream aind-dynamic-foraging-database. Requires a subject_id; data is
+    cached per subject and fetched from upstream on a cache miss.
+
+    Key columns: _session_id, subject_id, session_date, trial_index,
+    animal_response, rewarded_historyL, rewarded_historyR,
+    reward_outcome_color, go_cue_time, reaction_time, ...
+
+    Parameters
+    ----------
+    subject_id : str
+        The subject ID to fetch trial data for (required).
+    limit : int
+        Maximum number of rows to return (default 500).
+
+    Returns
+    -------
+    list[dict]
+        Trial rows for the subject.
+    """
+    try:
+        df = platform_dynamic_foraging_trials(str(subject_id))
+        df = df.head(limit)
+        return _df_to_records(df)
+    except Exception as ex:
+        return f"Error in get_foraging_trials: {type(ex).__name__}: {ex}"
+
+
+@mcp.tool()
+def get_foraging_events(
+    subject_id: str,
+    limit: int = 1000,
+) -> list[dict] | str:
+    """
+    Fetch dynamic foraging event-level data for a single subject.
+
+    Returns one row per behavioral event from the hive-partitioned event
+    table in the upstream aind-dynamic-foraging-database. Requires a
+    subject_id; data is cached per subject and fetched from upstream on
+    a cache miss.
+
+    Key columns: _session_id, subject_id, session_date, event_type,
+    event_time, value, ...
+
+    Parameters
+    ----------
+    subject_id : str
+        The subject ID to fetch event data for (required).
+    limit : int
+        Maximum number of rows to return (default 1000).
+
+    Returns
+    -------
+    list[dict]
+        Event rows for the subject.
+    """
+    try:
+        df = platform_dynamic_foraging_events(str(subject_id))
+        df = df.head(limit)
+        return _df_to_records(df)
+    except Exception as ex:
+        return f"Error in get_foraging_events: {type(ex).__name__}: {ex}"
+
+
+@mcp.tool()
+def get_scientist_rl_fib(
+    targeted_structure: Optional[str] = None,
+    indicator: Optional[str] = None,
+) -> list[dict] | str:
+    """
+    Query the biodata_cache scientist_rl_fib cohort summary table.
+
+    Returns one row per (fiber_targeted_structure, virus/indicator)
+    combination, collapsed across all qualifying subjects that have both
+    behavior and fiber photometry data at a STAGE_FINAL or GRADUATED
+    training stage.
+
+    Columns: targeted_structure, coordinates, indicator, mouse_ids,
+    mouse_count, session_count
+
+    Parameters
+    ----------
+    targeted_structure : str, optional
+        Filter to rows whose targeted_structure contains this substring
+        (case-insensitive).
+    indicator : str, optional
+        Filter to rows whose indicator (virus/reporter) contains this
+        substring (case-insensitive).
+
+    Returns
+    -------
+    list[dict]
+        Matching cohort summary rows.
+    """
+    try:
+        df = scientist_rl_fib()
+
+        if targeted_structure is not None:
+            df = df[
+                df["targeted_structure"].str.contains(
+                    targeted_structure, case=False, na=False
+                )
+            ]
+        if indicator is not None:
+            df = df[
+                df["indicator"].str.contains(
+                    indicator, case=False, na=False
+                )
+            ]
+
+        return _df_to_records(df)
+
+    except Exception as ex:
+        return f"Error in get_scientist_rl_fib: {type(ex).__name__}: {ex}"
