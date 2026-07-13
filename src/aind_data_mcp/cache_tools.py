@@ -32,7 +32,6 @@ from biodata_cache import (  # noqa: E402
     platform_qc,
     qc,
     raw_to_derived,
-    scientist_rl_fib,
     source_data,
     time_to_qc,
     unique_genotypes,
@@ -841,55 +840,3 @@ def get_foraging_events(
         return _df_to_records(df)
     except Exception as ex:
         return f"Error in get_foraging_events: {type(ex).__name__}: {ex}"
-
-
-@mcp.tool()
-def get_scientist_rl_fib(
-    targeted_structure: Optional[str] = None,
-    indicator: Optional[str] = None,
-) -> list[dict] | str:
-    """
-    Query the biodata_cache scientist_rl_fib cohort summary table.
-
-    Returns one row per (fiber_targeted_structure, virus/indicator)
-    combination, collapsed across all qualifying subjects that have both
-    behavior and fiber photometry data at a STAGE_FINAL or GRADUATED
-    training stage.
-
-    Columns: targeted_structure, coordinates, indicator, mouse_ids,
-    mouse_count, session_count
-
-    Parameters
-    ----------
-    targeted_structure : str, optional
-        Filter to rows whose targeted_structure contains this substring
-        (case-insensitive).
-    indicator : str, optional
-        Filter to rows whose indicator (virus/reporter) contains this
-        substring (case-insensitive).
-
-    Returns
-    -------
-    list[dict]
-        Matching cohort summary rows.
-    """
-    try:
-        df = scientist_rl_fib()
-
-        if targeted_structure is not None:
-            df = df[
-                df["targeted_structure"].str.contains(
-                    targeted_structure, case=False, na=False
-                )
-            ]
-        if indicator is not None:
-            df = df[
-                df["indicator"].str.contains(
-                    indicator, case=False, na=False
-                )
-            ]
-
-        return _df_to_records(df)
-
-    except Exception as ex:
-        return f"Error in get_scientist_rl_fib: {type(ex).__name__}: {ex}"
