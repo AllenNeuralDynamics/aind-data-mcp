@@ -142,3 +142,4 @@ uv.lock
 # Benchmark generated outputs
 scripts/benchmark/results/
 scripts/benchmark/ground_truth/raw/
+/jobs

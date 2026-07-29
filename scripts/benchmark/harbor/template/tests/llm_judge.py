@@ -1,0 +1,172 @@
+"""LLM judge verifier for the aind-data-mcp Harbor benchmark.
+
+Runs inside the Harbor verifier container after the agent finishes. It:
+
+  1. Reads the agent's answer from ``/app/answer.txt``.
+  2. Reads the raw ground-truth database records from ``/tests/ground_truth.json``
+     (baked into the task at generation time).
+  3. Asks an LLM judge to score the answer on four criteria (1-5 each).
+  4. Writes ``/logs/verifier/reward.json`` with per-criterion scores plus an
+     ``overall`` metric (normalised to 0-1, which is Harbor's reward
+     convention).
+
+The scoring rubric mirrors the original standalone benchmark judge so results
+stay comparable across the migration.
+
+Configuration (via ``[verifier.env]`` in ``task.toml``):
+  JUDGE_MODEL      litellm model id for the judge (default:
+                   ``anthropic/claude-haiku-4-5``).
+  ANTHROPIC_API_KEY / OPENAI_API_KEY / AWS_* credentials as required by the
+                   chosen model.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
+
+# Paths default to the in-container Harbor locations but can be overridden via
+# environment variables so the verifier can be exercised locally (e.g. by
+# check_verifier.py) without a running Harbor harness.
+ANSWER_PATH = Path(os.environ.get("ANSWER_PATH", "/app/answer.txt"))
+GROUND_TRUTH_PATH = Path(os.environ.get("GROUND_TRUTH_PATH", "/tests/ground_truth.json"))
+REWARD_PATH = Path(os.environ.get("REWARD_PATH", "/logs/verifier/reward.json"))
+
+MAX_JUDGE_RAW_RECORDS = 10
+CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity")
+
+SYSTEM_PROMPT = """\
+You are an expert judge evaluating answers produced by an AI data assistant.
+The data comes from the Allen Institute for Neural Dynamics (AIND) neuroscience
+database.
+
+You will be shown:
+1. The original user question
+2. The agent's answer to evaluate
+3. The raw database records that the question's official query returns -- this
+   is the authoritative factual source.
+
+Score each criterion from 1 (very poor) to 5 (excellent).
+Be critical: only award 5 when the answer is essentially perfect for that
+criterion.
+
+Criteria:
+  factual_accuracy : Do specific facts (counts, names, dates, values) in the
+                     agent answer match what the raw DB records actually show?
+                     Penalise hallucinated or contradicted facts.
+  completeness     : Does the answer address ALL relevant aspects of the
+                     question without omitting important information that is
+                     present in the raw records?
+  relevance        : Is the answer focused on what was asked? Penalise
+                     irrelevant tangents or excessive boilerplate.
+  clarity          : Is the answer well-structured and appropriately formatted
+                     (tables where useful, no walls of repetitive text)?
+
+Return ONLY a valid JSON object with EXACTLY this structure (no markdown, no
+extra keys, no commentary):
+
+{
+  "factual_accuracy": {"score": <1-5>, "reasoning": "<one sentence>"},
+  "completeness":     {"score": <1-5>, "reasoning": "<one sentence>"},
+  "relevance":        {"score": <1-5>, "reasoning": "<one sentence>"},
+  "clarity":          {"score": <1-5>, "reasoning": "<one sentence>"}
+}
+"""
+
+
+def _build_user_prompt(question: str, answer: str | None, records: list | None) -> str:
+    parts = [
+        f"## Question\n{question}",
+        f"## Agent Answer\n{answer or '(no answer -- the agent did not write /app/answer.txt)'}",
+    ]
+    if records:
+        truncated = records[:MAX_JUDGE_RAW_RECORDS]
+        note = (
+            f" (showing {len(truncated)} of {len(records)})"
+            if len(records) > len(truncated)
+            else ""
+        )
+        parts.append(
+            f"## Raw Database Records (authoritative ground truth){note}\n"
+            + json.dumps(truncated, indent=2, default=str)
+        )
+    else:
+        parts.append(
+            "## Raw Database Records\n(none available -- query returned zero "
+            "records or errored)"
+        )
+    return "\n\n".join(parts)
+
+
+def _strip_markdown_fence(text: str) -> str:
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        stripped = stripped.split("\n", 1)[1] if "\n" in stripped else stripped[3:]
+        stripped = stripped.rsplit("```", 1)[0]
+    return stripped.strip()
+
+
+def _write_reward(metrics: dict) -> None:
+    REWARD_PATH.parent.mkdir(parents=True, exist_ok=True)
+    REWARD_PATH.write_text(json.dumps(metrics, indent=2))
+    print(json.dumps(metrics, indent=2))
+
+
+def main() -> None:
+    try:
+        gt = json.loads(GROUND_TRUTH_PATH.read_text())
+    except Exception as exc:  # noqa: BLE001 - always emit a reward file
+        print(f"ERROR: could not read ground truth: {exc}")
+        _write_reward({"overall": 0.0, "error": f"ground_truth read failed: {exc}"})
+        return
+    question = gt.get("question", "")
+    records = gt.get("records") or None
+
+    answer = ANSWER_PATH.read_text().strip() if ANSWER_PATH.exists() else None
+
+    model = os.environ.get("JUDGE_MODEL", "anthropic/claude-haiku-4-5")
+    prompt = _build_user_prompt(question, answer, records)
+
+    try:
+        import litellm
+
+        response = litellm.completion(
+            model=model,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=1024,
+            temperature=0.0,
+        )
+        raw_text = response["choices"][0]["message"]["content"]
+        scores = json.loads(_strip_markdown_fence(raw_text))
+    except Exception as exc:  # noqa: BLE001 - judge failure => zero reward
+        print(f"ERROR: judge failed: {exc}")
+        _write_reward({"overall": 0.0, "error": str(exc)})
+        return
+
+    values = []
+    metrics: dict[str, float] = {}
+    for key in CRITERIA:
+        entry = scores.get(key)
+        if not isinstance(entry, dict) or "score" not in entry:
+            _write_reward({"overall": 0.0, "error": f"missing criterion '{key}'"})
+            return
+        score = float(entry["score"])
+        # Normalise each 1-5 criterion to Harbor's 0-1 reward convention.
+        metrics[key] = round((score - 1) / 4, 4)
+        values.append(score)
+
+    overall_1_5 = sum(values) / len(values)
+    metrics["overall"] = round((overall_1_5 - 1) / 4, 4)
+    _write_reward(metrics)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as exc:  # noqa: BLE001 - never exit without a reward file
+        print(f"ERROR: unexpected judge failure: {exc}")
+        _write_reward({"overall": 0.0, "error": f"unexpected: {exc}"})

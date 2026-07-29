@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "aind-data-mcp"
 description = "Generated from aind-library-template"
 license = {text = "MIT"}
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.12,<3.14"
 authors = [
     {name = "Allen Institute for Neural Dynamics"}
 ]
@@ -31,8 +31,8 @@ aind-data-mcp = "aind_data_mcp.data_access_server:main"
 
 [project.optional-dependencies]
 benchmark = [
-    "strands-agents",         # agent framework (Bedrock + MCP)
-    "boto3",                  # Bedrock Converse API for the judge
+    "harbor",                 # container-based agent evaluation harness
+    "litellm",                # provider-agnostic client used by the LLM judge
 ]
 
 dev = [
