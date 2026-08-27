@@ -11,9 +11,11 @@ is required.
 """
 
 import os
+from datetime import date, datetime
 from typing import Optional
 
 import pandas as pd
+from fastmcp.exceptions import ToolError
 
 # Must be set before importing biodata_cache — the registry reads this env var
 # at module-import time and selects the backend (S3 vs in-memory) accordingly.
@@ -39,7 +41,41 @@ from biodata_cache import (  # noqa: E402
     unique_subject_ids,
 )
 
-from .mcp_instance import mcp
+from .mcp_instance import mcp  # noqa: E402
+
+DEFAULT_LIMIT = 100
+MAX_LIMIT = 100
+
+
+def _raise_tool_error(tool_name: str, ex: Exception) -> None:
+    raise ToolError(f"{tool_name} failed: {type(ex).__name__}: {ex}") from ex
+
+
+def _page_limit(limit: int) -> int:
+    if limit < 0:
+        raise ValueError("limit must be non-negative")
+    return min(limit, MAX_LIMIT)
+
+
+def _offset(offset: int) -> int:
+    if offset < 0:
+        raise ValueError("offset must be non-negative")
+    return offset
+
+
+def _filter_acquisition_times(
+    df: pd.DataFrame,
+    before: Optional[str],
+    after: Optional[str],
+) -> pd.DataFrame:
+    acquisition_times = pd.to_datetime(
+        df["acquisition_start_time"], utc=True, errors="coerce"
+    )
+    if before is not None:
+        df = df[acquisition_times < pd.to_datetime(before, utc=True)]
+    if after is not None:
+        df = df[acquisition_times >= pd.to_datetime(after, utc=True)]
+    return df
 
 
 def _to_serialisable(value):
@@ -48,8 +84,16 @@ def _to_serialisable(value):
 
     import numpy as np
 
+    if value is pd.NA or value is pd.NaT:
+        return None
+    if isinstance(value, (datetime, date, pd.Timestamp, np.datetime64)):
+        return None if pd.isna(value) else value.isoformat()
     if isinstance(value, np.ndarray):
         return [_to_serialisable(v) for v in value.tolist()]
+    if isinstance(value, dict):
+        return {k: _to_serialisable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_to_serialisable(v) for v in value]
     if isinstance(value, (np.integer,)):
         return int(value)
     if isinstance(value, (np.floating,)):
@@ -76,8 +120,12 @@ def get_asset_basics(
     modality: Optional[str] = None,
     data_level: Optional[str] = None,
     name_contains: Optional[str] = None,
-    limit: int = 200,
-) -> list[dict] | str:
+    limit: int = DEFAULT_LIMIT,
+    offset: int = 0,
+    acquisition_start_before: Optional[str] = None,
+    acquisition_start_after: Optional[str] = None,
+    include_total: bool = False,
+) -> list[dict] | dict | str:
     """
     Query the biodata_cache asset_basics cached table.
 
@@ -86,7 +134,7 @@ def get_asset_basics(
     nearly current.
 
     WHEN TO USE THIS TOOL FIRST:
-    - Discovering assets for a subject, project, modality, or data level
+    - Discovering assets for a subject, project, modality, data level, or date
     - Counting or listing assets before deciding whether to fetch full records
     - Getting asset names / _ids for use in downstream MongoDB queries
 
@@ -115,7 +163,16 @@ def get_asset_basics(
     name_contains : str, optional
         Filter to assets whose name contains this substring. Case-insensitive.
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
+    offset : int
+        Number of matching rows to skip for paging (default 0).
+    acquisition_start_before : str, optional
+        ISO timestamp; keep assets acquired before this time.
+    acquisition_start_after : str, optional
+        ISO timestamp; keep assets acquired at or after this time.
+    include_total : bool
+        If true, return records plus total_matches, offset, limit, and
+        has_more metadata. The default returns the records list directly.
 
     Returns
     -------
@@ -132,7 +189,7 @@ def get_asset_basics(
         if modality is not None:
             df = df[
                 df["modalities"].str.contains(
-                    modality, case=False, na=False
+                    modality, case=False, na=False, regex=False
                 )
             ]
         if data_level is not None:
@@ -140,15 +197,32 @@ def get_asset_basics(
         if name_contains is not None:
             df = df[
                 df["name"].str.contains(
-                    name_contains, case=False, na=False
+                    name_contains, case=False, na=False, regex=False
                 )
             ]
 
-        df = df.head(limit)
-        return _df_to_records(df)
+        df = _filter_acquisition_times(
+            df, acquisition_start_before, acquisition_start_after
+        )
+
+        page_limit = _page_limit(limit)
+        page_offset = _offset(offset)
+        df = df.sort_values("name", kind="stable")
+        total_matches = len(df)
+        page = df.iloc[page_offset:].head(page_limit)
+        records = _df_to_records(page)
+        if include_total:
+            return {
+                "records": records,
+                "total_matches": total_matches,
+                "offset": page_offset,
+                "limit": page_limit,
+                "has_more": page_offset + len(records) < total_matches,
+            }
+        return records
 
     except Exception as ex:
-        return f"Error in get_asset_basics: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_asset_basics", ex)
 
 
 @mcp.tool()
@@ -168,7 +242,7 @@ def get_unique_project_names() -> list[str] | str:
     try:
         return sorted(p for p in unique_project_names() if p is not None)
     except Exception as ex:
-        return f"Error in get_unique_project_names: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_unique_project_names", ex)
 
 
 @mcp.tool()
@@ -188,7 +262,7 @@ def get_unique_subject_ids() -> list[str] | str:
     try:
         return [str(s) for s in unique_subject_ids() if pd.notna(s)]
     except Exception as ex:
-        return f"Error in get_unique_subject_ids: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_unique_subject_ids", ex)
 
 
 @mcp.tool()
@@ -231,15 +305,15 @@ def get_source_data_table(
         if pipeline_name is not None:
             df = df[
                 df["pipeline_name"].str.contains(
-                    pipeline_name, case=False, na=False
+                    pipeline_name, case=False, na=False, regex=False
                 )
             ]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_source_data_table: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_source_data_table", ex)
 
 
 @mcp.tool()
@@ -272,7 +346,7 @@ def get_raw_to_derived(
     try:
         return raw_to_derived(asset_name, latest=latest)
     except Exception as ex:
-        return f"Error in get_raw_to_derived: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_raw_to_derived", ex)
 
 
 @mcp.tool()
@@ -305,21 +379,24 @@ def get_qc_metrics(
     """
     try:
         result = qc(subject_id, asset_names=asset_names)
-        if isinstance(result, str) or (
-            isinstance(result, pd.DataFrame) and result.empty
-        ):
+        if isinstance(result, str):
+            raise RuntimeError(
+                "QC returned a lazy cache location; lazy mode is not supported"
+            )
+        if result.empty:
             return []
         return _df_to_records(result)
     except Exception as ex:
-        return f"Error in get_qc_metrics: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_qc_metrics", ex)
 
 
 @mcp.tool()
 def get_assets_smartspim(
+    subject_id: Optional[str] = None,
     raw_name_contains: Optional[str] = None,
     channel: Optional[str] = None,
     processed: Optional[bool] = None,
-    limit: int = 100,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache SmartSPIM assets cached table.
@@ -328,14 +405,17 @@ def get_assets_smartspim(
     Neuroglancer visualisation links. Join with get_asset_basics on the
     raw_name column to get subject_id, genotype, or other metadata.
 
-    Columns: name, raw_name, processed, processing_end_time, stitched_link,
-    raw_link, channel, segmentation_link, quantification_link
+    Columns: name, raw_name, processed, subject_id, genotype,
+    processing_end_time, stitched_link, raw_link, channel,
+    segmentation_link, quantification_link
 
     Parameters
     ----------
     raw_name_contains : str, optional
         Filter rows whose raw_name contains this substring (case-insensitive).
         Useful for filtering by subject ID embedded in the asset name.
+    subject_id : str, optional
+        Filter to assets belonging to this subject ID.
     channel : str, optional
         Filter to a specific channel (substring match, case-insensitive).
     processed : bool, optional
@@ -351,27 +431,38 @@ def get_assets_smartspim(
     """
     try:
         df = assets_smartspim()
+        metadata = asset_basics()[["name", "subject_id", "genotype"]]
+        metadata = metadata.drop_duplicates(subset=["name"])
+        df = df.merge(
+            metadata,
+            left_on="raw_name",
+            right_on="name",
+            how="left",
+            suffixes=("", "_asset"),
+        ).drop(columns=["name_asset"])
 
+        if subject_id is not None:
+            df = df[df["subject_id"] == str(subject_id)]
         if raw_name_contains is not None:
             df = df[
                 df["raw_name"].str.contains(
-                    raw_name_contains, case=False, na=False
+                    raw_name_contains, case=False, na=False, regex=False
                 )
             ]
         if channel is not None:
             df = df[
                 df["channel"].str.contains(
-                    channel, case=False, na=False
+                    channel, case=False, na=False, regex=False
                 )
             ]
         if processed is not None:
             df = df[df["processed"] == processed]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_assets_smartspim: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_assets_smartspim", ex)
 
 
 @mcp.tool()
@@ -391,7 +482,7 @@ def get_unique_genotypes() -> list[str] | str:
     try:
         return sorted(g for g in unique_genotypes() if g is not None)
     except Exception as ex:
-        return f"Error in get_unique_genotypes: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_unique_genotypes", ex)
 
 
 @mcp.tool()
@@ -437,16 +528,18 @@ def get_platform_qc(
             df = df[df["asset_name"] == asset_name]
         if tag is not None:
             df = df[
-                df["tag"].str.contains(tag, case=False, na=False)
+                df["tag"].str.contains(
+                    tag, case=False, na=False, regex=False
+                )
             ]
         if status is not None:
             df = df[df["status"] == status]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_platform_qc: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_platform_qc", ex)
 
 
 @mcp.tool()
@@ -484,17 +577,17 @@ def get_assets_exaspim(
         if raw_name_contains is not None:
             df = df[
                 df["raw_name"].str.contains(
-                    raw_name_contains, case=False, na=False
+                    raw_name_contains, case=False, na=False, regex=False
                 )
             ]
         if processed is not None:
             df = df[df["processed"] == processed]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_assets_exaspim: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_assets_exaspim", ex)
 
 
 @mcp.tool()
@@ -539,24 +632,31 @@ def get_assets_fib(
             df = df[df["asset_name"] == asset_name]
         if fiber is not None:
             df = df[
-                df["fiber"].str.contains(fiber, case=False, na=False)
+                df["fiber"].str.contains(
+                    fiber, case=False, na=False, regex=False
+                )
             ]
         if channel is not None:
             df = df[
-                df["channel"].str.contains(channel, case=False, na=False)
+                df["channel"].str.contains(
+                    channel, case=False, na=False, regex=False
+                )
             ]
         if targeted_structure is not None:
             df = df[
                 df["targeted_structure"].str.contains(
-                    targeted_structure, case=False, na=False
+                    targeted_structure,
+                    case=False,
+                    na=False,
+                    regex=False,
                 )
             ]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_assets_fib: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_assets_fib", ex)
 
 
 @mcp.tool()
@@ -604,20 +704,22 @@ def get_foraging_sessions(
             df = df[df["subject_id"] == str(subject_id)]
         if task is not None:
             df = df[
-                df["task"].str.contains(task, case=False, na=False)
+                df["task"].str.contains(
+                    task, case=False, na=False, regex=False
+                )
             ]
         if curriculum_name is not None:
             df = df[
                 df["curriculum_name"].str.contains(
-                    curriculum_name, case=False, na=False
+                    curriculum_name, case=False, na=False, regex=False
                 )
             ]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_foraging_sessions: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_foraging_sessions", ex)
 
 
 @mcp.tool()
@@ -659,21 +761,21 @@ def get_behavior_curriculum(
         if curriculum_name is not None:
             df = df[
                 df["curriculum_name"].str.contains(
-                    curriculum_name, case=False, na=False
+                    curriculum_name, case=False, na=False, regex=False
                 )
             ]
         if stage_name is not None:
             df = df[
                 df["stage_name"].str.contains(
-                    stage_name, case=False, na=False
+                    stage_name, case=False, na=False, regex=False
                 )
             ]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_behavior_curriculum: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_behavior_curriculum", ex)
 
 
 @mcp.tool()
@@ -709,15 +811,15 @@ def get_time_to_qc(
         if name_contains is not None:
             df = df[
                 df["name"].str.contains(
-                    name_contains, case=False, na=False
+                    name_contains, case=False, na=False, regex=False
                 )
             ]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_time_to_qc: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_time_to_qc", ex)
 
 
 @mcp.tool()
@@ -763,11 +865,11 @@ def get_metadata_upgrade(
         if status is not None:
             df = df[df["status"] == status]
 
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
 
     except Exception as ex:
-        return f"Error in get_metadata_upgrade: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_metadata_upgrade", ex)
 
 
 @mcp.tool()
@@ -800,10 +902,10 @@ def get_foraging_trials(
     """
     try:
         df = platform_dynamic_foraging_trials(str(subject_id))
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
     except Exception as ex:
-        return f"Error in get_foraging_trials: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_foraging_trials", ex)
 
 
 @mcp.tool()
@@ -836,7 +938,7 @@ def get_foraging_events(
     """
     try:
         df = platform_dynamic_foraging_events(str(subject_id))
-        df = df.head(limit)
+        df = df.head(_page_limit(limit))
         return _df_to_records(df)
     except Exception as ex:
-        return f"Error in get_foraging_events: {type(ex).__name__}: {ex}"
+        _raise_tool_error("get_foraging_events", ex)

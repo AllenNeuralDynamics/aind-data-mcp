@@ -33,32 +33,25 @@ def get_top_level_nodes() -> list:
 @mcp.tool()
 def get_additional_schema_help():
     """
-    Advice to follow for creating MongoDB aggregations for the metadata
+    Canonical V2 field paths and small aggregation examples.
     """
     return """
+Use these paths:
+- subject ID: subject.subject_id
+- subject details: subject.subject_details.sex,
+  subject.subject_details.date_of_birth,
+  subject.subject_details.strain.name
+- project: data_description.project_name
+- modalities: data_description.modalities.abbreviation
+- acquisition times: acquisition.acquisition_start_time and
+  acquisition.acquisition_end_time
+- injections: procedures.subject_procedures.procedures.injection_materials.name
 
-Key Requirements when creating MongoDB queries:
-Always unwind procedures field
-Use data_description.modalities.abbreviation for modality queries
-For questions on modalities, always unwind the modalities field.
-Use $regex over $elemMatch
-
-Handle duration queries carefully:
-To find the duration of an acquisition, strictly follow the following aggregation stage -
-{{
-    $addFields: {{
-      acquisition_duration_ms: {{
-        $subtract: [
-          {{ $dateFromString: {{ dateString: "$acquisition.acquisition_end_time" }} }},
-          {{ $dateFromString: {{ dateString: "$acquisition.acquisition_start_time" }} }}
-        ]
-      }}
-    }}
-  }}
-
-All data collection metadata is under 'acquisition' regardless of modality
-(imaging or physiology). The 'acquisition' field contains data_streams,
-stimulus_epochs, and subject_details.
+Examples:
+[{"$group": {"_id": "$data_description.data_level", "count": {"$sum": 1}}}]
+[{"$group": {"_id": "$subject.subject_details.sex", "count": {"$sum": 1}}}]
+Unwind only needed arrays, such as data_description.modalities or
+procedures.subject_procedures. Project only needed result fields.
 """
 
 

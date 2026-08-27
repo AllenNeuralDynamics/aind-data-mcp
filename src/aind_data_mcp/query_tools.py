@@ -1,12 +1,22 @@
 """MongoDB query tools."""
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, NoReturn, Optional, Union
+
+from fastmcp.exceptions import ToolError
 
 from .mcp_instance import mcp, setup_mongodb_client
 
 
+def _raise_tool_error(tool_name: str, ex: Exception) -> NoReturn:
+    raise ToolError(f"{tool_name} failed: {type(ex).__name__}: {ex}") from ex
+
+
 @mcp.tool()
-def get_records(filter: dict = {}, projection: dict = {}, limit: int = 5):
+def get_records(
+    filter: Optional[dict] = None,
+    projection: Optional[dict] = None,
+    limit: int = 5,
+):
     """
     Retrieves documents from MongoDB database using simple filters
     and projections.
@@ -28,13 +38,13 @@ def get_records(filter: dict = {}, projection: dict = {}, limit: int = 5):
     ----------
     filter : dict
         MongoDB query filter to narrow down the documents to retrieve.
-        Example: {"subject.sex": "Male"}
+        Example: {"subject.subject_details.sex": "Male"}
         If empty dict object, returns all documents.
 
     projection : dict
         Fields to include or exclude in the returned documents.
         Use 1 to include a field, 0 to exclude.
-        Example: {"subject.genotype": 1, "_id": 0}
+        Example: {"subject.subject_details.genotype": 1, "_id": 0}
         will return only the genotype field.
         If empty dict object, returns all documents.
 
@@ -49,19 +59,15 @@ def get_records(filter: dict = {}, projection: dict = {}, limit: int = 5):
 
     """
 
-    docdb_api_client = setup_mongodb_client()
-
     try:
+        docdb_api_client = setup_mongodb_client()
         records = docdb_api_client.retrieve_docdb_records(
-            filter_query=filter, projection=projection, limit=limit
+            filter_query=filter or {}, projection=projection or {}, limit=limit
         )
         return records
 
     except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        return message
-
+        _raise_tool_error("get_records", ex)
 
 
 @mcp.tool()
@@ -102,19 +108,15 @@ def aggregation_retrieval(agg_pipeline: list):
     - Include a $project stage early in the pipeline to reduce data transfer
     - Avoid using $map operator in $project stages as it requires array inputs
     """
-    docdb_api_client = setup_mongodb_client()
-
     try:
+        docdb_api_client = setup_mongodb_client()
         result = docdb_api_client.aggregate_docdb_records(
             pipeline=agg_pipeline
         )
         return result
 
     except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        return message
-
+        _raise_tool_error("aggregation_retrieval", ex)
 
 
 @mcp.tool()
@@ -133,7 +135,7 @@ def count_records(filter: dict | None = None):
     ----------
     filter : dict, optional
         MongoDB query filter to narrow down the documents to retrieve.
-        Example: {"subject.sex": "Male"}
+        Example: {"subject.subject_details.sex": "Male"}
         If empty dict object, returns all documents.
 
     Returns
@@ -143,16 +145,13 @@ def count_records(filter: dict | None = None):
         ``filtered_record_count``.
 
     """
-    docdb_api_client = setup_mongodb_client()
     try:
+        docdb_api_client = setup_mongodb_client()
         count = docdb_api_client._count_records(filter_query=filter or {})
         return count
 
     except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        return message
-
+        _raise_tool_error("count_records", ex)
 
 
 @mcp.tool()
@@ -160,17 +159,13 @@ def get_summary(_id: str):
     """
     Get an LLM-generated summary for a data asset, based on the _id field
     """
-    docdb_api_client = setup_mongodb_client()
-
     try:
+        docdb_api_client = setup_mongodb_client()
         result = docdb_api_client.generate_data_summary(_id)
         return result
 
     except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        return message
-
+        _raise_tool_error("get_summary", ex)
 
 
 def _flatten_dict(
@@ -208,8 +203,6 @@ def _flatten_dict(
 
 @mcp.tool()
 def flatten_records(
-    filter,
-    limit,
     records: list[dict],
     depth: Optional[int] = None,
 ) -> list[dict]:
@@ -224,18 +217,11 @@ def flatten_records(
         list[dict]: Each record flattened.
     """
 
-    docdb_api_client = setup_mongodb_client()
-
     try:
-        records = docdb_api_client.retrieve_docdb_records(
-            filter_query=filter, limit=limit
-        )
         return [_flatten_dict(record, depth=depth) for record in records]
 
     except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        return message
+        _raise_tool_error("flatten_records", ex)
 
 
 @mcp.tool()
@@ -243,22 +229,23 @@ def get_project_names() -> list:
     """
     Exposes project names in database
     """
-    docdb_api_client = setup_mongodb_client()
-    names = docdb_api_client.aggregate_docdb_records(
-        pipeline=[
-            {
-                "$match": {
-                    "data_description.project_name": {
-                        "$exists": True,
-                        "$ne": None,
+    try:
+        docdb_api_client = setup_mongodb_client()
+        return docdb_api_client.aggregate_docdb_records(
+            pipeline=[
+                {
+                    "$match": {
+                        "data_description.project_name": {
+                            "$exists": True,
+                            "$ne": None,
+                        }
                     }
-                }
-            },
-            {"$group": {"_id": "$data_description.project_name"}},
-            {"$sort": {"_id": 1}},
-            {"$project": {"_id": 0, "project_name": "$_id"}},
-        ]
-    )
-    return names
-
+                },
+                {"$group": {"_id": "$data_description.project_name"}},
+                {"$sort": {"_id": 1}},
+                {"$project": {"_id": 0, "project_name": "$_id"}},
+            ]
+        )
+    except Exception as ex:
+        _raise_tool_error("get_project_names", ex)
 
