@@ -42,13 +42,14 @@ def _normalize(text: str) -> str:
 
 
 def _write_reward(metrics: dict) -> None:
-    reward = {
+    numeric_metrics = {
         key: value
         for key, value in metrics.items()
         if isinstance(value, (float, int)) and not isinstance(value, bool)
     }
+    numeric_metrics["reward"] = numeric_metrics.get("overall", 0.0)
     REWARD_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REWARD_PATH.write_text(json.dumps(reward, indent=2))
+    REWARD_PATH.write_text(json.dumps(numeric_metrics, indent=2))
     print(json.dumps(metrics, indent=2))
 
 
