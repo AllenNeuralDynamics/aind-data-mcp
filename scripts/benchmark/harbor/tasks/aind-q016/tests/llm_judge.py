@@ -15,7 +15,7 @@ stay comparable across the migration.
 
 Configuration (via ``[verifier.env]`` in ``task.toml``):
   JUDGE_MODEL      litellm model id for the judge (default:
-                   ``anthropic/claude-haiku-4-5``).
+                   ``bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0``).
   ANTHROPIC_API_KEY / OPENAI_API_KEY / AWS_* credentials as required by the
                    chosen model.
 """
@@ -147,7 +147,9 @@ def main() -> None:
 
     answer = ANSWER_PATH.read_text().strip() if ANSWER_PATH.exists() else None
 
-    model = os.environ.get("JUDGE_MODEL", "anthropic/claude-haiku-4-5")
+    model = os.environ.get(
+        "JUDGE_MODEL", "bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0"
+    )
     prompt = _build_user_prompt(question, answer, records)
 
     try:

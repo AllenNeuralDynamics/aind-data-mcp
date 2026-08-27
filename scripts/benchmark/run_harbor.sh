@@ -7,13 +7,26 @@ cd "$repo_root"
 
 profile="${AWS_PROFILE:-aind_octo}"
 region="${AWS_REGION:-us-west-2}"
-agent_model="${HARBOR_AGENT_MODEL:-bedrock/us.anthropic.claude-sonnet-5}"
+model_haiku_45="bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0"
+model_sonnet_46="bedrock/us.anthropic.claude-sonnet-4-6"
+model_sonnet_5="bedrock/us.anthropic.claude-sonnet-5"
+agent_model="${HARBOR_AGENT_MODEL:-$model_sonnet_5}"
 judge_model="${JUDGE_MODEL:-bedrock/us.anthropic.claude-sonnet-5}"
 concurrency="${HARBOR_CONCURRENCY:-4}"
 tasks_path="${HARBOR_TASKS_PATH:-scripts/benchmark/harbor/tasks}"
 harbor_bin="${HARBOR_BIN:-$repo_root/.venv/bin/harbor}"
+aws_bin="${AWS_BIN:-$(command -v aws || true)}"
 
-if ! command -v aws >/dev/null 2>&1; then
+case "$agent_model" in
+    haiku-4.5) agent_model="$model_haiku_45" ;;
+    sonnet-4.6) agent_model="$model_sonnet_46" ;;
+    sonnet-5) agent_model="$model_sonnet_5" ;;
+esac
+
+if [[ -z "$aws_bin" && -x /usr/local/bin/aws ]]; then
+    aws_bin=/usr/local/bin/aws
+fi
+if [[ -z "$aws_bin" ]]; then
     printf 'error: aws CLI is required\n' >&2
     exit 1
 fi
@@ -38,10 +51,10 @@ if [[ -n "${AWS_BEARER_TOKEN_BEDROCK:-}" ]]; then
     )
 else
     export AWS_PROFILE="$profile"
-    eval "$(aws configure export-credentials \
+    eval "$(\"$aws_bin\" configure export-credentials \
         --profile "$AWS_PROFILE" \
         --format env)"
-    aws sts get-caller-identity \
+    "$aws_bin" sts get-caller-identity \
         --profile "$AWS_PROFILE" \
         --region "$AWS_REGION" >/dev/null
     unset AWS_PROFILE
