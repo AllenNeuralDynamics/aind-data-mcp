@@ -22,7 +22,7 @@ Usage::
     python scripts/benchmark/harbor/build_dataset.py
     # then, e.g.:
     harbor run -p scripts/benchmark/harbor/tasks/aind-q001 \
-        -a claude-code -m anthropic/claude-sonnet-4-5 --env docker
+        -a claude-code -m anthropic/claude-sonnet-5 --env docker
 
 Run ``generate_ground_truth.py`` first (or pass ``--generate-ground-truth``)
 so the ground-truth files exist before the dataset is built.

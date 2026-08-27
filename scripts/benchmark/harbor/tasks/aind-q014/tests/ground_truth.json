@@ -1,0 +1,57 @@
+{
+  "id": 14,
+  "question": "Which unique actual viral material names were injected into subjects in the `Thalamus in the middle` project for assets acquired before 2024-01-01? Exclude schema-upgrade placeholder values that do not identify a material.",
+  "records": [
+    {
+      "viral_material": "AAV-Syn-DIO-TVA66T-dTomato-CVS N2cG",
+      "injection_count": 64
+    },
+    {
+      "viral_material": "AAV1-CAG-H2B-mTurquoise2-WPRE",
+      "injection_count": 44
+    },
+    {
+      "viral_material": "AAVrg-Syn-Flpo",
+      "injection_count": 42
+    },
+    {
+      "viral_material": "AAVrg-Syn-H2B-EGFP",
+      "injection_count": 82
+    },
+    {
+      "viral_material": "AAVrg-Syn-H2B-Turquoise",
+      "injection_count": 131
+    },
+    {
+      "viral_material": "AAVrg-Syn-H2B-tdTomato",
+      "injection_count": 139
+    },
+    {
+      "viral_material": "AAVrg-Syn-iCre",
+      "injection_count": 42
+    },
+    {
+      "viral_material": "CVS N2cdG-H2B-GFP",
+      "injection_count": 16
+    },
+    {
+      "viral_material": "CVS N2cdG-H2B-tdTomato",
+      "injection_count": 16
+    },
+    {
+      "viral_material": "EnvA CVS-N2C-histone-GFP",
+      "injection_count": 64
+    },
+    {
+      "viral_material": "FluoSphere (Dark Red)",
+      "injection_count": 4
+    },
+    {
+      "viral_material": "SL1-hSyn-Cre",
+      "injection_count": 64
+    }
+  ],
+  "record_count": 12,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

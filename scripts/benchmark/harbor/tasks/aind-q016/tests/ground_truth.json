@@ -1,0 +1,13 @@
+{
+  "id": 16,
+  "question": "Which unique experimenters acquired assets in the `Dynamic Routing` project during January 2024?",
+  "records": [
+    {
+      "experimenter": "NSB trainer",
+      "asset_count": 218
+    }
+  ],
+  "record_count": 1,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

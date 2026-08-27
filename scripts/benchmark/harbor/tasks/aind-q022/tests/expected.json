@@ -1,0 +1,10 @@
+{
+  "id": 22,
+  "question": "What unique subject sex values are recorded across the database, and how many records have each value?",
+  "must_include": [
+    "56542",
+    "41821",
+    "368"
+  ],
+  "min_matches": 3
+}

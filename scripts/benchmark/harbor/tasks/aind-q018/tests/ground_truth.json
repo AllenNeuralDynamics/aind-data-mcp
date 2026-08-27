@@ -1,0 +1,1149 @@
+{
+  "id": 18,
+  "question": "How many data assets are in the `Thalamus in the middle` project that were acquired before 2024-01-01? Also list their names and acquisition start times.",
+  "records": [
+    {
+      "name": "SmartSPIM_652504_2023-01-07_13-51-57",
+      "acquisition_start_time": "2023-01-07 06:23:52-08:00"
+    },
+    {
+      "name": "SmartSPIM_652504_2023-01-07_13-51-57_stitched_2023-02-09_17-18-01",
+      "acquisition_start_time": "2023-01-07 06:23:52-08:00"
+    },
+    {
+      "name": "SmartSPIM_652505_2023-01-07_18-24-00",
+      "acquisition_start_time": "2023-01-07 10:58:44-08:00"
+    },
+    {
+      "name": "SmartSPIM_652505_2023-01-07_18-24-00_stitched_2023-02-09_17-23-47",
+      "acquisition_start_time": "2023-01-07 10:58:44-08:00"
+    },
+    {
+      "name": "SmartSPIM_654092_2023-01-26_10-45-12",
+      "acquisition_start_time": "2023-01-26 06:38:22-08:00"
+    },
+    {
+      "name": "SmartSPIM_654092_2023-01-26_10-45-12_stitched_2023-02-02_21-58-54",
+      "acquisition_start_time": "2023-01-26 06:38:22-08:00"
+    },
+    {
+      "name": "SmartSPIM_654097_2023-01-26_23-32-01",
+      "acquisition_start_time": "2023-01-26 23:32:00-08:00"
+    },
+    {
+      "name": "SmartSPIM_654097_2023-01-26_23-32-01_stitched_2023-01-31_17-35-27",
+      "acquisition_start_time": "2023-01-26 23:32:00-08:00"
+    },
+    {
+      "name": "SmartSPIM_656374_2023-01-27_12-41-55",
+      "acquisition_start_time": "2023-01-27 06:09:53-08:00"
+    },
+    {
+      "name": "SmartSPIM_656374_2023-01-27_12-41-55_stitched_2023-01-31_17-28-34",
+      "acquisition_start_time": "2023-01-27 06:09:53-08:00"
+    },
+    {
+      "name": "SmartSPIM_656375_2023-01-27_18-10-00",
+      "acquisition_start_time": "2023-01-27 18:10:00-08:00"
+    },
+    {
+      "name": "SmartSPIM_656375_2023-01-27_18-10-00_stitched_2023-01-31_17-25-22",
+      "acquisition_start_time": "2023-01-27 18:10:00-08:00"
+    },
+    {
+      "name": "SmartSPIM_656376_2023-01-30_14-59-16",
+      "acquisition_start_time": "2023-01-30 07:09:47-08:00"
+    },
+    {
+      "name": "SmartSPIM_656376_2023-01-30_14-59-16_stitched_2023-02-08_17-16-56",
+      "acquisition_start_time": "2023-01-30 07:09:47-08:00"
+    },
+    {
+      "name": "SmartSPIM_658208_2023-02-05_13-42-31",
+      "acquisition_start_time": "2023-02-05 06:30:01-08:00"
+    },
+    {
+      "name": "SmartSPIM_658208_2023-02-05_13-42-31_stitched_2023-02-07_19-40-25",
+      "acquisition_start_time": "2023-02-05 06:30:01-08:00"
+    },
+    {
+      "name": "SmartSPIM_658209_2023-02-08_16-32-24",
+      "acquisition_start_time": "2023-02-08 09:26:54-08:00"
+    },
+    {
+      "name": "SmartSPIM_658209_2023-02-08_16-32-24_stitched_2023-02-12_21-41-40",
+      "acquisition_start_time": "2023-02-08 09:26:54-08:00"
+    },
+    {
+      "name": "SmartSPIM_661792_2023-02-08_21-27-02",
+      "acquisition_start_time": "2023-02-08 21:27:00-08:00"
+    },
+    {
+      "name": "SmartSPIM_661792_2023-02-08_21-27-02_stitched_2023-02-13_22-40-24",
+      "acquisition_start_time": "2023-02-08 21:27:00-08:00"
+    },
+    {
+      "name": "SmartSPIM_661793_2023-02-09_02-05-24",
+      "acquisition_start_time": "2023-02-09 02:05:02-08:00"
+    },
+    {
+      "name": "SmartSPIM_661793_2023-02-09_02-05-24_stitched_2023-02-22_20-49-02",
+      "acquisition_start_time": "2023-02-09 02:05:02-08:00"
+    },
+    {
+      "name": "SmartSPIM_665261_2023-03-31_15-34-58",
+      "acquisition_start_time": "2023-03-31 15:34:58-07:00"
+    },
+    {
+      "name": "SmartSPIM_665261_2023-03-31_15-34-58_stitched_2023-04-10_18-57-56",
+      "acquisition_start_time": "2023-03-31 15:34:58-07:00"
+    },
+    {
+      "name": "SmartSPIM_668125_2023-03-31_20-40-04",
+      "acquisition_start_time": "2023-03-31 20:40:04-07:00"
+    },
+    {
+      "name": "SmartSPIM_668125_2023-03-31_20-40-04_stitched_2023-04-10_19-14-40",
+      "acquisition_start_time": "2023-03-31 20:40:04-07:00"
+    },
+    {
+      "name": "SmartSPIM_668126_2023-04-01_01-46-02",
+      "acquisition_start_time": "2023-04-01 01:46:02-07:00"
+    },
+    {
+      "name": "SmartSPIM_668126_2023-04-01_01-46-02_stitched_2023-05-15_17-08-30",
+      "acquisition_start_time": "2023-04-01 01:46:02-07:00"
+    },
+    {
+      "name": "SmartSPIM_665259_2023-04-03_19-50-16",
+      "acquisition_start_time": "2023-04-03 19:50:16-07:00"
+    },
+    {
+      "name": "SmartSPIM_665259_2023-04-03_19-50-16_stitched_2023-04-10_19-01-51",
+      "acquisition_start_time": "2023-04-03 19:50:16-07:00"
+    },
+    {
+      "name": "SmartSPIM_666941_2023-04-04_00-43-18",
+      "acquisition_start_time": "2023-04-04 00:43:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_666941_2023-04-04_00-43-18_stitched_2023-04-10_19-00-09",
+      "acquisition_start_time": "2023-04-04 00:43:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_665260_2023-04-07_16-27-03",
+      "acquisition_start_time": "2023-04-07 16:27:03-07:00"
+    },
+    {
+      "name": "SmartSPIM_665260_2023-04-07_16-27-03_stitched_2023-04-12_21-37-55",
+      "acquisition_start_time": "2023-04-07 16:27:03-07:00"
+    },
+    {
+      "name": "SmartSPIM_661792_2023-04-14_10-21-45",
+      "acquisition_start_time": "2023-04-14 01:39:00-07:00"
+    },
+    {
+      "name": "SmartSPIM_661792_2023-04-14_10-21-45_stitched_2023-04-19_21-36-56",
+      "acquisition_start_time": "2023-04-14 01:39:00-07:00"
+    },
+    {
+      "name": "SmartSPIM_662616_2023-04-14_15-11-04",
+      "acquisition_start_time": "2023-04-14 06:10:00-07:00"
+    },
+    {
+      "name": "SmartSPIM_662616_2023-04-14_15-11-04_stitched_2023-04-19_21-51-23",
+      "acquisition_start_time": "2023-04-14 06:10:00-07:00"
+    },
+    {
+      "name": "SmartSPIM_669120_2023-04-21_14-06-35",
+      "acquisition_start_time": "2023-04-21 14:06:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_669120_2023-04-21_14-06-35_stitched_2023-05-15_16-16-35",
+      "acquisition_start_time": "2023-04-21 14:06:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_669121_2023-04-21_18-46-00",
+      "acquisition_start_time": "2023-04-21 18:46:00-07:00"
+    },
+    {
+      "name": "SmartSPIM_669121_2023-04-21_18-46-00_stitched_2023-05-15_16-50-09",
+      "acquisition_start_time": "2023-04-21 18:46:00-07:00"
+    },
+    {
+      "name": "SmartSPIM_671189_2023-04-25_17-17-46",
+      "acquisition_start_time": "2023-04-25 17:17:46-07:00"
+    },
+    {
+      "name": "SmartSPIM_671189_2023-04-25_17-17-46_stitched_2023-05-15_16-38-57",
+      "acquisition_start_time": "2023-04-25 17:17:46-07:00"
+    },
+    {
+      "name": "SmartSPIM_671201_2023-04-26_11-54-21",
+      "acquisition_start_time": "2023-04-26 11:54:21-07:00"
+    },
+    {
+      "name": "SmartSPIM_671201_2023-04-26_11-54-21_stitched_2023-05-15_16-41-11",
+      "acquisition_start_time": "2023-04-26 11:54:21-07:00"
+    },
+    {
+      "name": "SmartSPIM_665260_2023-04-26_17-09-52",
+      "acquisition_start_time": "2023-04-26 17:09:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_665260_2023-04-26_17-09-52_stitched_2023-05-15_16-53-24",
+      "acquisition_start_time": "2023-04-26 17:09:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_675385_2023-05-23_17-09-15",
+      "acquisition_start_time": "2023-05-23 17:09:15-07:00"
+    },
+    {
+      "name": "SmartSPIM_675385_2023-05-23_17-09-15_stitched_2023-05-30_23-22-30",
+      "acquisition_start_time": "2023-05-23 17:09:15-07:00"
+    },
+    {
+      "name": "SmartSPIM_675387_2023-05-23_23-05-56",
+      "acquisition_start_time": "2023-05-23 23:05:56-07:00"
+    },
+    {
+      "name": "SmartSPIM_675387_2023-05-23_23-05-56_stitched_2023-06-01_22-30-44",
+      "acquisition_start_time": "2023-05-23 23:05:56-07:00"
+    },
+    {
+      "name": "SmartSPIM_675388_2023-05-24_04-10-19",
+      "acquisition_start_time": "2023-05-24 04:10:19-07:00"
+    },
+    {
+      "name": "SmartSPIM_675388_2023-05-24_04-10-19_stitched_2023-05-28_18-07-46",
+      "acquisition_start_time": "2023-05-24 04:10:19-07:00"
+    },
+    {
+      "name": "SmartSPIM_673393_2023-05-24_11-07-31",
+      "acquisition_start_time": "2023-05-24 11:07:31-07:00"
+    },
+    {
+      "name": "SmartSPIM_673393_2023-05-24_11-07-31_stitched_2023-07-27_21-56-31",
+      "acquisition_start_time": "2023-05-24 11:07:31-07:00"
+    },
+    {
+      "name": "SmartSPIM_673394_2023-05-24_16-36-27",
+      "acquisition_start_time": "2023-05-24 16:36:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_673394_2023-05-24_16-36-27_stitched_2023-06-02_20-40-43",
+      "acquisition_start_time": "2023-05-24 16:36:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_674187_2023-06-01_19-20-28",
+      "acquisition_start_time": "2023-06-01 19:20:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_674187_2023-06-01_19-20-28_stitched_2023-06-07_05-06-28",
+      "acquisition_start_time": "2023-06-01 19:20:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_674189_2023-06-02_00-04-04",
+      "acquisition_start_time": "2023-06-02 00:04:04-07:00"
+    },
+    {
+      "name": "SmartSPIM_674189_2023-06-02_00-04-04_stitched_2023-06-05_18-05-03",
+      "acquisition_start_time": "2023-06-02 00:04:04-07:00"
+    },
+    {
+      "name": "SmartSPIM_675376_2023-06-05_11-53-17",
+      "acquisition_start_time": "2023-06-05 11:53:17-07:00"
+    },
+    {
+      "name": "SmartSPIM_675376_2023-06-05_11-53-17_stitched_2026-05-06_17-51-28",
+      "acquisition_start_time": "2023-06-05 11:53:17-07:00"
+    },
+    {
+      "name": "SmartSPIM_676742_2023-06-05_17-10-27",
+      "acquisition_start_time": "2023-06-05 17:10:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_676742_2023-06-05_17-10-27_stitched_2023-06-14_02-52-03",
+      "acquisition_start_time": "2023-06-05 17:10:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_676743_2023-06-05_22-06-40",
+      "acquisition_start_time": "2023-06-05 22:06:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_676743_2023-06-05_22-06-40_stitched_2023-06-14_00-44-07",
+      "acquisition_start_time": "2023-06-05 22:06:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_678703_2023-06-20_17-18-27",
+      "acquisition_start_time": "2023-06-20 17:18:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_678703_2023-06-20_17-18-27_stitched_2023-08-01_20-48-15",
+      "acquisition_start_time": "2023-06-20 17:18:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_678704_2023-06-20_20-49-52",
+      "acquisition_start_time": "2023-06-20 20:49:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_678704_2023-06-20_20-49-52_stitched_2023-08-01_20-55-11",
+      "acquisition_start_time": "2023-06-20 20:49:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_675378_2023-06-21_13-47-47",
+      "acquisition_start_time": "2023-06-21 13:47:47-07:00"
+    },
+    {
+      "name": "SmartSPIM_675378_2023-06-21_13-47-47_stitched_2023-07-29_02-16-48",
+      "acquisition_start_time": "2023-06-21 13:47:47-07:00"
+    },
+    {
+      "name": "SmartSPIM_675380_2023-06-21_17-01-14",
+      "acquisition_start_time": "2023-06-21 17:01:14-07:00"
+    },
+    {
+      "name": "SmartSPIM_675380_2023-06-21_17-01-14_stitched_2023-07-29_02-18-10",
+      "acquisition_start_time": "2023-06-21 17:01:14-07:00"
+    },
+    {
+      "name": "SmartSPIM_675382_2023-06-21_20-12-07",
+      "acquisition_start_time": "2023-06-21 20:12:07-07:00"
+    },
+    {
+      "name": "SmartSPIM_675382_2023-06-21_20-12-07_stitched_2023-07-29_02-31-49",
+      "acquisition_start_time": "2023-06-21 20:12:07-07:00"
+    },
+    {
+      "name": "SmartSPIM_674182_2023-06-22_13-24-46",
+      "acquisition_start_time": "2023-06-22 13:24:46-07:00"
+    },
+    {
+      "name": "SmartSPIM_674182_2023-06-22_13-24-46_stitched_2023-07-27_22-08-20",
+      "acquisition_start_time": "2023-06-22 13:24:46-07:00"
+    },
+    {
+      "name": "SmartSPIM_674188_2023-06-22_17-04-38",
+      "acquisition_start_time": "2023-06-22 17:04:38-07:00"
+    },
+    {
+      "name": "SmartSPIM_674188_2023-06-22_17-04-38_stitched_2023-07-27_22-10-14",
+      "acquisition_start_time": "2023-06-22 17:04:38-07:00"
+    },
+    {
+      "name": "SmartSPIM_677719_2023-06-22_20-51-21",
+      "acquisition_start_time": "2023-06-22 20:51:21-07:00"
+    },
+    {
+      "name": "SmartSPIM_677719_2023-06-22_20-51-21_stitched_2023-08-01_04-23-59",
+      "acquisition_start_time": "2023-06-22 20:51:21-07:00"
+    },
+    {
+      "name": "SmartSPIM_677729_2023-06-23_13-24-51",
+      "acquisition_start_time": "2023-06-23 13:24:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_677729_2023-06-23_13-24-51_stitched_2023-08-01_04-44-10",
+      "acquisition_start_time": "2023-06-23 13:24:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_677730_2023-06-23_16-45-57",
+      "acquisition_start_time": "2023-06-23 16:45:57-07:00"
+    },
+    {
+      "name": "SmartSPIM_677730_2023-06-23_16-45-57_stitched_2023-08-01_20-53-38",
+      "acquisition_start_time": "2023-06-23 16:45:57-07:00"
+    },
+    {
+      "name": "SmartSPIM_677731_2023-06-23_20-17-12",
+      "acquisition_start_time": "2023-06-23 20:17:12-07:00"
+    },
+    {
+      "name": "SmartSPIM_677731_2023-06-23_20-17-12_stitched_2023-08-01_20-13-19",
+      "acquisition_start_time": "2023-06-23 20:17:12-07:00"
+    },
+    {
+      "name": "SmartSPIM_676744_2023-06-26_11-26-13",
+      "acquisition_start_time": "2023-06-26 11:26:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_676744_2023-06-26_11-26-13_stitched_2023-08-01_04-22-22",
+      "acquisition_start_time": "2023-06-26 11:26:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_676745_2023-06-26_14-51-21",
+      "acquisition_start_time": "2023-06-26 14:51:21-07:00"
+    },
+    {
+      "name": "SmartSPIM_676745_2023-06-26_14-51-21_stitched_2023-08-01_04-40-58",
+      "acquisition_start_time": "2023-06-26 14:51:21-07:00"
+    },
+    {
+      "name": "SmartSPIM_678706_2023-06-28_16-43-04",
+      "acquisition_start_time": "2023-06-28 07:58:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_678706_2023-06-28_16-43-04_stitched_2023-08-01_20-56-44",
+      "acquisition_start_time": "2023-06-28 07:58:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_679809_2023-06-29_15-57-34",
+      "acquisition_start_time": "2023-06-29 07:48:49-07:00"
+    },
+    {
+      "name": "SmartSPIM_679809_2023-06-29_15-57-34_stitched_2023-08-01_21-30-41",
+      "acquisition_start_time": "2023-06-29 07:48:49-07:00"
+    },
+    {
+      "name": "SmartSPIM_679810_2023-06-29_19-48-57",
+      "acquisition_start_time": "2023-06-29 11:15:11-07:00"
+    },
+    {
+      "name": "SmartSPIM_679810_2023-06-29_19-48-57_stitched_2023-07-11_22-53-01",
+      "acquisition_start_time": "2023-06-29 11:15:11-07:00"
+    },
+    {
+      "name": "SmartSPIM_679811_2023-06-29_23-15-21",
+      "acquisition_start_time": "2023-06-29 23:15:02-07:00"
+    },
+    {
+      "name": "SmartSPIM_679811_2023-06-29_23-15-21_stitched_2023-07-24_21-16-35",
+      "acquisition_start_time": "2023-06-29 23:15:02-07:00"
+    },
+    {
+      "name": "SmartSPIM_679820_2023-06-30_13-05-23",
+      "acquisition_start_time": "2023-06-30 04:09:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_679820_2023-06-30_13-05-23_stitched_2023-08-01_19-57-43",
+      "acquisition_start_time": "2023-06-30 04:09:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_681224_2023-07-06_15-06-45",
+      "acquisition_start_time": "2023-07-06 08:16:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_681224_2023-07-06_15-06-45_stitched_2026-02-28_16-59-18",
+      "acquisition_start_time": "2023-07-06 08:16:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_681225_2023-07-06_20-16-11",
+      "acquisition_start_time": "2023-07-06 20:16:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_681225_2023-07-06_20-16-11_stitched_2026-04-30_09-25-19",
+      "acquisition_start_time": "2023-07-06 20:16:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_681226_2023-07-07_01-19-25",
+      "acquisition_start_time": "2023-07-07 01:19:02-07:00"
+    },
+    {
+      "name": "SmartSPIM_681226_2023-07-07_01-19-25_stitched_2026-04-30_09-25-28",
+      "acquisition_start_time": "2023-07-07 01:19:02-07:00"
+    },
+    {
+      "name": "SmartSPIM_681227_2023-07-07_11-21-34",
+      "acquisition_start_time": "2023-07-07 04:32:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_681227_2023-07-07_11-21-34_stitched_2026-05-06_14-28-35",
+      "acquisition_start_time": "2023-07-07 04:32:27-07:00"
+    },
+    {
+      "name": "SmartSPIM_677291_2023-07-10_13-25-27",
+      "acquisition_start_time": "2023-07-10 06:28:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_677291_2023-07-10_13-25-27_stitched_2023-08-01_04-40-07",
+      "acquisition_start_time": "2023-07-10 06:28:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_677291_2023-07-10_13-25-27_stitched_2026-02-19_19-27-02",
+      "acquisition_start_time": "2023-07-10 06:28:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_677291_2023-07-10_13-25-27_stitched_2026-02-24_14-51-16",
+      "acquisition_start_time": "2023-07-10 06:28:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_684821_2023-07-21_02-03-50",
+      "acquisition_start_time": "2023-07-21 02:03:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_684821_2023-07-21_02-03-50_stitched_2026-04-30_09-45-29",
+      "acquisition_start_time": "2023-07-21 02:03:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_677290_2023-07-21_17-29-36",
+      "acquisition_start_time": "2023-07-21 17:29:36-07:00"
+    },
+    {
+      "name": "SmartSPIM_677290_2023-07-21_17-29-36_stitched_2026-02-28_15-09-53",
+      "acquisition_start_time": "2023-07-21 17:29:36-07:00"
+    },
+    {
+      "name": "SmartSPIM_677289_2023-07-28_12-35-35",
+      "acquisition_start_time": "2023-07-28 12:35:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_677289_2023-07-28_12-35-35_stitched_2026-02-28_12-21-18",
+      "acquisition_start_time": "2023-07-28 12:35:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_679517_2023-07-28_17-18-20",
+      "acquisition_start_time": "2023-07-28 17:18:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_679517_2023-07-28_17-18-20_stitched_2023-09-27_06-05-29",
+      "acquisition_start_time": "2023-07-28 17:18:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_679517_2023-07-28_17-18-20_stitched_2026-02-28_16-16-22",
+      "acquisition_start_time": "2023-07-28 17:18:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_679516_2023-07-28_22-47-44",
+      "acquisition_start_time": "2023-07-28 22:47:44-07:00"
+    },
+    {
+      "name": "SmartSPIM_679516_2023-07-28_22-47-44_stitched_2026-02-28_13-52-18",
+      "acquisition_start_time": "2023-07-28 22:47:44-07:00"
+    },
+    {
+      "name": "SmartSPIM_684812_2023-07-31_16-36-25",
+      "acquisition_start_time": "2023-07-31 16:36:25-07:00"
+    },
+    {
+      "name": "SmartSPIM_684812_2023-07-31_16-36-25_stitched_2026-04-30_12-20-56",
+      "acquisition_start_time": "2023-07-31 16:36:25-07:00"
+    },
+    {
+      "name": "SmartSPIM_679519_2023-08-15_11-43-09",
+      "acquisition_start_time": "2023-08-15 11:43:09-07:00"
+    },
+    {
+      "name": "SmartSPIM_679519_2023-08-15_11-43-09_stitched_2023-08-22_22-13-20",
+      "acquisition_start_time": "2023-08-15 11:43:09-07:00"
+    },
+    {
+      "name": "SmartSPIM_679519_2023-08-15_11-43-09_stitched_2024-10-29_00-40-35",
+      "acquisition_start_time": "2023-08-15 11:43:09-07:00"
+    },
+    {
+      "name": "SmartSPIM_679519_2023-08-15_11-43-09_stitched_2026-02-27_12-40-53",
+      "acquisition_start_time": "2023-08-15 11:43:09-07:00"
+    },
+    {
+      "name": "SmartSPIM_679521_2023-08-15_17-08-13",
+      "acquisition_start_time": "2023-08-15 17:08:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_679521_2023-08-15_17-08-13_stitched_2023-08-22_22-11-47",
+      "acquisition_start_time": "2023-08-15 17:08:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_679521_2023-08-15_17-08-13_stitched_2024-10-29_00-34-47",
+      "acquisition_start_time": "2023-08-15 17:08:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_679521_2023-08-15_17-08-13_stitched_2026-02-04_16-14-48",
+      "acquisition_start_time": "2023-08-15 17:08:13-07:00"
+    },
+    {
+      "name": "SmartSPIM_687220_2023-08-15_22-32-56",
+      "acquisition_start_time": "2023-08-15 22:32:56-07:00"
+    },
+    {
+      "name": "SmartSPIM_687220_2023-08-15_22-32-56_stitched_2023-08-22_22-09-47",
+      "acquisition_start_time": "2023-08-15 22:32:56-07:00"
+    },
+    {
+      "name": "SmartSPIM_687220_2023-08-15_22-32-56_stitched_2026-02-25_11-53-18",
+      "acquisition_start_time": "2023-08-15 22:32:56-07:00"
+    },
+    {
+      "name": "SmartSPIM_685903_2023-08-23_13-03-18",
+      "acquisition_start_time": "2023-08-23 13:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_685903_2023-08-23_13-03-18_stitched_2023-11-07_22-40-00",
+      "acquisition_start_time": "2023-08-23 13:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_685903_2023-08-23_13-03-18_stitched_2026-02-25_05-54-28",
+      "acquisition_start_time": "2023-08-23 13:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_685903_2023-08-23_13-03-18_stitched_2026-05-12_07-25-38",
+      "acquisition_start_time": "2023-08-23 13:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_679520_2023-08-23_19-38-19_stitched_2024-01-17_06-13-31",
+      "acquisition_start_time": "2023-08-23 19:38:19-07:00"
+    },
+    {
+      "name": "SmartSPIM_685905_2023-08-24_00-58-37",
+      "acquisition_start_time": "2023-08-24 00:58:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_685905_2023-08-24_00-58-37_stitched_2023-10-03_02-26-35",
+      "acquisition_start_time": "2023-08-24 00:58:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_685905_2023-08-24_00-58-37_stitched_2026-02-27_12-01-33",
+      "acquisition_start_time": "2023-08-24 00:58:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_685905_2023-08-24_00-58-37_stitched_2026-05-06_16-16-42",
+      "acquisition_start_time": "2023-08-24 00:58:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_679518_2023-08-25_12-08-11",
+      "acquisition_start_time": "2023-08-25 12:08:11-07:00"
+    },
+    {
+      "name": "SmartSPIM_679518_2023-08-25_12-08-11_stitched_2023-09-12_08-48-39",
+      "acquisition_start_time": "2023-08-25 12:08:11-07:00"
+    },
+    {
+      "name": "SmartSPIM_679518_2023-08-25_12-08-11_stitched_2026-02-27_11-51-17",
+      "acquisition_start_time": "2023-08-25 12:08:11-07:00"
+    },
+    {
+      "name": "SmartSPIM_685904_2023-08-25_17-30-03",
+      "acquisition_start_time": "2023-08-25 17:30:03-07:00"
+    },
+    {
+      "name": "SmartSPIM_685904_2023-08-25_17-30-03_stitched_2023-09-05_23-15-52",
+      "acquisition_start_time": "2023-08-25 17:30:03-07:00"
+    },
+    {
+      "name": "SmartSPIM_685904_2023-08-25_17-30-03_stitched_2026-02-27_15-00-29",
+      "acquisition_start_time": "2023-08-25 17:30:03-07:00"
+    },
+    {
+      "name": "SmartSPIM_685904_2023-08-25_17-30-03_stitched_2026-04-30_01-16-11",
+      "acquisition_start_time": "2023-08-25 17:30:03-07:00"
+    },
+    {
+      "name": "SmartSPIM_685906_2023-08-26_01-17-44",
+      "acquisition_start_time": "2023-08-26 01:17:44-07:00"
+    },
+    {
+      "name": "SmartSPIM_685906_2023-08-26_01-17-44_stitched_2023-09-02_11-13-51",
+      "acquisition_start_time": "2023-08-26 01:17:44-07:00"
+    },
+    {
+      "name": "SmartSPIM_687218_2023-08-28_12-59-28",
+      "acquisition_start_time": "2023-08-28 12:59:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_687218_2023-08-28_12-59-28_stitched_2023-09-12_07-35-47",
+      "acquisition_start_time": "2023-08-28 12:59:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_687218_2023-08-28_12-59-28_stitched_2026-02-27_10-22-29",
+      "acquisition_start_time": "2023-08-28 12:59:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_687218_2023-08-28_12-59-28_stitched_2026-05-12_09-32-53",
+      "acquisition_start_time": "2023-08-28 12:59:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_687219_2023-08-28_17-50-43",
+      "acquisition_start_time": "2023-08-28 17:50:43-07:00"
+    },
+    {
+      "name": "SmartSPIM_687219_2023-08-28_17-50-43_stitched_2023-09-12_07-32-28",
+      "acquisition_start_time": "2023-08-28 17:50:43-07:00"
+    },
+    {
+      "name": "SmartSPIM_687219_2023-08-28_17-50-43_stitched_2026-02-27_10-58-48",
+      "acquisition_start_time": "2023-08-28 17:50:43-07:00"
+    },
+    {
+      "name": "SmartSPIM_687219_2023-08-28_17-50-43_stitched_2026-05-06_15-52-33",
+      "acquisition_start_time": "2023-08-28 17:50:43-07:00"
+    },
+    {
+      "name": "SmartSPIM_687221_2023-08-29_00-00-20",
+      "acquisition_start_time": "2023-08-29 00:00:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_687221_2023-08-29_00-00-20_stitched_2023-09-12_07-43-50",
+      "acquisition_start_time": "2023-08-29 00:00:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_687221_2023-08-29_00-00-20_stitched_2026-02-27_06-18-30",
+      "acquisition_start_time": "2023-08-29 00:00:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_687221_2023-08-29_00-00-20_stitched_2026-05-06_12-40-10",
+      "acquisition_start_time": "2023-08-29 00:00:20-07:00"
+    },
+    {
+      "name": "SmartSPIM_685110_2023-08-30_14-41-42",
+      "acquisition_start_time": "2023-08-30 14:41:42-07:00"
+    },
+    {
+      "name": "SmartSPIM_685110_2023-08-30_14-41-42_stitched_2023-09-08_01-00-28",
+      "acquisition_start_time": "2023-08-30 14:41:42-07:00"
+    },
+    {
+      "name": "SmartSPIM_685110_2023-08-30_14-41-42_stitched_2026-02-27_08-52-06",
+      "acquisition_start_time": "2023-08-30 14:41:42-07:00"
+    },
+    {
+      "name": "SmartSPIM_689237_2023-08-30_19-04-37",
+      "acquisition_start_time": "2023-08-30 19:04:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_689237_2023-08-30_19-04-37_stitched_2023-09-12_08-06-57",
+      "acquisition_start_time": "2023-08-30 19:04:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_689237_2023-08-30_19-04-37_stitched_2026-02-19_21-34-53",
+      "acquisition_start_time": "2023-08-30 19:04:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_689237_2023-08-30_19-04-37_stitched_2026-02-24_12-00-04",
+      "acquisition_start_time": "2023-08-30 19:04:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_689237_2023-08-30_19-04-37_stitched_2026-04-29_10-03-26",
+      "acquisition_start_time": "2023-08-30 19:04:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_689238_2023-08-31_01-56-52",
+      "acquisition_start_time": "2023-08-31 01:56:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_689238_2023-08-31_01-56-52_stitched_2023-09-12_07-47-44",
+      "acquisition_start_time": "2023-08-31 01:56:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_689238_2023-08-31_01-56-52_stitched_2026-02-19_14-53-59",
+      "acquisition_start_time": "2023-08-31 01:56:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_689238_2023-08-31_01-56-52_stitched_2026-02-24_15-18-34",
+      "acquisition_start_time": "2023-08-31 01:56:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_689238_2023-08-31_01-56-52_stitched_2026-04-28_15-12-39",
+      "acquisition_start_time": "2023-08-31 01:56:52-07:00"
+    },
+    {
+      "name": "SmartSPIM_691386_2023-08-31_16-53-18_stitched_2024-01-09_15-15-16",
+      "acquisition_start_time": "2023-08-31 16:53:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_691387_2023-09-15_20-47-51",
+      "acquisition_start_time": "2023-09-15 20:47:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_691387_2023-09-15_20-47-51_stitched_2023-09-20_21-46-54",
+      "acquisition_start_time": "2023-09-15 20:47:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_691387_2023-09-15_20-47-51_stitched_2026-01-16_11-41-05",
+      "acquisition_start_time": "2023-09-15 20:47:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_691387_2023-09-15_20-47-51_stitched_2026-02-19_17-17-58",
+      "acquisition_start_time": "2023-09-15 20:47:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_691387_2023-09-15_20-47-51_stitched_2026-02-24_15-33-16",
+      "acquisition_start_time": "2023-09-15 20:47:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_691387_2023-09-15_20-47-51_stitched_2026-04-28_15-42-33",
+      "acquisition_start_time": "2023-09-15 20:47:51-07:00"
+    },
+    {
+      "name": "SmartSPIM_691388_2023-09-16_03-45-18",
+      "acquisition_start_time": "2023-09-16 03:45:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_691388_2023-09-16_03-45-18_stitched_2023-09-20_23-25-37",
+      "acquisition_start_time": "2023-09-16 03:45:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_691388_2023-09-16_03-45-18_stitched_2026-02-19_19-46-17",
+      "acquisition_start_time": "2023-09-16 03:45:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_691388_2023-09-16_03-45-18_stitched_2026-02-24_14-07-39",
+      "acquisition_start_time": "2023-09-16 03:45:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_691388_2023-09-16_03-45-18_stitched_2026-05-06_19-34-16",
+      "acquisition_start_time": "2023-09-16 03:45:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_687502_2023-09-28_02-24-35",
+      "acquisition_start_time": "2023-09-28 02:24:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_687502_2023-09-28_02-24-35_stitched_2023-10-03_02-19-21",
+      "acquisition_start_time": "2023-09-28 02:24:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_687502_2023-09-28_02-24-35_stitched_2026-01-13_01-26-31",
+      "acquisition_start_time": "2023-09-28 02:24:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_687502_2023-09-28_02-24-35_stitched_2026-02-19_13-48-42",
+      "acquisition_start_time": "2023-09-28 02:24:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_687502_2023-09-28_02-24-35_stitched_2026-02-24_11-12-33",
+      "acquisition_start_time": "2023-09-28 02:24:35-07:00"
+    },
+    {
+      "name": "SmartSPIM_685111_2023-09-28_18-19-10",
+      "acquisition_start_time": "2023-09-28 18:19:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_685111_2023-09-28_18-19-10_stitched_2023-10-05_23-50-50",
+      "acquisition_start_time": "2023-09-28 18:19:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_685111_2023-09-28_18-19-10_stitched_2024-01-11_10-16-44",
+      "acquisition_start_time": "2023-09-28 18:19:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_685111_2023-09-28_18-19-10_stitched_2026-02-19_13-51-20",
+      "acquisition_start_time": "2023-09-28 18:19:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_685111_2023-09-28_18-19-10_stitched_2026-02-24_12-25-01",
+      "acquisition_start_time": "2023-09-28 18:19:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_693196_2023-09-28_23-12-22",
+      "acquisition_start_time": "2023-09-28 23:12:22-07:00"
+    },
+    {
+      "name": "SmartSPIM_693196_2023-09-28_23-12-22_stitched_2023-10-05_23-14-39",
+      "acquisition_start_time": "2023-09-28 23:12:22-07:00"
+    },
+    {
+      "name": "SmartSPIM_693196_2023-09-28_23-12-22_stitched_2024-01-11_10-23-15",
+      "acquisition_start_time": "2023-09-28 23:12:22-07:00"
+    },
+    {
+      "name": "SmartSPIM_693196_2023-09-28_23-12-22_stitched_2026-02-19_18-32-05",
+      "acquisition_start_time": "2023-09-28 23:12:22-07:00"
+    },
+    {
+      "name": "SmartSPIM_693196_2023-09-28_23-12-22_stitched_2026-05-12_06-56-46",
+      "acquisition_start_time": "2023-09-28 23:12:22-07:00"
+    },
+    {
+      "name": "SmartSPIM_693197_2023-09-29_05-18-50",
+      "acquisition_start_time": "2023-09-29 05:18:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_693197_2023-09-29_05-18-50_stitched_2023-10-05_23-16-54",
+      "acquisition_start_time": "2023-09-29 05:18:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_693197_2023-09-29_05-18-50_stitched_2024-01-11_13-16-50",
+      "acquisition_start_time": "2023-09-29 05:18:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_693197_2023-09-29_05-18-50_stitched_2026-02-19_14-31-41",
+      "acquisition_start_time": "2023-09-29 05:18:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_693197_2023-09-29_05-18-50_stitched_2026-02-24_13-50-23",
+      "acquisition_start_time": "2023-09-29 05:18:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_693197_2023-09-29_05-18-50_stitched_2026-05-12_09-57-29",
+      "acquisition_start_time": "2023-09-29 05:18:50-07:00"
+    },
+    {
+      "name": "SmartSPIM_694512_2023-09-29_17-21-48",
+      "acquisition_start_time": "2023-09-29 17:21:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_694512_2023-09-29_17-21-48_stitched_2023-11-10_22-59-04",
+      "acquisition_start_time": "2023-09-29 17:21:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_694512_2023-09-29_17-21-48_stitched_2026-02-19_16-59-34",
+      "acquisition_start_time": "2023-09-29 17:21:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_694512_2023-09-29_17-21-48_stitched_2026-02-24_14-16-54",
+      "acquisition_start_time": "2023-09-29 17:21:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_694512_2023-09-29_17-21-48_stitched_2026-04-29_08-57-11",
+      "acquisition_start_time": "2023-09-29 17:21:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_694513_2023-09-30_00-03-18",
+      "acquisition_start_time": "2023-09-30 00:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_694513_2023-09-30_00-03-18_stitched_2023-10-05_22-52-14",
+      "acquisition_start_time": "2023-09-30 00:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_694513_2023-09-30_00-03-18_stitched_2024-01-11_10-15-23",
+      "acquisition_start_time": "2023-09-30 00:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_694513_2023-09-30_00-03-18_stitched_2026-02-19_15-22-49",
+      "acquisition_start_time": "2023-09-30 00:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_694513_2023-09-30_00-03-18_stitched_2026-02-24_11-14-20",
+      "acquisition_start_time": "2023-09-30 00:03:18-07:00"
+    },
+    {
+      "name": "SmartSPIM_695721_2023-09-30_05-54-33",
+      "acquisition_start_time": "2023-09-30 05:54:33-07:00"
+    },
+    {
+      "name": "SmartSPIM_695721_2023-09-30_05-54-33_stitched_2023-11-11_01-44-48",
+      "acquisition_start_time": "2023-09-30 05:54:33-07:00"
+    },
+    {
+      "name": "SmartSPIM_695721_2023-09-30_05-54-33_stitched_2026-02-17_14-00-10",
+      "acquisition_start_time": "2023-09-30 05:54:33-07:00"
+    },
+    {
+      "name": "SmartSPIM_695721_2023-09-30_05-54-33_stitched_2026-05-06_07-28-06",
+      "acquisition_start_time": "2023-09-30 05:54:33-07:00"
+    },
+    {
+      "name": "SmartSPIM_693198_2023-10-02_16-39-10",
+      "acquisition_start_time": "2023-10-02 16:39:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_693198_2023-10-02_16-39-10_stitched_2023-10-05_23-41-04",
+      "acquisition_start_time": "2023-10-02 16:39:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_693198_2023-10-02_16-39-10_stitched_2024-01-11_13-20-45",
+      "acquisition_start_time": "2023-10-02 16:39:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_693198_2023-10-02_16-39-10_stitched_2026-02-19_19-31-30",
+      "acquisition_start_time": "2023-10-02 16:39:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_693198_2023-10-02_16-39-10_stitched_2026-02-24_11-59-36",
+      "acquisition_start_time": "2023-10-02 16:39:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_693198_2023-10-02_16-39-10_stitched_2026-05-06_16-51-21",
+      "acquisition_start_time": "2023-10-02 16:39:10-07:00"
+    },
+    {
+      "name": "SmartSPIM_698927_2023-10-02_23-40-40",
+      "acquisition_start_time": "2023-10-02 23:40:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_698927_2023-10-02_23-40-40_stitched_2023-10-05_23-34-31",
+      "acquisition_start_time": "2023-10-02 23:40:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_698927_2023-10-02_23-40-40_stitched_2024-11-20_20-50-15",
+      "acquisition_start_time": "2023-10-02 23:40:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_698927_2023-10-02_23-40-40_stitched_2026-02-17_13-39-51",
+      "acquisition_start_time": "2023-10-02 23:40:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_698928_2023-10-03_04-48-54",
+      "acquisition_start_time": "2023-10-03 04:48:54-07:00"
+    },
+    {
+      "name": "SmartSPIM_698928_2023-10-03_04-48-54_stitched_2023-10-05_23-37-47",
+      "acquisition_start_time": "2023-10-03 04:48:54-07:00"
+    },
+    {
+      "name": "SmartSPIM_698928_2023-10-03_04-48-54_stitched_2024-11-12_18-16-50",
+      "acquisition_start_time": "2023-10-03 04:48:54-07:00"
+    },
+    {
+      "name": "SmartSPIM_693977_2023-10-10_17-04-36",
+      "acquisition_start_time": "2023-10-10 17:04:36-07:00"
+    },
+    {
+      "name": "SmartSPIM_693977_2023-10-10_17-04-36_stitched_2023-10-18_21-49-51",
+      "acquisition_start_time": "2023-10-10 17:04:36-07:00"
+    },
+    {
+      "name": "SmartSPIM_693977_2023-10-10_17-04-36_stitched_2024-11-20_18-49-09",
+      "acquisition_start_time": "2023-10-10 17:04:36-07:00"
+    },
+    {
+      "name": "SmartSPIM_693980_2023-10-10_21-31-48",
+      "acquisition_start_time": "2023-10-10 21:31:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_693980_2023-10-10_21-31-48_stitched_2023-10-18_22-31-55",
+      "acquisition_start_time": "2023-10-10 21:31:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_693980_2023-10-10_21-31-48_stitched_2024-11-20_21-26-38",
+      "acquisition_start_time": "2023-10-10 21:31:48-07:00"
+    },
+    {
+      "name": "SmartSPIM_692907_2023-10-11_13-47-37",
+      "acquisition_start_time": "2023-10-11 13:47:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_692907_2023-10-11_13-47-37_stitched_2023-10-18_22-19-08",
+      "acquisition_start_time": "2023-10-11 13:47:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_692907_2023-10-11_13-47-37_stitched_2026-02-17_14-37-57",
+      "acquisition_start_time": "2023-10-11 13:47:37-07:00"
+    },
+    {
+      "name": "SmartSPIM_692909_2023-10-11_18-54-39",
+      "acquisition_start_time": "2023-10-11 18:54:39-07:00"
+    },
+    {
+      "name": "SmartSPIM_692909_2023-10-11_18-54-39_stitched_2023-10-18_22-58-59",
+      "acquisition_start_time": "2023-10-11 18:54:39-07:00"
+    },
+    {
+      "name": "SmartSPIM_692909_2023-10-11_18-54-39_stitched_2026-02-17_14-00-13",
+      "acquisition_start_time": "2023-10-11 18:54:39-07:00"
+    },
+    {
+      "name": "SmartSPIM_693979_2023-10-11_23-49-28",
+      "acquisition_start_time": "2023-10-11 23:49:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_693979_2023-10-11_23-49-28_stitched_2023-10-18_21-59-20",
+      "acquisition_start_time": "2023-10-11 23:49:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_693979_2023-10-11_23-49-28_stitched_2024-11-20_16-12-14",
+      "acquisition_start_time": "2023-10-11 23:49:28-07:00"
+    },
+    {
+      "name": "SmartSPIM_693978_2023-10-12_12-29-01_stitched_2024-10-30_19-47-54",
+      "acquisition_start_time": "2023-10-12 12:29:01-07:00"
+    },
+    {
+      "name": "SmartSPIM_696668_2023-10-12_17-50-40_stitched_2023-10-18_21-28-56",
+      "acquisition_start_time": "2023-10-12 17:50:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_696669_2023-10-12_23-45-17_stitched_2023-10-18_22-10-13",
+      "acquisition_start_time": "2023-10-12 23:45:17-07:00"
+    },
+    {
+      "name": "SmartSPIM_692911_2023-10-23_11-27-30",
+      "acquisition_start_time": "2023-10-23 11:27:30-07:00"
+    },
+    {
+      "name": "SmartSPIM_692911_2023-10-23_11-27-30_stitched_2023-10-27_22-35-31",
+      "acquisition_start_time": "2023-10-23 11:27:30-07:00"
+    },
+    {
+      "name": "SmartSPIM_692911_2023-10-23_11-27-30_stitched_2026-02-17_14-21-11",
+      "acquisition_start_time": "2023-10-23 11:27:30-07:00"
+    },
+    {
+      "name": "SmartSPIM_692912_2023-10-23_16-45-17_stitched_2023-10-28_20-52-28",
+      "acquisition_start_time": "2023-10-23 16:45:17-07:00"
+    },
+    {
+      "name": "SmartSPIM_698035_2023-10-24_18-38-40_stitched_2023-10-28_20-52-51",
+      "acquisition_start_time": "2023-10-24 18:38:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_698034_2023-10-27_00-23-26",
+      "acquisition_start_time": "2023-10-27 00:23:26-07:00"
+    },
+    {
+      "name": "SmartSPIM_698034_2023-10-27_00-23-26_stitched_2023-11-01_01-57-15",
+      "acquisition_start_time": "2023-10-27 00:23:26-07:00"
+    },
+    {
+      "name": "SmartSPIM_699834_2023-10-31_16-31-46",
+      "acquisition_start_time": "2023-10-31 16:31:46-07:00"
+    },
+    {
+      "name": "SmartSPIM_699834_2023-10-31_16-31-46_stitched_2023-11-01_14-53-14",
+      "acquisition_start_time": "2023-10-31 16:31:46-07:00"
+    },
+    {
+      "name": "SmartSPIM_699835_2023-10-31_21-17-33",
+      "acquisition_start_time": "2023-10-31 21:17:33-07:00"
+    },
+    {
+      "name": "SmartSPIM_699835_2023-10-31_21-17-33_stitched_2023-11-01_19-47-10",
+      "acquisition_start_time": "2023-10-31 21:17:33-07:00"
+    },
+    {
+      "name": "SmartSPIM_701120_2023-11-03_22-08-40",
+      "acquisition_start_time": "2023-11-03 22:08:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_701120_2023-11-03_22-08-40_stitched_2023-11-04_19-02-25",
+      "acquisition_start_time": "2023-11-03 22:08:40-07:00"
+    },
+    {
+      "name": "SmartSPIM_692908_2023-11-08_16-48-13",
+      "acquisition_start_time": "2023-11-08 16:48:13-08:00"
+    },
+    {
+      "name": "SmartSPIM_692908_2023-11-08_16-48-13_stitched_2023-11-09_11-12-06",
+      "acquisition_start_time": "2023-11-08 16:48:13-08:00"
+    },
+    {
+      "name": "SmartSPIM_701121_2023-11-10_10-53-43",
+      "acquisition_start_time": "2023-11-10 10:53:43-08:00"
+    },
+    {
+      "name": "SmartSPIM_701121_2023-11-10_10-53-43_stitched_2023-11-11_08-59-35",
+      "acquisition_start_time": "2023-11-10 10:53:43-08:00"
+    },
+    {
+      "name": "SmartSPIM_702320_2023-11-10_16-03-12",
+      "acquisition_start_time": "2023-11-10 16:03:12-08:00"
+    },
+    {
+      "name": "SmartSPIM_702320_2023-11-10_16-03-12_stitched_2023-11-11_11-55-08",
+      "acquisition_start_time": "2023-11-10 16:03:12-08:00"
+    },
+    {
+      "name": "SmartSPIM_702321_2023-11-10_20-59-26",
+      "acquisition_start_time": "2023-11-10 20:59:26-08:00"
+    },
+    {
+      "name": "SmartSPIM_702321_2023-11-10_20-59-26_stitched_2023-11-11_18-11-28",
+      "acquisition_start_time": "2023-11-10 20:59:26-08:00"
+    },
+    {
+      "name": "SmartSPIM_701750_2023-11-28_10-05-47_stitched_2023-11-29_06-25-59",
+      "acquisition_start_time": "2023-11-28 10:05:47-08:00"
+    },
+    {
+      "name": "SmartSPIM_701751_2023-11-28_15-13-41_stitched_2023-11-29_13-49-24",
+      "acquisition_start_time": "2023-11-28 15:13:41-08:00"
+    },
+    {
+      "name": "SmartSPIM_701754_2023-11-28_20-06-23_stitched_2023-11-29_16-06-06",
+      "acquisition_start_time": "2023-11-28 20:06:23-08:00"
+    }
+  ],
+  "record_count": 285,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

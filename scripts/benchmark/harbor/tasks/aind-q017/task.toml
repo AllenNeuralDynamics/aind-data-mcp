@@ -1,0 +1,35 @@
+version = "1.0"
+
+[metadata]
+question_id = 17
+complexity = "medium"
+benchmark = "aind-data-mcp"
+verify_mode = "llm"
+
+[verifier]
+timeout_sec = 300.0
+
+[verifier.env]
+# litellm model id for the judge. Use a bedrock/... id to grade via Amazon
+# Bedrock (litellm reads AWS_BEARER_TOKEN_BEDROCK or the standard AWS chain).
+JUDGE_MODEL = "${JUDGE_MODEL:-anthropic/claude-haiku-4-5}"
+# Amazon Bedrock credentials (API-key/bearer-token auth or the standard chain).
+AWS_BEARER_TOKEN_BEDROCK = "${AWS_BEARER_TOKEN_BEDROCK:-}"
+AWS_REGION = "${AWS_REGION:-us-west-2}"
+AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID:-}"
+AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY:-}"
+AWS_SESSION_TOKEN = "${AWS_SESSION_TOKEN:-}"
+# Direct-provider keys (used when JUDGE_MODEL is an Anthropic/OpenAI id).
+ANTHROPIC_API_KEY = "${ANTHROPIC_API_KEY:-}"
+OPENAI_API_KEY = "${OPENAI_API_KEY:-}"
+
+[agent]
+timeout_sec = 300.0
+
+[environment]
+build_timeout_sec = 900.0
+
+[[environment.mcp_servers]]
+name = "aind-data-mcp"
+transport = "streamable-http"
+url = "https://metadata-portal.allenneuraldynamics.org/mcp/"

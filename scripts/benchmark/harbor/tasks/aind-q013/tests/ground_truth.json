@@ -1,0 +1,39 @@
+{
+  "id": 13,
+  "question": "Which unique brain structures were targeted across the SmartSPIM (`SPIM`) assets in the `Thalamus in the middle` project that were acquired before 2024-01-01?",
+  "records": [
+    {
+      "structure": "Infralimbic area",
+      "acronym": "ILA",
+      "asset_count": 12
+    },
+    {
+      "structure": "Isocortex",
+      "acronym": "Isocortex",
+      "asset_count": 498
+    },
+    {
+      "structure": "Paraventricular nucleus of the thalamus",
+      "acronym": "PVT",
+      "asset_count": 48
+    },
+    {
+      "structure": "Secondary motor area",
+      "acronym": "MOs",
+      "asset_count": 4
+    },
+    {
+      "structure": "Somatomotor areas",
+      "acronym": "MO",
+      "asset_count": 18
+    },
+    {
+      "structure": "Ventral medial nucleus of the thalamus",
+      "acronym": "VM",
+      "asset_count": 80
+    }
+  ],
+  "record_count": 6,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

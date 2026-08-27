@@ -1,0 +1,776 @@
+{
+  "id": 12,
+  "question": "List every data asset in the database belonging to subject 690706 along with each asset's data_level and modality abbreviations.",
+  "records": [
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_LPFaceParts_2025-01-18_03-58-58",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_sorted_2024-10-27_13-27-33",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_dlc_side_2024-04-03_17-58-51",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-25_12-25-09",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_sorted_2024-10-27_13-27-33",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_dlc_eye_2024-03-11_01-11-50",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_LPFaceParts_2025-01-18_04-25-57",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_sorted_2024-03-24_16-58-20",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_dlc_face_2024-04-05_21-12-05",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23",
+      "data_level": "raw",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-18_12-58-31",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_sorted_2023-12-16_20-49-49",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-16_13-45-50",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_dlc_eye_2024-03-11_01-12-12",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_sorted_2024-03-01_17-40-09",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_GammaEncoding_2024-12-05_17-02-14",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_LPFaceParts_2024-07-10_11-00-52",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_sorted_2023-12-20_20-38-19",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_sorted_2024-10-27_13-27-33",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_sorted_2024-03-06_16-04-15",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-24_13-00-29",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_facemap_2024-04-02_13-24-49",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_sorted_2023-12-18_05-24-11",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_LPFaceParts_2025-01-18_04-03-13",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_dlc_face_2024-04-05_21-12-25",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-27_12-47-15",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_dlc_eye_2024-03-10_18-11-50",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_facemap_2024-04-02_13-03-07",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_sorted_2024-03-06_16-46-29",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_dlc_side_2024-04-03_17-37-33",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_dlc_eye_2024-03-10_18-12-00",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_dlc_side_2024-04-03_17-37-54",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_LPFaceParts_2024-07-10_03-42-22",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_dlc_eye_2024-03-11_01-12-00",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_sorted_2024-10-27_13-27-33",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-26_12-52-41",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-09_13-13-19",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_GammaEncoding_2024-12-05_16-19-55",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_dlc_side_2024-04-03_18-09-38",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_LPFaceParts_2024-07-10_03-44-28",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-22_13-21-39",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_dlc_eye_2024-03-10_18-22-30",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-23_13-30-21",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_14-56-25_sorted_2024-03-24_17-28-44",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-25_13-27-53",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-10_13-32-48",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_facemap_2024-04-02_13-03-50",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_14-39-06_sorted_2024-10-27_16-23-01",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-26_13-09-53",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_dlc_eye_2024-03-10_18-12-12",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-05_13-55-16",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_14-56-25",
+      "data_level": "raw",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_LPFaceParts_2024-07-10_04-00-52",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_LPFaceParts_2024-07-10_10-46-35",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_dlc_face_2024-04-05_21-44-03",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-30_13-19-03",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-06_13-58-41",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_12-50-23_facemap_2024-04-02_13-03-28",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50",
+      "data_level": "raw",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_dlc_face_2024-04-05_21-23-03",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-27_11-59-09",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-14_13-38-37",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_GammaEncoding_2024-12-06_11-01-16",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-10_13-59-44",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_14-39-06_sorted_2024-10-27_16-23-01",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_14-39-06_sorted_2024-03-20_12-50-01",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-02_12-06-16",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-20_12-55-54",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-20_13-38-00",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-06_13-22-27",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-21_12-20-06",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-11_13-45-27",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-18_12-48-08",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-15_13-18-55",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-07_13-49-03",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-02_12-49-31",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-04_11-32-30",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-13_13-19-12",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-17_13-09-27",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-15_12-30-35",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_dlc_eye_2024-03-11_01-22-30",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08",
+      "data_level": "raw",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-29_13-16-51",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-13_13-12-02",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-11-01_12-04-45",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-03_13-58-18",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_sorted_2023-12-16_12-42-54",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-27_15-10-08_sorted_2024-03-06_21-39-00",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_LPFaceParts_2024-07-10_03-46-35",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_GammaEncoding_2024-12-05_17-31-25",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-29_14-56-25_sorted_2023-12-15_02-53-55",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_sorted_2024-04-08_11-09-52",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41",
+      "data_level": "raw",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-28_12-25-50_LPFaceParts_2025-01-18_04-07-30",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_14-39-06_sorted_2023-12-15_02-14-28",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_14-39-06",
+      "data_level": "raw",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_12-37-41_LPFaceParts_2024-07-10_10-42-22",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys",
+        "behavior-videos"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-19_12-50-29",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "ecephys_690706_2023-11-30_14-39-06_sorted_2024-10-27_16-23-01",
+      "data_level": "derived",
+      "modalities": [
+        "ecephys"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-19_12-06-38",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-10-31_11-37-11",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    },
+    {
+      "name": "behavior_690706_2023-09-28_12-45-17",
+      "data_level": "raw",
+      "modalities": [
+        "behavior"
+      ]
+    }
+  ],
+  "record_count": 102,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

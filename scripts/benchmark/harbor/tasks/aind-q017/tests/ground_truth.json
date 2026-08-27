@@ -1,0 +1,25 @@
+{
+  "id": 17,
+  "question": "In the `OpenScope` project, considering only assets acquired before 2025-01-01, which unique modality abbreviations are present?",
+  "records": [
+    {
+      "modality": "behavior",
+      "asset_count": 214
+    },
+    {
+      "modality": "behavior-videos",
+      "asset_count": 348
+    },
+    {
+      "modality": "ecephys",
+      "asset_count": 53
+    },
+    {
+      "modality": "pophys",
+      "asset_count": 297
+    }
+  ],
+  "record_count": 4,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

@@ -118,7 +118,7 @@ def aggregation_retrieval(agg_pipeline: list):
 
 
 @mcp.tool()
-def count_records(filter: dict):
+def count_records(filter: dict | None = None):
     """
     Retrieves number of documents from MongoDB database using
     a simple MongoDB filter
@@ -131,20 +131,21 @@ def count_records(filter: dict):
 
     Parameters
     ----------
-    filter : dict
+    filter : dict, optional
         MongoDB query filter to narrow down the documents to retrieve.
         Example: {"subject.sex": "Male"}
         If empty dict object, returns all documents.
 
     Returns
     -------
-    int
-        number of records retrieved
+    dict
+        Object containing ``total_record_count`` and
+        ``filtered_record_count``.
 
     """
     docdb_api_client = setup_mongodb_client()
     try:
-        count = docdb_api_client._count_records(filter_query=filter)
+        count = docdb_api_client._count_records(filter_query=filter or {})
         return count
 
     except Exception as ex:

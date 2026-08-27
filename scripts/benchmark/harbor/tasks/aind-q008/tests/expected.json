@@ -1,0 +1,11 @@
+{
+  "id": 8,
+  "question": "What are the parental (maternal and paternal) genotypes recorded for subject 690706?",
+  "must_include": [
+    "Sst-IRES-Cre",
+    "Ai32(RCL-ChR2(H134R)_EYFP)/Ai32(RCL-ChR2(H134R)_EYFP)",
+    "666493",
+    "666784"
+  ],
+  "min_matches": 3
+}

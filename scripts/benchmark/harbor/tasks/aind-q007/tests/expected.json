@@ -1,0 +1,10 @@
+{
+  "id": 7,
+  "question": "What is the genotype of the subject and who were the investigators for `ecephys_690706_2023-11-30_12-37-41_sorted_2024-10-27_13-27-33`?",
+  "must_include": [
+    "Corbett Bennett",
+    "Shawn Olsen",
+    "Sst-IRES-Cre"
+  ],
+  "min_matches": 2
+}

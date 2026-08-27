@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "question": "What instrument was used to acquire the SmartSPIM dataset named `SmartSPIM_702321_2023-11-10_20-59-26`?",
+  "must_include": [
+    "SmartSPIM1-7"
+  ],
+  "min_matches": null
+}

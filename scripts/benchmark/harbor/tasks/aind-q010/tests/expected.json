@@ -1,0 +1,9 @@
+{
+  "id": 10,
+  "question": "What are the data streams (start time, end time, modalities) recorded for `ecephys_690706_2023-11-30_12-37-41_sorted_2024-10-27_13-27-33`?",
+  "must_include": [
+    "ecephys",
+    "Extracellular electrophysiology"
+  ],
+  "min_matches": 1
+}

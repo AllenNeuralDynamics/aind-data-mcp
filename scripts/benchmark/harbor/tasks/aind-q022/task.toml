@@ -1,0 +1,21 @@
+version = "1.0"
+
+[metadata]
+question_id = 22
+complexity = "easy"
+benchmark = "aind-data-mcp"
+verify_mode = "deterministic"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 300.0
+
+[environment]
+build_timeout_sec = 900.0
+
+[[environment.mcp_servers]]
+name = "aind-data-mcp"
+transport = "streamable-http"
+url = "https://metadata-portal.allenneuraldynamics.org/mcp/"

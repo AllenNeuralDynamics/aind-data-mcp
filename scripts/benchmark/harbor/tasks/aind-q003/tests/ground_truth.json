@@ -1,0 +1,70 @@
+{
+  "id": 3,
+  "question": "For the dataset `SmartSPIM_702321_2023-11-10_20-59-26`, which brain structures were targeted in the surgical procedures and which viral materials were injected?",
+  "records": [
+    {
+      "name": "SmartSPIM_702321_2023-11-10_20-59-26",
+      "procedures": {
+        "subject_procedures": [
+          {
+            "procedures": [
+              {
+                "object_type": "Perfusion"
+              }
+            ]
+          },
+          {
+            "procedures": [
+              {
+                "object_type": "Brain injection",
+                "targeted_structure": {
+                  "name": "Infralimbic area",
+                  "acronym": "ILA"
+                },
+                "injection_materials": [
+                  {
+                    "name": "SL1-hSyn-Cre"
+                  },
+                  {
+                    "name": "CTB-647"
+                  }
+                ]
+              },
+              {
+                "object_type": "Brain injection",
+                "targeted_structure": {
+                  "name": "Paraventricular nucleus of the thalamus",
+                  "acronym": "PVT"
+                },
+                "injection_materials": [
+                  {
+                    "name": "AAV-Syn-DIO-TVA66T-dTomato-CVS N2cG"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "procedures": [
+              {
+                "object_type": "Brain injection",
+                "targeted_structure": {
+                  "name": "Paraventricular nucleus of the thalamus",
+                  "acronym": "PVT"
+                },
+                "injection_materials": [
+                  {
+                    "name": "EnvA CVS-N2C-histone-GFP"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "record_count": 1,
+  "generated_at": "2026-08-27T21:34:29Z",
+  "error": null
+}

@@ -1,0 +1,9 @@
+{
+  "id": 5,
+  "question": "What is the sex, date of birth, and strain of the subject in the SmartSPIM dataset `SmartSPIM_702321_2023-11-10_20-59-26`?",
+  "must_include": [
+    "Male",
+    "C57BL/6J"
+  ],
+  "min_matches": null
+}
