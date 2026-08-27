@@ -78,7 +78,7 @@ timeout_sec = 300.0
 [verifier.env]
 # litellm model id for the judge. Use a bedrock/... id to grade via Amazon
 # Bedrock (litellm reads AWS_BEARER_TOKEN_BEDROCK or the standard AWS chain).
-JUDGE_MODEL = "${JUDGE_MODEL:-bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0}"
+JUDGE_MODEL = "${JUDGE_MODEL:-bedrock/us.anthropic.claude-sonnet-5}"
 # Amazon Bedrock credentials (API-key/bearer-token auth or the standard chain).
 AWS_BEARER_TOKEN_BEDROCK = "${AWS_BEARER_TOKEN_BEDROCK:-}"
 AWS_REGION = "${AWS_REGION:-us-west-2}"

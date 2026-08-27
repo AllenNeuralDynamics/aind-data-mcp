@@ -48,6 +48,9 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+aind_data_mcp = ["resources/*.txt"]
+
 [tool.setuptools.dynamic]
 version = {attr = "aind_data_mcp.__version__"}
 
