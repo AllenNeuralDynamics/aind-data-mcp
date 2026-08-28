@@ -87,7 +87,11 @@ def _to_serialisable(value):
     if value is pd.NA or value is pd.NaT:
         return None
     if isinstance(value, (datetime, date, pd.Timestamp, np.datetime64)):
-        return None if pd.isna(value) else value.isoformat()
+        return (
+            None
+            if pd.isna(value)
+            else pd.Timestamp(value).isoformat()
+        )
     if isinstance(value, np.ndarray):
         return [_to_serialisable(v) for v in value.tolist()]
     if isinstance(value, dict):
@@ -269,7 +273,7 @@ def get_unique_subject_ids() -> list[str] | str:
 def get_source_data_table(
     source_asset_name: Optional[str] = None,
     pipeline_name: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache source_data cached table.
@@ -289,7 +293,7 @@ def get_source_data_table(
         Filter to rows from a specific pipeline (substring match,
         case-insensitive).
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -392,11 +396,11 @@ def get_qc_metrics(
 
 @mcp.tool()
 def get_assets_smartspim(
-    subject_id: Optional[str] = None,
     raw_name_contains: Optional[str] = None,
     channel: Optional[str] = None,
     processed: Optional[bool] = None,
     limit: int = DEFAULT_LIMIT,
+    subject_id: Optional[str] = None,
 ) -> list[dict] | str:
     """
     Query the biodata_cache SmartSPIM assets cached table.
@@ -414,15 +418,15 @@ def get_assets_smartspim(
     raw_name_contains : str, optional
         Filter rows whose raw_name contains this substring (case-insensitive).
         Useful for filtering by subject ID embedded in the asset name.
-    subject_id : str, optional
-        Filter to assets belonging to this subject ID.
     channel : str, optional
         Filter to a specific channel (substring match, case-insensitive).
     processed : bool, optional
         If True, return only assets with a stitched derived asset.
         If False, return only unprocessed assets.
     limit : int
-        Maximum number of rows to return (default 100).
+        Maximum number of rows to return (default 100, hard maximum 100).
+    subject_id : str, optional
+        Filter to assets belonging to this subject ID.
 
     Returns
     -------
@@ -491,7 +495,7 @@ def get_platform_qc(
     asset_name: Optional[str] = None,
     tag: Optional[str] = None,
     status: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache platform_qc table for tag-level QC statuses.
@@ -514,7 +518,7 @@ def get_platform_qc(
     status : str, optional
         Filter by QC status, e.g. 'pass', 'fail', 'pending'.
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -546,7 +550,7 @@ def get_platform_qc(
 def get_assets_exaspim(
     raw_name_contains: Optional[str] = None,
     processed: Optional[bool] = None,
-    limit: int = 100,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache ExaSPIM assets cached table.
@@ -564,7 +568,7 @@ def get_assets_exaspim(
         If True, return only assets with a fused derived asset.
         If False, return only unprocessed assets.
     limit : int
-        Maximum number of rows to return (default 100).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -596,7 +600,7 @@ def get_assets_fib(
     fiber: Optional[str] = None,
     channel: Optional[str] = None,
     targeted_structure: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache fiber photometry (fib) assets table.
@@ -618,7 +622,7 @@ def get_assets_fib(
         Filter by targeted brain structure (substring match,
         case-insensitive).
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -664,7 +668,7 @@ def get_foraging_sessions(
     subject_id: Optional[str] = None,
     task: Optional[str] = None,
     curriculum_name: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache dynamic foraging session table.
@@ -690,7 +694,7 @@ def get_foraging_sessions(
         Filter to sessions with this curriculum (substring match,
         case-insensitive).
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -727,7 +731,7 @@ def get_behavior_curriculum(
     asset_name: Optional[str] = None,
     curriculum_name: Optional[str] = None,
     stage_name: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache behavior_curriculum table.
@@ -746,7 +750,7 @@ def get_behavior_curriculum(
     stage_name : str, optional
         Filter by stage name (substring match, case-insensitive).
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -781,7 +785,7 @@ def get_behavior_curriculum(
 @mcp.tool()
 def get_time_to_qc(
     name_contains: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache time_to_qc table.
@@ -798,7 +802,7 @@ def get_time_to_qc(
         Filter to assets whose name contains this substring
         (case-insensitive).
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -827,7 +831,7 @@ def get_metadata_upgrade(
     project_name: Optional[str] = None,
     data_level: Optional[str] = None,
     status: Optional[str] = None,
-    limit: int = 200,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Query the biodata_cache metadata_upgrade table.
@@ -848,7 +852,7 @@ def get_metadata_upgrade(
     status : str, optional
         Filter by upgrade status, e.g. 'success', 'failed', 'pending'.
     limit : int
-        Maximum number of rows to return (default 200).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -875,7 +879,7 @@ def get_metadata_upgrade(
 @mcp.tool()
 def get_foraging_trials(
     subject_id: str,
-    limit: int = 500,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Fetch dynamic foraging trial-level data for a single subject.
@@ -893,7 +897,7 @@ def get_foraging_trials(
     subject_id : str
         The subject ID to fetch trial data for (required).
     limit : int
-        Maximum number of rows to return (default 500).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------
@@ -911,7 +915,7 @@ def get_foraging_trials(
 @mcp.tool()
 def get_foraging_events(
     subject_id: str,
-    limit: int = 1000,
+    limit: int = DEFAULT_LIMIT,
 ) -> list[dict] | str:
     """
     Fetch dynamic foraging event-level data for a single subject.
@@ -929,7 +933,7 @@ def get_foraging_events(
     subject_id : str
         The subject ID to fetch event data for (required).
     limit : int
-        Maximum number of rows to return (default 1000).
+        Maximum number of rows to return (default 100, hard maximum 100).
 
     Returns
     -------

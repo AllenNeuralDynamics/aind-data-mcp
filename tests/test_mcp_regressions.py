@@ -121,6 +121,7 @@ class TestMcpRegressions(unittest.TestCase):
         result = cache_tools._to_serialisable(
             {
                 "timestamp": pd.Timestamp("2024-01-01"),
+                "numpy_timestamp": np.datetime64("2024-01-02"),
                 "missing": pd.NA,
                 "values": np.array([np.int64(2), np.nan]),
             }
@@ -130,6 +131,7 @@ class TestMcpRegressions(unittest.TestCase):
             result,
             {
                 "timestamp": "2024-01-01T00:00:00",
+                "numpy_timestamp": "2024-01-02T00:00:00",
                 "missing": None,
                 "values": [2, None],
             },
