@@ -37,43 +37,12 @@ REWARD_PATH = Path(os.environ.get("REWARD_PATH", "/logs/verifier/reward.json"))
 MAX_JUDGE_RAW_RECORDS = 500
 CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity")
 
-SYSTEM_PROMPT = """\
-You are an expert judge evaluating answers produced by an AI data assistant.
-The data comes from the Allen Institute for Neural Dynamics (AIND) neuroscience
-database.
-
-You will be shown:
-1. The original user question
-2. The agent's answer to evaluate
-3. The raw database records that the question's official query returns -- this
-   is the authoritative factual source.
-
-Score each criterion from 1 (very poor) to 5 (excellent).
-Be critical: only award 5 when the answer is essentially perfect for that
-criterion.
-
-Criteria:
-  factual_accuracy : Do specific facts (counts, names, dates, values) in the
-                     agent answer match what the raw DB records actually show?
-                     Penalise hallucinated or contradicted facts.
-  completeness     : Does the answer address ALL relevant aspects of the
-                     question without omitting important information that is
-                     present in the raw records?
-  relevance        : Is the answer focused on what was asked? Penalise
-                     irrelevant tangents or excessive boilerplate.
-  clarity          : Is the answer well-structured and appropriately formatted
-                     (tables where useful, no walls of repetitive text)?
-
-Return ONLY a valid JSON object with EXACTLY this structure (no markdown, no
-extra keys, no commentary):
-
-{
-  "factual_accuracy": {"score": <1-5>, "reasoning": "<one sentence>"},
-  "completeness":     {"score": <1-5>, "reasoning": "<one sentence>"},
-  "relevance":        {"score": <1-5>, "reasoning": "<one sentence>"},
-  "clarity":          {"score": <1-5>, "reasoning": "<one sentence>"}
-}
-"""
+# The judge system prompt lives in a sibling file so it can be edited without
+# touching this script. It is copied alongside llm_judge.py into each task.
+SYSTEM_PROMPT_PATH = Path(
+    os.environ.get("SYSTEM_PROMPT_PATH", Path(__file__).parent / "system_prompt.txt")
+)
+SYSTEM_PROMPT = SYSTEM_PROMPT_PATH.read_text()
 
 
 def _build_user_prompt(question: str, answer: str | None, records: list | None) -> str:

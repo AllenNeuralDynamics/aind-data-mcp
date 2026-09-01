@@ -49,9 +49,8 @@ jobs/<run>/<task>/trial.log
 jobs/<run>/<task>/exception.txt
 ```
 
-The current task set can be rebuilt from the benchmark inputs with:
+## Editing tasks
 
-```bash
-.venv/bin/python scripts/benchmark/harbor/build_dataset.py \
-  --ids 1 3 5 7 8 10 12 13 14 16 17 18 21 22 23
-```
+The tasks under `tasks/` are self-contained and checked in directly. To tweak a
+task, edit its files in place, e.g. the LLM-judge prompt at
+`tasks/<task>/tests/system_prompt.txt`.
