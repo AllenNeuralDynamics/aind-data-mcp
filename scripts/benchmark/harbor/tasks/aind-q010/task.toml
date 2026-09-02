@@ -17,5 +17,5 @@ build_timeout_sec = 900.0
 
 [[environment.mcp_servers]]
 name = "aind-data-mcp"
-transport = "streamable-http"
-url = "https://metadata-portal.allenneuraldynamics.org/mcp/"
+transport = "stdio"
+command = "aind-data-mcp"

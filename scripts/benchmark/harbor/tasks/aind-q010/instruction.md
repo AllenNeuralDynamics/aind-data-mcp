@@ -1,7 +1,6 @@
 # AIND Data Question
 
-You have access to an MCP server named `aind-data-mcp` (streamable-http
-transport at `https://metadata-portal.allenneuraldynamics.org/mcp/`). It exposes
+You have access to a local MCP server named `aind-data-mcp` over stdio. It exposes
 tools for querying the Allen Institute for Neural Dynamics (AIND) neuroscience
 metadata database.
 

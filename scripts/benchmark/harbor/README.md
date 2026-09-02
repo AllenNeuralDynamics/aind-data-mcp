@@ -1,8 +1,9 @@
 # AIND Data Harbor benchmark
 
 This benchmark runs the 15 generated AIND metadata questions with Claude Code
-on Amazon Bedrock. The agent uses the hosted MCP server at
-`https://metadata-portal.allenneuraldynamics.org/mcp/`.
+on Amazon Bedrock. Each task image installs the published `aind-data-mcp`
+package, sets `BIODATA_CACHE_BACKEND=s3`, and exposes it to the agent over local
+stdio.
 
 ## Setup
 
@@ -54,3 +55,6 @@ jobs/<run>/<task>/exception.txt
 The tasks under `tasks/` are self-contained and checked in directly. To tweak a
 task, edit its files in place, e.g. the LLM-judge prompt at
 `tasks/<task>/tests/system_prompt.txt`.
+
+New task images must include `ENV BIODATA_CACHE_BACKEND="s3"` in their
+Dockerfile so cache-backed MCP tools use the S3 environment.
