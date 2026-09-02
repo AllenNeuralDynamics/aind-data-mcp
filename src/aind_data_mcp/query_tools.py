@@ -107,14 +107,17 @@ def aggregation_retrieval(
     ``{"acquisition": 1}`` return the entire nested object, so project only
     required leaf paths.
 
-    Direct recipes:
-    - Project counts: group by ``$data_description.project_name``, sum 1,
-      sort by ``count`` descending, and limit to 10.
-    - Data-level counts: group by ``$data_description.data_level`` and sum 1.
-    - Subject-sex counts: group by
-      ``$subject.subject_details.sex``. To include legacy ``$subject.sex``
-      values in one call, use ``field_aliases`` with the logical name
-      ``subject_sex`` and group by ``$_aind_aliases.subject_sex``.
+        Direct recipes:
+        - Project counts: ``[{"$group": {"_id":
+            "$data_description.project_name", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}, {"$limit": 10}]``.
+        - Data-level counts: ``[{"$group": {"_id":
+            "$data_description.data_level", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}]``.
+        - Subject-sex counts: group by ``$subject.subject_details.sex``. To
+            include legacy ``$subject.sex`` values in one call, pass
+            ``field_aliases={"subject_sex": ["subject.subject_details.sex",
+            "subject.sex"]}`` and group by ``$_aind_aliases.subject_sex``.
 
     Args:
         agg_pipeline: MongoDB aggregation stages such as ``$match``,
