@@ -31,7 +31,9 @@ from pathlib import Path
 # environment variables so the verifier can be exercised locally (e.g. by
 # check_verifier.py) without a running Harbor harness.
 ANSWER_PATH = Path(os.environ.get("ANSWER_PATH", "/app/answer.txt"))
-GROUND_TRUTH_PATH = Path(os.environ.get("GROUND_TRUTH_PATH", "/tests/ground_truth.json"))
+GROUND_TRUTH_PATH = Path(
+    os.environ.get("GROUND_TRUTH_PATH", "/tests/ground_truth.json")
+)
 REWARD_PATH = Path(os.environ.get("REWARD_PATH", "/logs/verifier/reward.json"))
 
 MAX_JUDGE_RAW_RECORDS = 500
@@ -40,12 +42,16 @@ CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity")
 # The judge system prompt lives in a sibling file so it can be edited without
 # touching this script. It is copied alongside llm_judge.py into each task.
 SYSTEM_PROMPT_PATH = Path(
-    os.environ.get("SYSTEM_PROMPT_PATH", Path(__file__).parent / "system_prompt.txt")
+    os.environ.get(
+        "SYSTEM_PROMPT_PATH", Path(__file__).parent / "system_prompt.txt"
+    )
 )
 SYSTEM_PROMPT = SYSTEM_PROMPT_PATH.read_text()
 
 
-def _build_user_prompt(question: str, answer: str | None, records: list | None) -> str:
+def _build_user_prompt(
+    question: str, answer: str | None, records: list | None
+) -> str:
     parts = [
         f"## Question\n{question}",
         f"## Agent Answer\n{answer or '(no answer -- the agent did not write /app/answer.txt)'}",
@@ -72,7 +78,9 @@ def _build_user_prompt(question: str, answer: str | None, records: list | None) 
 def _strip_markdown_fence(text: str) -> str:
     stripped = text.strip()
     if stripped.startswith("```"):
-        stripped = stripped.split("\n", 1)[1] if "\n" in stripped else stripped[3:]
+        stripped = (
+            stripped.split("\n", 1)[1] if "\n" in stripped else stripped[3:]
+        )
         stripped = stripped.rsplit("```", 1)[0]
     return stripped.strip()
 
@@ -86,7 +94,9 @@ def _parse_scores(raw_text: str) -> dict:
             r'"(factual_accuracy|completeness|relevance|clarity)"\s*:'
             r'\s*\{\s*"score"\s*:\s*([1-5])'
         )
-        matches = dict((key, int(score)) for key, score in re.findall(pattern, cleaned))
+        matches = dict(
+            (key, int(score)) for key, score in re.findall(pattern, cleaned)
+        )
         if set(matches) != set(CRITERIA):
             raise
         return {key: {"score": score} for key, score in matches.items()}
@@ -109,7 +119,9 @@ def main() -> None:
         gt = json.loads(GROUND_TRUTH_PATH.read_text())
     except Exception as exc:  # noqa: BLE001 - always emit a reward file
         print(f"ERROR: could not read ground truth: {exc}")
-        _write_reward({"overall": 0.0, "error": f"ground_truth read failed: {exc}"})
+        _write_reward(
+            {"overall": 0.0, "error": f"ground_truth read failed: {exc}"}
+        )
         return
     question = gt.get("question", "")
     records = gt.get("records") or None
@@ -144,7 +156,9 @@ def main() -> None:
     for key in CRITERIA:
         entry = scores.get(key)
         if not isinstance(entry, dict) or "score" not in entry:
-            _write_reward({"overall": 0.0, "error": f"missing criterion '{key}'"})
+            _write_reward(
+                {"overall": 0.0, "error": f"missing criterion '{key}'"}
+            )
             return
         score = float(entry["score"])
         # Normalise each 1-5 criterion to Harbor's 0-1 reward convention.

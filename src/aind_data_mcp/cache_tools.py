@@ -87,11 +87,7 @@ def _to_serialisable(value):
     if value is pd.NA or value is pd.NaT:
         return None
     if isinstance(value, (datetime, date, pd.Timestamp, np.datetime64)):
-        return (
-            None
-            if pd.isna(value)
-            else pd.Timestamp(value).isoformat()
-        )
+        return None if pd.isna(value) else pd.Timestamp(value).isoformat()
     if isinstance(value, np.ndarray):
         return [_to_serialisable(v) for v in value.tolist()]
     if isinstance(value, dict):
@@ -112,9 +108,7 @@ def _to_serialisable(value):
 def _df_to_records(df: pd.DataFrame) -> list[dict]:
     """Convert a DataFrame to a JSON-serializable list of dicts."""
     raw = df.to_dict("records")
-    return [
-        {k: _to_serialisable(v) for k, v in row.items()} for row in raw
-    ]
+    return [{k: _to_serialisable(v) for k, v in row.items()} for row in raw]
 
 
 @mcp.tool()
@@ -532,9 +526,7 @@ def get_platform_qc(
             df = df[df["asset_name"] == asset_name]
         if tag is not None:
             df = df[
-                df["tag"].str.contains(
-                    tag, case=False, na=False, regex=False
-                )
+                df["tag"].str.contains(tag, case=False, na=False, regex=False)
             ]
         if status is not None:
             df = df[df["status"] == status]

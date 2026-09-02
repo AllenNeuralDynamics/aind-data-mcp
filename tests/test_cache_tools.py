@@ -64,8 +64,12 @@ def test_asset_basics_no_filter():
     assert isinstance(result, list), f"Expected list, got {type(result)}"
     assert len(result) == 5, f"Expected 5 rows, got {len(result)}"
     expected_cols = {
-        "_id", "name", "modalities", "project_name",
-        "data_level", "subject_id",
+        "_id",
+        "name",
+        "modalities",
+        "project_name",
+        "data_level",
+        "subject_id",
     }
     assert expected_cols.issubset(
         result[0].keys()
@@ -113,9 +117,7 @@ def test_asset_basics_modality_filter():
     assert all(
         "ecephys" in r["modalities"].lower() for r in result
     ), "All rows should contain 'ecephys' in modalities"
-    print(
-        f"  [PASS] get_asset_basics (modality=ecephys): {len(result)} rows"
-    )
+    print(f"  [PASS] get_asset_basics (modality=ecephys): {len(result)} rows")
 
 
 def test_asset_basics_name_contains():
@@ -130,9 +132,7 @@ def test_asset_basics_name_contains():
 
 
 def test_asset_basics_combined_filter():
-    result = get_asset_basics(
-        modality="behavior", data_level="raw", limit=10
-    )
+    result = get_asset_basics(modality="behavior", data_level="raw", limit=10)
     assert isinstance(result, list)
     assert all(r["data_level"] == "raw" for r in result)
     assert all("behavior" in r["modalities"].lower() for r in result)
@@ -150,9 +150,9 @@ def test_source_data_no_filter():
     assert isinstance(result, list)
     assert len(result) == 5
     expected_cols = {"name", "source_data", "pipeline_name", "processing_time"}
-    assert expected_cols.issubset(result[0].keys()), (
-        f"Missing columns. Got: {list(result[0].keys())}"
-    )
+    assert expected_cols.issubset(
+        result[0].keys()
+    ), f"Missing columns. Got: {list(result[0].keys())}"
     print(f"  [PASS] get_source_data_table (no filter): {len(result)} rows")
     return result
 
@@ -190,9 +190,9 @@ def test_source_data_pipeline_filter():
 def test_raw_to_derived_known(source_name: str):
     result = get_raw_to_derived(source_name)
     assert isinstance(result, list), f"Expected list, got {type(result)}"
-    assert len(result) > 0, (
-        f"Expected at least one derived asset for {source_name}"
-    )
+    assert (
+        len(result) > 0
+    ), f"Expected at least one derived asset for {source_name}"
     assert all(isinstance(s, str) for s in result)
     # Every derived name should start with the raw asset prefix
     assert all(result[i].startswith(source_name) for i in range(len(result)))
@@ -204,9 +204,9 @@ def test_raw_to_derived_latest(source_name: str):
     latest_derived = get_raw_to_derived(source_name, latest=True)
     assert isinstance(latest_derived, list)
     # latest should return <= all
-    assert len(latest_derived) <= len(all_derived), (
-        "latest=True should return <= number of results from latest=False"
-    )
+    assert len(latest_derived) <= len(
+        all_derived
+    ), "latest=True should return <= number of results from latest=False"
     print(
         f"  [PASS] get_raw_to_derived latest=True: {len(latest_derived)} "
         f"(vs {len(all_derived)} total)"
@@ -241,12 +241,10 @@ def test_assets_smartspim_no_filter():
     assert isinstance(result, list), f"Expected list, got {type(result)}"
     if result:
         expected_cols = {"subject_id", "name", "genotype"}
-        assert expected_cols.issubset(result[0].keys()), (
-            f"Missing columns. Got: {list(result[0].keys())}"
-        )
-    print(
-        f"  [PASS] get_assets_smartspim (no filter): {len(result)} rows"
-    )
+        assert expected_cols.issubset(
+            result[0].keys()
+        ), f"Missing columns. Got: {list(result[0].keys())}"
+    print(f"  [PASS] get_assets_smartspim (no filter): {len(result)} rows")
 
 
 def test_assets_smartspim_subject_filter(subject_id: str):

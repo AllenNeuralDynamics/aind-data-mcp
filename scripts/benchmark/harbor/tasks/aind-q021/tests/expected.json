@@ -2,16 +2,16 @@
   "id": 21,
   "question": "What are the top 10 project_name values in the database by number of data assets, and how many assets does each contain?",
   "must_include": [
-    "11702",
-    "10999",
-    "10523",
-    "7026",
-    "6632",
-    "6548",
-    "6138",
+    "11711",
+    "11143",
+    "10778",
+    "10533",
+    "7296",
+    "6552",
+    "6441",
     "3424",
-    "3142",
-    "2787"
+    "3371",
+    "2849"
   ],
   "min_matches": 8
 }

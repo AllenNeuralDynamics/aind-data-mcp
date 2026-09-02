@@ -36,8 +36,8 @@ REWARD_PATH = Path(os.environ.get("REWARD_PATH", "/logs/verifier/reward.json"))
 
 def _normalize(text: str) -> str:
     text = text.lower()
-    text = text.replace(",", "")          # 11,585 -> 11585
-    text = re.sub(r"\s+", " ", text)      # collapse whitespace
+    text = text.replace(",", "")  # 11,585 -> 11585
+    text = re.sub(r"\s+", " ", text)  # collapse whitespace
     return text
 
 
@@ -57,7 +57,9 @@ def main() -> None:
     try:
         spec = json.loads(EXPECTED_PATH.read_text())
     except Exception as exc:  # noqa: BLE001 - always emit a reward file
-        _write_reward({"overall": 0.0, "error": f"expected.json read failed: {exc}"})
+        _write_reward(
+            {"overall": 0.0, "error": f"expected.json read failed: {exc}"}
+        )
         return
 
     must_include = spec.get("must_include", [])

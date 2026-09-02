@@ -18,7 +18,7 @@ dynamic = ["version"]
 
 dependencies = [
     "aind-data-access-api",
-    "biodata-cache>=0.40.0,<0.41.0",
+    "biodata-cache>=0.42.2,<0.43.0",
     "fastmcp",
     "hdmf-zarr>=0.11.1",
     "langchain-core>=0.3.60",

@@ -29,10 +29,26 @@ def get_acquisition_example() -> dict:
             "name": "BREGMA_ARID",
             "origin": "Bregma",
             "axes": [
-                {"object_type": "Axis", "name": "AP", "direction": "Posterior_to_anterior"},
-                {"object_type": "Axis", "name": "ML", "direction": "Left_to_right"},
-                {"object_type": "Axis", "name": "SI", "direction": "Superior_to_inferior"},
-                {"object_type": "Axis", "name": "Depth", "direction": "Up_to_down"},
+                {
+                    "object_type": "Axis",
+                    "name": "AP",
+                    "direction": "Posterior_to_anterior",
+                },
+                {
+                    "object_type": "Axis",
+                    "name": "ML",
+                    "direction": "Left_to_right",
+                },
+                {
+                    "object_type": "Axis",
+                    "name": "SI",
+                    "direction": "Superior_to_inferior",
+                },
+                {
+                    "object_type": "Axis",
+                    "name": "Depth",
+                    "direction": "Up_to_down",
+                },
             ],
             "axis_unit": "millimeter",
         },
@@ -41,7 +57,12 @@ def get_acquisition_example() -> dict:
                 "object_type": "Data stream",
                 "stream_start_time": "2023-04-25T02:45:00-07:00",
                 "stream_end_time": "2023-04-25T03:16:00-07:00",
-                "modalities": [{"name": "Extracellular electrophysiology", "abbreviation": "ecephys"}],
+                "modalities": [
+                    {
+                        "name": "Extracellular electrophysiology",
+                        "abbreviation": "ecephys",
+                    }
+                ],
                 "active_devices": ["Basestation Slot 3", "Ephys_assemblyA"],
                 "configurations": [],
                 "code": None,
@@ -118,7 +139,10 @@ def get_data_description_example():
         "project_name": "Example project",
         "restrictions": None,
         "modalities": [
-            {"name": "Extracellular electrophysiology", "abbreviation": "ecephys"},
+            {
+                "name": "Extracellular electrophysiology",
+                "abbreviation": "ecephys",
+            },
             {"name": "Behavior videos", "abbreviation": "behavior-videos"},
         ],
         "tags": ["Pilot data"],
@@ -142,7 +166,12 @@ def get_instrument_example():
         "instrument_id": "EPHYS1",
         "location": "323",
         "modification_date": "2023-10-03",
-        "modalities": [{"name": "Extracellular electrophysiology", "abbreviation": "ecephys"}],
+        "modalities": [
+            {
+                "name": "Extracellular electrophysiology",
+                "abbreviation": "ecephys",
+            }
+        ],
         "calibrations": [
             {
                 "object_type": "Calibration",
@@ -160,9 +189,21 @@ def get_instrument_example():
             "name": "BREGMA_ARI",
             "origin": "Bregma",
             "axes": [
-                {"object_type": "Axis", "name": "AP", "direction": "Posterior_to_anterior"},
-                {"object_type": "Axis", "name": "ML", "direction": "Left_to_right"},
-                {"object_type": "Axis", "name": "SI", "direction": "Superior_to_inferior"},
+                {
+                    "object_type": "Axis",
+                    "name": "AP",
+                    "direction": "Posterior_to_anterior",
+                },
+                {
+                    "object_type": "Axis",
+                    "name": "ML",
+                    "direction": "Left_to_right",
+                },
+                {
+                    "object_type": "Axis",
+                    "name": "SI",
+                    "direction": "Superior_to_inferior",
+                },
             ],
             "axis_unit": "millimeter",
         },
@@ -418,7 +459,13 @@ def get_processing_example():
                 "url": "https://url/for/pipeline",
                 "name": "Imaging processing pipeline",
                 "version": "0.1.1",
-                "input_data": [{"object_type": "Data asset", "name": "123456_2026-05-20_14-14-14", "url": None}],
+                "input_data": [
+                    {
+                        "object_type": "Data asset",
+                        "name": "123456_2026-05-20_14-14-14",
+                        "url": None,
+                    }
+                ],
             }
         ],
         "dependency_graph": {
@@ -444,7 +491,11 @@ def get_model_example() -> dict:
         "name": "2024_01_01_ResNet18_SmartSPIM",
         "version": "0.1",
         "architecture": "ResNet",
-        "software_framework": {"object_type": "Software", "name": "tensorflow", "version": "2.11.0"},
+        "software_framework": {
+            "object_type": "Software",
+            "name": "tensorflow",
+            "version": "2.11.0",
+        },
         "architecture_parameters": {"layers": 18, "input_shape": [14, 14, 26]},
         "intended_use": "Cell counting for 488 channel of SmartSPIM data",
         "limitations": "Only trained on 488 channel",
@@ -463,19 +514,44 @@ def get_model_example() -> dict:
                     "object_type": "Code",
                     "url": "url for model code repo",
                     "run_script": "train.py",
-                    "input_data": [{"object_type": "Data asset", "url": "s3 path to training data"}],
-                    "parameters": {"learning_rate": 0.0001, "batch_size": 32, "augmentation": True},
+                    "input_data": [
+                        {
+                            "object_type": "Data asset",
+                            "url": "s3 path to training data",
+                        }
+                    ],
+                    "parameters": {
+                        "learning_rate": 0.0001,
+                        "batch_size": 32,
+                        "augmentation": True,
+                    },
                 },
                 "experimenters": ["Dr. Dan"],
                 "output_path": "trained_model.h5",
                 "notes": "note on training data selection",
                 "train_performance": [
-                    {"object_type": "Performance metric", "name": "precision", "value": 0.9},
-                    {"object_type": "Performance metric", "name": "recall", "value": 0.85},
+                    {
+                        "object_type": "Performance metric",
+                        "name": "precision",
+                        "value": 0.9,
+                    },
+                    {
+                        "object_type": "Performance metric",
+                        "name": "recall",
+                        "value": 0.85,
+                    },
                 ],
                 "test_performance": [
-                    {"object_type": "Performance metric", "name": "precision", "value": 0.8},
-                    {"object_type": "Performance metric", "name": "recall", "value": 0.8},
+                    {
+                        "object_type": "Performance metric",
+                        "name": "precision",
+                        "value": 0.8,
+                    },
+                    {
+                        "object_type": "Performance metric",
+                        "name": "recall",
+                        "value": 0.8,
+                    },
                 ],
                 "test_evaluation_method": "random 4:1 train/test split",
             }
@@ -490,13 +566,23 @@ def get_model_example() -> dict:
                     "object_type": "Code",
                     "url": "url for model code repo",
                     "run_script": "eval.py",
-                    "input_data": [{"object_type": "Data asset", "url": "s3 path to eval data"}],
+                    "input_data": [
+                        {
+                            "object_type": "Data asset",
+                            "url": "s3 path to eval data",
+                        }
+                    ],
                 },
                 "experimenters": ["Dr. Dan"],
-                "performance": [{"object_type": "Performance metric", "name": "precision", "value": 0.8}],
+                "performance": [
+                    {
+                        "object_type": "Performance metric",
+                        "name": "precision",
+                        "value": 0.8,
+                    }
+                ],
             }
         ],
         "notes": None,
     }
     return sample_model
-

@@ -115,4 +115,3 @@ def identify_nwb_contents_with_s3_link(s3_link):
     except Exception as e:
         # print(f"Error accessing S3: {e}")
         return None
-

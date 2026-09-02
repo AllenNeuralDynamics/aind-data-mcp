@@ -28,20 +28,21 @@ An MCP (Model Context Protocol) server that provides access to AIND (Allen Insti
 This MCP server provides the following tools:
 
 **Data Retrieval & Querying**
-- `get_records` — Query MongoDB collections using filters and projections
-- `aggregation_retrieval` — Execute complex MongoDB aggregation pipelines
+- `get_records` — Query MongoDB collections using filters and exact leaf-path projections; optionally return a reproducible result marker
+- `aggregation_retrieval` — Execute complex MongoDB aggregation pipelines, including logical aliases for legacy field paths
 - `count_records` — Count documents matching a filter
 - `flatten_records` — Retrieve and flatten records into dot-notation for easier inspection
 - `get_project_names` — List all project names in the database
 - `get_summary` — Generate an AI-powered summary for a specific data asset
 
 **Schema Navigation**
-- `get_top_level_nodes` — Explore the top-level fields of the V2 metadata schema
-- `get_additional_schema_help` — Query-writing guidance for V2 aggregations
+- `get_schema_context` — Explore compact V2 field paths by node and opt-in small examples
 - `get_modality_types` — List all available data modality names and abbreviations
 
-**Schema Examples** (one tool per document type)
-- `get_acquisition_example`, `get_data_description_example`, `get_instrument_example`, `get_procedures_example`, `get_subject_example`, `get_processing_example`, `get_model_example`, `get_quality_control_example`
+The MCP initialize response includes a ready tool manifest. Use
+`get_schema_context(node="subject", detail="example")` only when a compact
+synthetic example is needed; ordinary path discovery does not load bulky schema
+examples.
 
 **NWB File Access**
 - `identify_nwb_contents_in_code_ocean` — Load an NWB file from the `/data` directory in a Code Ocean capsule

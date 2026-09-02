@@ -1,65 +1,254 @@
-"""Schema navigation and QC example tools."""
+"""Compact schema navigation for AIND metadata queries."""
+
+from typing import Any, Literal
 
 from .mcp_instance import mcp
 
+_SCHEMA_PATHS: dict[str, dict[str, Any]] = {
+    "_id": {"description": "MongoDB data asset identifier", "paths": ["_id"]},
+    "name": {"description": "Data asset name", "paths": ["name"]},
+    "quality_control": {
+        "description": "Quality metrics evaluated on a data asset",
+        "paths": [
+            "quality_control.metrics.modality.abbreviation",
+            "quality_control.metrics.stage",
+            "quality_control.metrics.status_history.status",
+        ],
+    },
+    "acquisition": {
+        "description": "Data collection episode and streams",
+        "paths": [
+            "acquisition.acquisition_start_time",
+            "acquisition.acquisition_end_time",
+            "acquisition.data_streams.stream_start_time",
+            "acquisition.data_streams.stream_end_time",
+            "acquisition.data_streams.modalities.abbreviation",
+            "acquisition.data_streams.modalities.name",
+            "acquisition.data_streams.active_devices",
+        ],
+    },
+    "data_description": {
+        "description": "Administrative, project, modality, and level metadata",
+        "paths": [
+            "data_description.project_name",
+            "data_description.data_level",
+            "data_description.modalities.abbreviation",
+            "data_description.modalities.name",
+            "data_description.creation_time",
+            "data_description.subject_id",
+        ],
+    },
+    "instrument": {
+        "description": "Devices and components used for collection",
+        "paths": [
+            "instrument.instrument_id",
+            "instrument.modalities.abbreviation",
+            "instrument.components.name",
+            "instrument.components.object_type",
+        ],
+    },
+    "procedures": {
+        "description": "Procedures performed before data collection",
+        "paths": [
+            "procedures.subject_procedures.start_date",
+            "procedures.subject_procedures.procedures.object_type",
+            "procedures.subject_procedures.procedures.injection_materials.name",
+            "procedures.subject_procedures.procedures.targeted_structure.name",
+        ],
+    },
+    "processing": {
+        "description": "Processing steps, pipelines, and dependencies",
+        "paths": [
+            "processing.data_processes.name",
+            "processing.data_processes.process_type",
+            "processing.data_processes.pipeline_name",
+            "processing.pipelines.name",
+        ],
+    },
+    "subject": {
+        "description": "Subject identity and biological metadata",
+        "paths": [
+            "subject.subject_id",
+            "subject.subject_details.sex",
+            "subject.subject_details.date_of_birth",
+            "subject.subject_details.strain.name",
+            "subject.subject_details.species.name",
+            "subject.subject_details.genotype",
+            "subject.subject_details.breeding_info.maternal_id",
+            "subject.subject_details.breeding_info.maternal_genotype",
+            "subject.subject_details.breeding_info.paternal_id",
+            "subject.subject_details.breeding_info.paternal_genotype",
+            "subject.sex",
+        ],
+    },
+    "model": {
+        "description": "Machine learning model metadata",
+        "paths": [
+            "model.name",
+            "model.version",
+            "model.architecture",
+            "model.software_framework.name",
+        ],
+    },
+    "other_identifiers": {
+        "description": "Links to secondary platforms",
+        "paths": ["other_identifiers"],
+    },
+    "location": {
+        "description": "Current data asset location",
+        "paths": ["location"],
+    },
+}
+
+_SCHEMA_EXAMPLES = {
+    "acquisition": {
+        "acquisition": {
+            "acquisition_start_time": "2023-04-25T02:35:00-07:00",
+            "acquisition_end_time": "2023-04-25T03:16:00-07:00",
+            "data_streams": [
+                {
+                    "stream_start_time": "2023-04-25T02:45:00-07:00",
+                    "stream_end_time": "2023-04-25T03:16:00-07:00",
+                    "modalities": [{"abbreviation": "ecephys"}],
+                }
+            ],
+        }
+    },
+    "data_description": {
+        "data_description": {
+            "project_name": "Example project",
+            "data_level": "raw",
+            "modalities": [{"name": "Behavior", "abbreviation": "behavior"}],
+        }
+    },
+    "instrument": {
+        "instrument": {
+            "instrument_id": "EPHYS1",
+            "modalities": [{"abbreviation": "ecephys"}],
+            "components": [{"object_type": "Camera", "name": "Face Camera"}],
+        }
+    },
+    "procedures": {
+        "procedures": {
+            "subject_procedures": [
+                {
+                    "start_date": "2022-07-12",
+                    "procedures": [
+                        {
+                            "object_type": "Brain injection",
+                            "injection_materials": [
+                                {"name": "AAV2-Flex-ChrimsonR"}
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+    },
+    "processing": {
+        "processing": {
+            "data_processes": [
+                {"name": "File format conversion", "pipeline_name": "Imaging"}
+            ],
+            "pipelines": [{"name": "Imaging"}],
+        }
+    },
+    "subject": {
+        "subject": {
+            "subject_id": "123456",
+            "subject_details": {
+                "sex": "Male",
+                "date_of_birth": "2022-11-22",
+                "strain": {"name": "C57BL/6J"},
+                "genotype": "wt",
+                "breeding_info": {
+                    "maternal_id": "546543",
+                    "maternal_genotype": "wt",
+                    "paternal_id": "232323",
+                    "paternal_genotype": "wt",
+                },
+            },
+        }
+    },
+    "quality_control": {
+        "quality_control": {
+            "metrics": [
+                {
+                    "modality": {"abbreviation": "SPIM"},
+                    "stage": "Raw data",
+                    "status_history": [{"status": "Pass"}],
+                }
+            ]
+        }
+    },
+    "model": {
+        "model": {
+            "name": "Example model",
+            "version": "1.0",
+            "architecture": "ResNet",
+        }
+    },
+}
+
 
 @mcp.tool()
-def get_top_level_nodes() -> list:
-    """
-    This tool exposes the top level nodes of the data schema. In order to access any of the fields using
-    tools like get_records/aggregation retrieval, you would just have to call the field name like "_id".
-    Note that most of the fields have further nesting. So in order to call a field within the nesting sturcture,
-    you would have to use something like "subject.subject_id". Use this tool as a resource. To find out more
-    about the nesting structure of the fields, you can access the relevant get_<field_name>_example tools in this server.
-    """
+def get_schema_context(
+    node: str = "top_level",
+    path: str | None = None,
+    detail: Literal["paths", "example"] = "paths",
+) -> dict[str, Any]:
+    """Return compact V2 schema paths or an opt-in small example.
 
-    top_level_nodes = {
-        "_id": "Unique identifier for data asset assigned by MongoDB, usually a series of numbers",
-        "name": "Name of data asset, combines subject_id and creation_time",
-        "quality_control": "A collection of quality control metrics evaluated on a data asset. Has further nesting",
-        "acquisition": "Single episode of data collection that creates one data asset. Contains data_streams, stimulus_epochs, manipulations. Has further nesting",
-        "data_description": "Tracks administrative information about a data asset, including affiliated researchers/organizations, projects, data modalities, dates of collection. Has further nesting",
-        "instrument": "Information about the components/devices used to collect data. Has a single 'components' list. Has further nesting",
-        "procedures": "Information about anything done to the subject or specimen prior to data collection. Has further nesting",
-        "processing": "Captures the data processing and analysis steps, with data_processes, pipelines, and dependency_graph. Has further nesting",
-        "subject": "Describes the subject from which data was obtained. Has subject_id and subject_details (MouseSubject/HumanSubject/CalibrationObject). Has further nesting",
-        "model": "Description of a machine learning model including architecture, training, and evaluation details. Has further nesting",
-        "other_identifiers": "Links to the data asset on secondary platforms",
-        "location": "Current location of the data asset (e.g., S3 path)",
-    }
-    return top_level_nodes
-
-
-@mcp.tool()
-def get_additional_schema_help():
+    Use this single hierarchy entry point before calling ``get_records`` or
+    ``aggregation_retrieval``. ``node`` is a top-level node such as
+    ``subject``, ``data_description``, ``acquisition``, or ``procedures``;
+    use ``top_level`` to list all nodes. ``path`` filters the returned paths,
+    for example ``subject_details.breeding_info``. ``detail`` is ``paths``
+    by default and can be ``example`` when a compact synthetic example is
+    needed. Examples are intentionally small and omit unrelated fields.
     """
-    Canonical V2 field paths and small aggregation examples.
-    """
-    return """
-Use these paths:
-- subject ID: subject.subject_id
-- subject details: subject.subject_details.sex,
-  subject.subject_details.date_of_birth,
-  subject.subject_details.strain.name
-- project: data_description.project_name
-- modalities: data_description.modalities.abbreviation
-- acquisition times: acquisition.acquisition_start_time and
-  acquisition.acquisition_end_time
-- injections: procedures.subject_procedures.procedures.injection_materials.name
+    if detail not in {"paths", "example"}:
+        raise ValueError("detail must be 'paths' or 'example'")
 
-Examples:
-[{"$group": {"_id": "$data_description.data_level", "count": {"$sum": 1}}}]
-[{"$group": {"_id": "$subject.subject_details.sex", "count": {"$sum": 1}}}]
-Unwind only needed arrays, such as data_description.modalities or
-procedures.subject_procedures. Project only needed result fields.
-"""
+    if node == "top_level":
+        if detail == "example":
+            raise ValueError("choose a schema node when detail='example'")
+        return {
+            "nodes": {
+                name: value["description"]
+                for name, value in _SCHEMA_PATHS.items()
+            }
+        }
+
+    if node not in _SCHEMA_PATHS:
+        valid_nodes = ", ".join(sorted(_SCHEMA_PATHS))
+        raise ValueError(
+            f"unknown node '{node}'; choose one of: {valid_nodes}"
+        )
+
+    if detail == "example":
+        example = _SCHEMA_EXAMPLES.get(node)
+        if example is None:
+            raise ValueError(f"no compact example is available for '{node}'")
+        return {"node": node, "path": path, "example": example}
+
+    node_paths = _SCHEMA_PATHS[node]["paths"]
+    if path:
+        path_prefix = (
+            f"{node}.{path}" if not path.startswith(f"{node}.") else path
+        )
+        node_paths = [
+            schema_path
+            for schema_path in node_paths
+            if schema_path == path_prefix
+            or schema_path.startswith(f"{path_prefix}.")
+        ]
+    return {"node": node, "path": path, "paths": node_paths}
 
 
 @mcp.tool()
 def get_modality_types():
-    """
-    Exposes how to access data modality information within data assets
-    """
+    """List modality names and abbreviations used in data asset metadata."""
     return """
 Here are the different modality types:
 Access them through data_description.modalities.name or data_description.modalities.abbreviation
@@ -106,51 +295,3 @@ Access them through data_description.modalities.name or data_description.modalit
     name: "Selective plane illumination microscopy"
     abbreviation: "SPIM"
 """
-
-
-@mcp.tool()
-def get_quality_control_example() -> dict:
-    """
-    Example of the quality_control schema.
-    Each metric has modality, stage, tags, status_history, and reference.
-    """
-    return """
-    The quality_control schema defines how quality metrics are organized
-    and evaluated for data assets:
-
-- Each data asset has an array of "metrics"
-- Each metric contains:
-  - modality: The type of data (SPIM, ecephys, behavior, etc.)
-  - stage: When quality was assessed (Raw data, Processing, Analysis, Multi-asset)
-  - tags: List of string tags for grouping
-  - status_history: Array of status entries with timestamp and status value
-  - reference: Optional reference link or description
-- Top-level fields: default_grouping, allow_tag_failures
-
-Important quality_control query patterns:
-1. To query metrics by modality:
-   {{"quality_control.metrics": {{"\\$elemMatch": {{"modality.abbreviation": "SPIM"}}}}}}
-
-2. To unwind and query individual metrics:
-   [{{"\\$unwind": "$quality_control.metrics"}}, {{"\\$match": {{"quality_control.metrics.<field>": <value>}}}}]
-
-3. To query latest status (check status_history array):
-   [{{"\\$unwind": "$quality_control.metrics"}},
-    {{"\\$unwind": "$quality_control.metrics.status_history"}},
-    {{"\\$match": {{"quality_control.metrics.status_history.status": "Pass"}}}}]
-
-4. For aggregating QC statistics by modality:
-   [{{"\\$unwind": "$quality_control.metrics"}},
-    {{"\\$group": {{"_id": "$quality_control.metrics.modality.abbreviation", "count": {{"\\$sum": 1}}}}}}]
-
-Example queries:
-- Find assets with failed QC metrics:
-  {{"quality_control.metrics.status_history.status": "Fail"}}
-- Find SPIM data with pending QC:
-  {{"quality_control.metrics": {{"\\$elemMatch": {{"modality.abbreviation": "SPIM", "status_history.status": "Pending"}}}}}}
-- Count metrics per asset:
-  {{"\\$project": {{"metricCount": {{"\\$size": "$quality_control.metrics"}}}}}}
-
-"""
-
-

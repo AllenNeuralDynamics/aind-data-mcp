@@ -1,4 +1,5 @@
 """Temporary script to probe the strands MCPClient + Agent API."""
+
 from strands import Agent
 from strands.models import BedrockModel
 from strands.tools.mcp import MCPClient

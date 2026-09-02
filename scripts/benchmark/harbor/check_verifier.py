@@ -46,12 +46,18 @@ def _resolve_task_dir(task_id: int | None, task_dir: Path | None) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--id", type=int, help="Question id (e.g. 1 -> aind-q001)")
-    group.add_argument("--task-dir", type=Path, help="Path to a task directory")
+    group.add_argument(
+        "--id", type=int, help="Question id (e.g. 1 -> aind-q001)"
+    )
+    group.add_argument(
+        "--task-dir", type=Path, help="Path to a task directory"
+    )
 
     ans = parser.add_mutually_exclusive_group()
     ans.add_argument("--answer", help="Answer text to grade")
-    ans.add_argument("--answer-file", type=Path, help="File containing the answer")
+    ans.add_argument(
+        "--answer-file", type=Path, help="File containing the answer"
+    )
 
     parser.add_argument(
         "--dry-run",
@@ -80,7 +86,9 @@ def main() -> int:
             "Run build_dataset.py first."
         )
     if not gt_file.exists():
-        raise SystemExit(f"Missing {gt_file.name} in {task_dir}. Run build_dataset.py.")
+        raise SystemExit(
+            f"Missing {gt_file.name} in {task_dir}. Run build_dataset.py."
+        )
 
     # Resolve the answer text.
     if args.answer_file:
@@ -117,14 +125,19 @@ def main() -> int:
                     os.environ[k] = v
 
         if not reward_path.exists():
-            print("FAIL: verifier did not write a reward file", file=sys.stderr)
+            print(
+                "FAIL: verifier did not write a reward file", file=sys.stderr
+            )
             return 1
 
         reward = json.loads(reward_path.read_text())
         print("\n--- reward.json ---")
         print(json.dumps(reward, indent=2))
         if "error" in reward:
-            print(f"\nNote: judge reported an error: {reward['error']}", file=sys.stderr)
+            print(
+                f"\nNote: judge reported an error: {reward['error']}",
+                file=sys.stderr,
+            )
         return 0
 
 

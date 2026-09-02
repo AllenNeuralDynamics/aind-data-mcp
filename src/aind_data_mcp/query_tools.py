@@ -1,5 +1,8 @@
 """MongoDB query tools."""
 
+from datetime import datetime, timezone
+import hashlib
+import json
 from typing import Any, Dict, NoReturn, Optional, Union
 
 from fastmcp.exceptions import ToolError
@@ -11,52 +14,70 @@ def _raise_tool_error(tool_name: str, ex: Exception) -> NoReturn:
     raise ToolError(f"{tool_name} failed: {type(ex).__name__}: {ex}") from ex
 
 
+def _result_metadata(result: list[dict]) -> dict[str, str]:
+    serialized = json.dumps(
+        result, sort_keys=True, separators=(",", ":"), default=str
+    )
+    marker = hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+    return {
+        "snapshot_marker": f"query-result-sha256:{marker}",
+        "snapshot_scope": "returned query result; the upstream API exposes no global database revision",
+        "api_version": "v2",
+        "retrieved_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def _with_metadata(result: list[dict], include_metadata: bool):
+    if not include_metadata:
+        return result
+    return {"records": result, "metadata": _result_metadata(result)}
+
+
 @mcp.tool()
 def get_records(
     filter: Optional[dict] = None,
     projection: Optional[dict] = None,
     limit: int = 5,
+    include_metadata: bool = False,
 ):
-    """
-    Retrieves documents from MongoDB database using simple filters
-    and projections.
+    """Retrieve metadata documents with a simple MongoDB filter and projection.
 
-    WHEN TO USE THIS FUNCTION:
-    - For straightforward document retrieval based on specific criteria
-    - When you need only a subset of fields from documents
-    - When the query logic doesn't require multi-stage processing
-    - For better performance with simpler queries
+    Use this for straightforward dataset and asset lookups. Common V2 leaf
+    paths are ``subject.subject_id``, ``subject.subject_details.sex`` (legacy
+    alias ``subject.sex``), ``subject.subject_details.date_of_birth``,
+    ``subject.subject_details.strain.name``,
+    ``subject.subject_details.genotype``,
+    ``subject.subject_details.breeding_info.maternal_genotype``,
+    ``subject.subject_details.breeding_info.paternal_genotype``,
+    ``data_description.project_name``, ``data_description.data_level``,
+    ``data_description.modalities.abbreviation``,
+    ``acquisition.acquisition_start_time``, and
+    ``acquisition.acquisition_end_time``.
 
-    NOT RECOMMENDED FOR:
-    - Complex data transformations (use aggregation_retrieval instead)
-    - Grouping operations or calculations across documents
-    - Joining or relating data across collections
-    - Trying to fetch an entire data asset (data assets are long and
-    will clog up the context window)
+    Use leaf paths instead of parent projections. For example, projecting
+    ``procedures: 1`` or ``acquisition: 1`` returns the entire nested object.
+    A compact procedures projection is
+    ``{"procedures.subject_procedures.procedures.injection_materials.name": 1,
+    "_id": 0}``.
 
-    Parameters
-    ----------
-    filter : dict
-        MongoDB query filter to narrow down the documents to retrieve.
-        Example: {"subject.subject_details.sex": "Male"}
-        If empty dict object, returns all documents.
+    Args:
+        filter: MongoDB query filter. For example,
+            ``{"subject.subject_details.sex": "Male"}``. An empty filter
+            returns all documents.
+        projection: Fields to include or exclude. Use 1 to include a field
+            and 0 to exclude it. An empty projection returns all fields.
+        limit: Maximum number of records to retrieve. Keep this at or below
+            100 when possible.
+        include_metadata: If true, return ``{"records": [...], "metadata":
+            {...}}`` with a reproducible marker for the exact result set and
+            the AIND API version.
 
-    projection : dict
-        Fields to include or exclude in the returned documents.
-        Use 1 to include a field, 0 to exclude.
-        Example: {"subject.subject_details.genotype": 1, "_id": 0}
-        will return only the genotype field.
-        If empty dict object, returns all documents.
+    Returns:
+        A list of matching documents, or a dictionary containing ``records``
+        and ``metadata`` when ``include_metadata`` is true.
 
-    limit: int
-        Limit retrievals to a reasonable number, try to not exceed 100
-
-    Returns
-    -------
-    list
-        List of dictionary objects representing the matching documents.
-        Each dictionary contains the requested fields based on the projection.
-
+    Do not use this for grouping, calculations across documents, joins, or
+    full data-asset retrievals. Use ``aggregation_retrieval`` for those cases.
     """
 
     try:
@@ -64,56 +85,79 @@ def get_records(
         records = docdb_api_client.retrieve_docdb_records(
             filter_query=filter or {}, projection=projection or {}, limit=limit
         )
-        return records
+        return _with_metadata(records, include_metadata)
 
     except Exception as ex:
         _raise_tool_error("get_records", ex)
 
 
 @mcp.tool()
-def aggregation_retrieval(agg_pipeline: list):
-    """
-    Executes a MongoDB aggregation pipeline for complex data transformations
-    and analysis.
+def aggregation_retrieval(
+    agg_pipeline: list,
+    field_aliases: Optional[dict[str, list[str]]] = None,
+    include_metadata: bool = False,
+):
+    """Run a MongoDB aggregation pipeline for transformed metadata queries.
 
-    For additional context on how to create filters and projections,
-    use the retrieve_schema_context tool.
+    Use ``get_schema_context`` for compact V2 field paths. Common grouping
+    fields are ``data_description.project_name``,
+    ``data_description.data_level``,
+    ``data_description.modalities.abbreviation``, and
+    ``subject.subject_details.sex``. Parent projections such as
+    ``{"acquisition": 1}`` return the entire nested object, so project only
+    required leaf paths.
 
-    WHEN TO USE THIS FUNCTION:
-    - When you need to perform multi-stage data processing operations
-    - For complex queries requiring grouping, filtering, sorting in sequence
-    - When you need to calculate aggregated values (sums, averages, counts)
-    - For data transformation operations that can't be done with simple queries
+    Direct recipes:
+    - Project counts: group by ``$data_description.project_name``, sum 1,
+      sort by ``count`` descending, and limit to 10.
+    - Data-level counts: group by ``$data_description.data_level`` and sum 1.
+    - Subject-sex counts: group by
+      ``$subject.subject_details.sex``. To include legacy ``$subject.sex``
+      values in one call, use ``field_aliases`` with the logical name
+      ``subject_sex`` and group by ``$_aind_aliases.subject_sex``.
 
-    NOT RECOMMENDED FOR:
-    - Simple document retrieval (use get_records instead)
-    - When you only need to filter data without transformations
+    Args:
+        agg_pipeline: MongoDB aggregation stages such as ``$match``,
+            ``$project``, ``$group``, ``$sort``, and ``$unwind``.
+        field_aliases: Map a logical field name to ordered MongoDB paths. The
+            tool creates ``_aind_aliases`` using the first non-null value.
+            For legacy sex data, use ``{"subject_sex":
+            ["subject.subject_details.sex", "subject.sex"]}`` and group by
+            ``$_aind_aliases.subject_sex``.
+        include_metadata: If true, return ``{"records": [...], "metadata":
+            {...}}`` with a reproducible result marker, API version, and
+            retrieval time. The upstream API exposes no global database
+            revision.
 
-    Parameters
-    ----------
-    agg_pipeline : list
-        A list of dictionary objects representing MongoDB aggregation stages.
-        Each stage should be a valid MongoDB aggregation operator.
-        Common stages include: $match, $project, $group, $sort, $unwind.
+    Returns:
+        A list of aggregation documents, or a dictionary containing
+        ``records`` and ``metadata`` when ``include_metadata`` is true.
+        Tool failures raise ``ToolError``.
 
-    Returns
-    -------
-    list
-        Returns a list of documents resulting from the aggregation pipeline.
-        If an error occurs, returns an error message string describing
-        the exception.
-
-    Notes
-    -----
-    - Include a $project stage early in the pipeline to reduce data transfer
-    - Avoid using $map operator in $project stages as it requires array inputs
+    Include a ``$project`` stage early to reduce data transfer. Avoid
+    ``$map`` in ``$project`` stages unless the input is an array.
     """
     try:
         docdb_api_client = setup_mongodb_client()
+        if field_aliases:
+            alias_fields = {}
+            for logical_name, paths in field_aliases.items():
+                if not paths:
+                    raise ValueError(
+                        f"field alias '{logical_name}' must include at least one path"
+                    )
+                expression: str | dict = f"${paths[-1]}"
+                for path in reversed(paths[:-1]):
+                    expression = {"$ifNull": [f"${path}", expression]}
+                alias_fields[logical_name] = expression
+            agg_pipeline = [
+                {"$set": {"_aind_aliases": alias_fields}},
+                *agg_pipeline,
+            ]
         result = docdb_api_client.aggregate_docdb_records(
             pipeline=agg_pipeline
         )
-        return result
+        return _with_metadata(result, include_metadata)
 
     except Exception as ex:
         _raise_tool_error("aggregation_retrieval", ex)
@@ -248,4 +292,3 @@ def get_project_names() -> list:
         )
     except Exception as ex:
         _raise_tool_error("get_project_names", ex)
-
