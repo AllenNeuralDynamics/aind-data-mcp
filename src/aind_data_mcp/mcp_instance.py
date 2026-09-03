@@ -19,9 +19,23 @@ Schema and discovery:
     request detail="example" for a small opt-in example.
 - get_modality_types(): list modality names and abbreviations.
 
-Cache tools should be preferred for asset-basics, project, subject, and
-modality lookups when their descriptions match the request. Use the NWB tools
-only when an asset file must be inspected.
+Routing rules:
+- Use get_asset_basics for asset-level filters, fields, dates, paging, and
+    totals. It pushes predicates to the cache and returns a compact projection.
+- Use get_records for a small exact lookup or nested leaf fields; use
+    aggregation_retrieval for grouping, distinct values, counts, or unwinding
+    arrays. Do not fetch records or call count_records when one aggregation
+    already answers the question.
+- Canonical aggregation paths include
+    data_description.data_level, data_description.project_name,
+    data_description.modalities.abbreviation, and
+    subject.subject_details.sex. Use field_aliases only when combining a
+    legacy path such as subject.sex with its V2 replacement.
+- Use get_schema_context only when the needed path is not listed above or in
+    a tool description. Request detail="example" only when a concrete shape
+    is necessary.
+
+Use the NWB tools only when an asset file must be inspected.
 """
 
 mcp = FastMCP("aind_data_mcp", instructions=SERVER_INSTRUCTIONS)

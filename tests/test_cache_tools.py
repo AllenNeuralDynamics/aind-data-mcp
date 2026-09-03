@@ -59,6 +59,12 @@ def test_unique_subject_ids():
 # ── get_asset_basics ─────────────────────────────────────────────────────────
 
 
+def _modalities_contain(value, expected: str) -> bool:
+    if isinstance(value, (list, tuple)):
+        return any(expected in str(modality).lower() for modality in value)
+    return expected in str(value).lower()
+
+
 def test_asset_basics_no_filter():
     result = get_asset_basics(limit=5)
     assert isinstance(result, list), f"Expected list, got {type(result)}"
@@ -115,7 +121,8 @@ def test_asset_basics_modality_filter():
     result = get_asset_basics(modality="ecephys", limit=10)
     assert isinstance(result, list)
     assert all(
-        "ecephys" in r["modalities"].lower() for r in result
+        _modalities_contain(r["modalities"], "ecephys")
+        for r in result
     ), "All rows should contain 'ecephys' in modalities"
     print(f"  [PASS] get_asset_basics (modality=ecephys): {len(result)} rows")
 
@@ -135,7 +142,9 @@ def test_asset_basics_combined_filter():
     result = get_asset_basics(modality="behavior", data_level="raw", limit=10)
     assert isinstance(result, list)
     assert all(r["data_level"] == "raw" for r in result)
-    assert all("behavior" in r["modalities"].lower() for r in result)
+    assert all(
+        _modalities_contain(r["modalities"], "behavior") for r in result
+    )
     print(
         f"  [PASS] get_asset_basics (combined: behavior+raw): "
         f"{len(result)} rows"

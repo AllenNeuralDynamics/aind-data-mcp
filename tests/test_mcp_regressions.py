@@ -190,9 +190,14 @@ class TestMcpRegressions(unittest.TestCase):
         self.assertIn("get_schema_context", mcp.instructions)
 
     def test_asset_basics_filters_dates_pages_and_reports_total(self):
+        backend_results = [
+            (self.asset_frame.iloc[[0]], 1),
+            self.asset_frame.iloc[[1]],
+            self.asset_frame.iloc[[0]],
+        ]
         with patch.object(
-            cache_tools, "asset_basics", return_value=self.asset_frame
-        ):
+            cache_tools, "asset_basics", side_effect=backend_results
+        ) as asset_basics_mock:
             result = cache_tools.get_asset_basics(
                 project_name="Project",
                 acquisition_start_before="2024-01-01T00:00:00Z",
@@ -210,6 +215,17 @@ class TestMcpRegressions(unittest.TestCase):
         self.assertEqual(result["records"][0]["name"], "a[1]")
         self.assertEqual(page[0]["name"], "b")
         self.assertEqual([row["name"] for row in literal], ["a[1]"])
+        first_call = asset_basics_mock.call_args_list[0].kwargs
+        self.assertEqual(first_call["project_name"], "Project")
+        self.assertEqual(
+            first_call["acquisition_start_before"], "2024-01-01T00:00:00Z"
+        )
+        self.assertEqual(first_call["limit"], cache_tools.MAX_LIMIT)
+        self.assertEqual(first_call["offset"], 0)
+        self.assertTrue(first_call["include_total"])
+        self.assertIn("instrument_id", first_call["columns"])
+        self.assertIn("experimenters_normalized", first_call["columns"])
+        self.assertIn("investigators_normalized", first_call["columns"])
 
     def test_smartspim_adds_subject_metadata_and_filters_subject(self):
         smartspim_frame = pd.DataFrame(

@@ -37,6 +37,7 @@ GROUND_TRUTH_PATH = Path(
 REWARD_PATH = Path(os.environ.get("REWARD_PATH", "/logs/verifier/reward.json"))
 
 MAX_JUDGE_RAW_RECORDS = 500
+MAX_JUDGE_ATTEMPTS = 2
 CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity")
 
 # The judge system prompt lives in a sibling file so it can be edited without
@@ -87,6 +88,8 @@ def _strip_markdown_fence(text: str) -> str:
 
 def _parse_scores(raw_text: str) -> dict:
     cleaned = _strip_markdown_fence(raw_text)
+    if not cleaned:
+        raise ValueError("judge returned empty content")
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError:
@@ -98,8 +101,67 @@ def _parse_scores(raw_text: str) -> dict:
             (key, int(score)) for key, score in re.findall(pattern, cleaned)
         )
         if set(matches) != set(CRITERIA):
-            raise
+            raise ValueError("judge response did not contain all score criteria")
         return {key: {"score": score} for key, score in matches.items()}
+
+
+def _response_text(response) -> str:
+    """Extract text from both string and structured provider responses."""
+    message = response["choices"][0]["message"]
+    if isinstance(message, dict):
+        content = message.get("content")
+        if not content:
+            content = message.get("reasoning_content")
+    else:
+        content = getattr(message, "content", None)
+        if not content:
+            content = getattr(message, "reasoning_content", None)
+
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        text_parts = []
+        for block in content:
+            if isinstance(block, dict):
+                text = block.get("text")
+            else:
+                text = getattr(block, "text", None)
+            if text:
+                text_parts.append(text)
+        return "".join(text_parts)
+    return "" if content is None else str(content)
+
+
+def _request_scores(litellm, model: str, prompt: str) -> dict:
+    last_error = None
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": prompt},
+    ]
+    for attempt in range(MAX_JUDGE_ATTEMPTS):
+        if attempt:
+            messages.append(
+                {
+                    "role": "user",
+                    "content": "Return only the required JSON object.",
+                }
+            )
+        response = litellm.completion(
+            model=model,
+            messages=messages,
+            max_tokens=2048,
+        )
+        try:
+            return _parse_scores(_response_text(response))
+        except (
+            TypeError,
+            ValueError,
+            KeyError,
+            IndexError,
+            json.JSONDecodeError,
+        ) as exc:
+            last_error = exc
+    raise last_error or ValueError("judge returned no response")
 
 
 def _write_reward(metrics: dict) -> None:
@@ -136,16 +198,7 @@ def main() -> None:
     try:
         import litellm
 
-        response = litellm.completion(
-            model=model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=1024,
-        )
-        raw_text = response["choices"][0]["message"]["content"]
-        scores = _parse_scores(raw_text)
+        scores = _request_scores(litellm, model, prompt)
     except Exception as exc:  # noqa: BLE001 - judge failure => zero reward
         print(f"ERROR: judge failed: {exc}")
         _write_reward({"overall": 0.0, "error": str(exc)})

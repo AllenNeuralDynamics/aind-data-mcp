@@ -45,6 +45,25 @@ from .mcp_instance import mcp  # noqa: E402
 
 DEFAULT_LIMIT = 100
 MAX_LIMIT = 100
+DEFAULT_ASSET_BASICS_COLUMNS = [
+    "_id",
+    "name",
+    "modalities",
+    "project_name",
+    "data_level",
+    "subject_id",
+    "acquisition_start_time",
+    "acquisition_end_time",
+    "process_date",
+    "genotype",
+    "age",
+    "acquisition_type",
+    "location",
+    "instrument_id",
+    "instrument_id_normalized",
+    "experimenters_normalized",
+    "investigators_normalized",
+]
 
 
 def _raise_tool_error(tool_name: str, ex: Exception) -> None:
@@ -123,6 +142,7 @@ def get_asset_basics(
     acquisition_start_before: Optional[str] = None,
     acquisition_start_after: Optional[str] = None,
     include_total: bool = False,
+    columns: Optional[list[str]] = None,
 ) -> list[dict] | dict | str:
     """
     Query the biodata_cache asset_basics cached table.
@@ -154,8 +174,8 @@ def get_asset_basics(
     project_name : str, optional
         Filter to assets with this project name (exact match).
     modality : str, optional
-        Filter to assets whose modalities string contains this substring,
-        e.g. "ecephys", "behavior", "ophys". Case-insensitive.
+        Filter to assets whose modalities list contains this substring, e.g.
+        "ecephys", "behavior", "ophys". Case-insensitive.
     data_level : str, optional
         Filter by data level, e.g. "raw" or "derived".
     name_contains : str, optional
@@ -171,6 +191,9 @@ def get_asset_basics(
     include_total : bool
         If true, return records plus total_matches, offset, limit, and
         has_more metadata. The default returns the records list directly.
+    columns : list[str], optional
+        Columns to return. Defaults to a compact projection containing the
+        common discovery fields and normalized experimenter/investigator names.
 
     Returns
     -------
@@ -178,36 +201,29 @@ def get_asset_basics(
         Matching asset rows, each containing the columns listed above.
     """
     try:
-        df = asset_basics()
-
-        if subject_id is not None:
-            df = df[df["subject_id"] == str(subject_id)]
-        if project_name is not None:
-            df = df[df["project_name"] == project_name]
-        if modality is not None:
-            df = df[
-                df["modalities"].str.contains(
-                    modality, case=False, na=False, regex=False
-                )
-            ]
-        if data_level is not None:
-            df = df[df["data_level"] == data_level]
-        if name_contains is not None:
-            df = df[
-                df["name"].str.contains(
-                    name_contains, case=False, na=False, regex=False
-                )
-            ]
-
-        df = _filter_acquisition_times(
-            df, acquisition_start_before, acquisition_start_after
-        )
-
         page_limit = _page_limit(limit)
         page_offset = _offset(offset)
-        df = df.sort_values("name", kind="stable")
-        total_matches = len(df)
-        page = df.iloc[page_offset:].head(page_limit)
+        result = asset_basics(
+            subject_id=subject_id,
+            project_name=project_name,
+            modality=modality,
+            data_level=data_level,
+            name_contains=name_contains,
+            acquisition_start_before=acquisition_start_before,
+            acquisition_start_after=acquisition_start_after,
+            columns=(
+                DEFAULT_ASSET_BASICS_COLUMNS if columns is None else columns
+            ),
+            limit=page_limit,
+            offset=page_offset,
+            include_total=include_total,
+        )
+        if include_total:
+            page, total_matches = result
+        else:
+            page = result
+            total_matches = None
+
         records = _df_to_records(page)
         if include_total:
             return {
@@ -429,7 +445,11 @@ def get_assets_smartspim(
     """
     try:
         df = assets_smartspim()
-        metadata = asset_basics()[["name", "subject_id", "genotype"]]
+        metadata = asset_basics(
+            subject_id=subject_id,
+            columns=["name", "subject_id", "genotype"],
+            limit=None,
+        )
         metadata = metadata.drop_duplicates(subset=["name"])
         df = df.merge(
             metadata,

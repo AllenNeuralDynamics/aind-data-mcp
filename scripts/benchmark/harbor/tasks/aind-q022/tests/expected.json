@@ -2,9 +2,9 @@
   "id": 22,
   "question": "What unique subject sex values are recorded across the database, and how many records have each value?",
   "must_include": [
-    "60399",
-    "44191",
-    "376"
+    "60426",
+    "44209",
+    "398"
   ],
   "min_matches": 3
 }

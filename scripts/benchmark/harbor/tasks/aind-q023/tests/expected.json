@@ -2,8 +2,8 @@
   "id": 23,
   "question": "What unique data_level values (e.g. raw, derived) appear in the database and how many records have each?",
   "must_include": [
-    "54874",
-    "49083",
+    "54907",
+    "49117",
     "1009"
   ],
   "min_matches": 3

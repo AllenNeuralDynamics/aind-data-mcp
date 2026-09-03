@@ -5,6 +5,13 @@ biodata_cache approach over a raw MongoDB query whenever the filter criteria
 only involve fields available in the cached tables (modality, project_name,
 data_level, subject_id, acquisition dates, genotype, asset name).
 
+For MCP queries, use get_asset_basics directly for these asset-level filters,
+fields, dates, paging, and totals. Use aggregation_retrieval for grouped
+counts, distinct values, or nested-array analysis; do not fetch full records
+or call count_records when one aggregation answers the question. Use
+get_records only for small exact lookups or nested fields not present in the
+cache.
+
 The biodata_cache package loads pre-built Parquet tables from S3 and is
 much faster than querying MongoDB for large-scale filtering. Full MongoDB
 records are only fetched for the final small set of matching assets.
@@ -31,18 +38,16 @@ records are only fetched for the final small set of matching assets.
 ```python
 import json
 
-import pandas as pd
 from aind_data_access_api.document_db import MetadataDbClient
 from biodata_cache import asset_basics  # import whichever tables are needed
 
-# ── Step 1: fast table lookup ────────────────────────────────────────────────
-df = asset_basics()
-
-# Apply whatever filters match the user's request, e.g.:
-filtered = df[
-    (df["project_name"] == "My Project") &
-    (df["data_level"] == "raw")
-]
+# ── Step 1: fast, pushed-down table lookup ───────────────────────────────────
+filtered = asset_basics(
+    project_name="My Project",
+    data_level="raw",
+    columns=["name"],
+    limit=None,
+)
 asset_names = filtered["name"].tolist()
 print(f"Found {len(asset_names)} matching assets in the table")
 
