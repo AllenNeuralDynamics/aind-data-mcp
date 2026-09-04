@@ -14,10 +14,11 @@ The scoring rubric mirrors the original standalone benchmark judge so results
 stay comparable across the migration.
 
 Configuration (via ``[verifier.env]`` in ``task.toml``):
-  JUDGE_MODEL      litellm model id for the judge (default:
-                   ``bedrock/us.anthropic.claude-sonnet-5``).
-  ANTHROPIC_API_KEY / OPENAI_API_KEY / AWS_* credentials as required by the
-                   chosen model.
+    JUDGE_MODEL      litellm model id for the judge (default:
+                                     ``anthropic/claude-sonnet-5``).
+    ANTHROPIC_API_KEY / OPENAI_API_KEY credentials as required by the chosen
+    model. The benchmark passes Claude Code's subscription OAuth token through
+    ANTHROPIC_API_KEY.
 """
 
 from __future__ import annotations
@@ -129,7 +130,7 @@ def main() -> None:
     answer = ANSWER_PATH.read_text().strip() if ANSWER_PATH.exists() else None
 
     model = os.environ.get(
-        "JUDGE_MODEL", "bedrock/us.anthropic.claude-sonnet-5"
+        "JUDGE_MODEL", "anthropic/claude-sonnet-5"
     )
     prompt = _build_user_prompt(question, answer, records)
 

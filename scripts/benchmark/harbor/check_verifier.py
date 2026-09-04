@@ -18,7 +18,7 @@ Examples::
     python scripts/benchmark/harbor/check_verifier.py --id 1 --answer "x" --dry-run
 
 The judge model and credentials come from the same env vars Harbor uses
-(`JUDGE_MODEL`, `ANTHROPIC_API_KEY`, `AWS_BEARER_TOKEN_BEDROCK`, ...).
+(`JUDGE_MODEL`, `ANTHROPIC_API_KEY`, ...).
 """
 
 from __future__ import annotations

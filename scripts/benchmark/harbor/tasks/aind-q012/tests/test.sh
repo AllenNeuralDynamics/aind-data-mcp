@@ -9,8 +9,7 @@ set -uo pipefail
 mkdir -p /logs/verifier
 
 # litellm gives us a provider-agnostic client so the judge model can be an
-# Anthropic, OpenAI, or Bedrock model id depending on JUDGE_MODEL. boto3 is
-# required for litellm's Bedrock (bedrock/...) routing.
+# Anthropic or OpenAI model id depending on JUDGE_MODEL.
 #
 # The verifier container's system Python is often PEP 668 "externally managed"
 # (Debian/Ubuntu), which refuses a plain `pip install`. Since this is a

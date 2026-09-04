@@ -8,8 +8,13 @@ Run the benchmark with the AWS SSO profile:
 ```bash
 pip install -e ".[benchmark]"
 aws sso login --profile aind_octo
+claude setup-token
 HARBOR_AWS_PROFILE=aind_octo ./scripts/benchmark/run_harbor.sh
 ```
+
+Set `CLAUDE_CODE_OAUTH_TOKEN` or `CLAUDE_CODE_OAUTH_TOKEN_FILE` after running
+`claude setup-token`. The token is used for the Claude Code agent and the
+Anthropic LLM judge; AWS is used only for the S3-backed MCP cache.
 
 View completed or partial runs afterward:
 

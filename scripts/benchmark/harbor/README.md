@@ -2,23 +2,31 @@
 
 This benchmark runs the 15 generated AIND metadata questions with agent
 harnesses selected for each model. By default, the launcher runs Claude Sonnet
-5 through Claude Code on Amazon Bedrock and GPT-5.6 Luna through the Codex CLI
-using a ChatGPT account. Each task image installs the published `aind-data-mcp`
-package, sets `BIODATA_CACHE_BACKEND=s3`, and exposes it to the agent over local
-stdio.
+5 through Claude Code using a Claude subscription and GPT-5.6 Luna through the
+Codex CLI using a ChatGPT account. Each task image installs the published
+`aind-data-mcp` package, sets `BIODATA_CACHE_BACKEND=s3`, and exposes it to the
+agent over local stdio.
 
 ## Setup
 
 ```bash
 pip install -e ".[benchmark]"
 aws sso login --profile aind_octo
+claude setup-token
 ```
+
+`claude setup-token` creates a long-lived OAuth token for the Claude
+subscription. Export the token as `CLAUDE_CODE_OAUTH_TOKEN`, or put the single
+token in a protected file and set `CLAUDE_CODE_OAUTH_TOKEN_FILE`. The launcher
+uses this token for both Claude Code and the LiteLLM judge. AWS remains
+required only for the S3-backed benchmark cache.
 
 ## Run
 
-The launcher exports fresh credentials from the AWS profile, checks the AWS
-identity, then starts Harbor once for each default agent model. The Luna run
-uses the local Codex login at `~/.codex/auth.json` (override with
+The launcher exports fresh credentials from the AWS profile for the S3 cache,
+checks the AWS identity, then starts Harbor once for each default agent model.
+The Sonnet run uses the Claude subscription OAuth token, and the Luna run uses
+the local Codex login at `~/.codex/auth.json` (override with
 `CODEX_AUTH_JSON_PATH`):
 
 ```bash
