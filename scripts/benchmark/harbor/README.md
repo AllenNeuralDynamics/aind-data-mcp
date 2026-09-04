@@ -1,8 +1,9 @@
 # AIND Data Harbor benchmark
 
-This benchmark runs the 15 generated AIND metadata questions with Claude Code
-on Amazon Bedrock. By default, the launcher runs separate jobs for Claude
-Sonnet 5 and GPT-5.6 Luna. Each task image installs the published `aind-data-mcp`
+This benchmark runs the 15 generated AIND metadata questions with agent
+harnesses selected for each model. By default, the launcher runs Claude Sonnet
+5 through Claude Code on Amazon Bedrock and GPT-5.6 Luna through the Codex CLI
+using a ChatGPT account. Each task image installs the published `aind-data-mcp`
 package, sets `BIODATA_CACHE_BACKEND=s3`, and exposes it to the agent over local
 stdio.
 
@@ -16,7 +17,9 @@ aws sso login --profile aind_octo
 ## Run
 
 The launcher exports fresh credentials from the AWS profile, checks the AWS
-identity, and starts Harbor once for each default agent model:
+identity, then starts Harbor once for each default agent model. The Luna run
+uses the local Codex login at `~/.codex/auth.json` (override with
+`CODEX_AUTH_JSON_PATH`):
 
 ```bash
 AWS_PROFILE=aind_octo ./scripts/benchmark/run_harbor.sh

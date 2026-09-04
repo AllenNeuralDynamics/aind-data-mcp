@@ -8,7 +8,8 @@ cd "$repo_root"
 profile="${HARBOR_AWS_PROFILE:-aind_octo}"
 region="${AWS_REGION:-us-west-2}"
 model_sonnet_5="bedrock/us.anthropic.claude-sonnet-5"
-model_gpt_56_luna="bedrock/openai.gpt-5.6-luna"
+model_gpt_56_luna="gpt-5.6-luna"
+codex_auth_path="${CODEX_AUTH_JSON_PATH:-$HOME/.codex/auth.json}"
 judge_model="${JUDGE_MODEL:-$model_sonnet_5}"
 concurrency="${HARBOR_CONCURRENCY:-16}"
 tasks_path="${HARBOR_TASKS_PATH:-scripts/benchmark/harbor/tasks}"
@@ -64,19 +65,42 @@ else
 fi
 
 for agent_model in "${agent_models[@]}"; do
+    agent_name=claude-code
+    declare -a model_agent_env_args
+
     case "$agent_model" in
-        gpt-5.6-luna) agent_model="$model_gpt_56_luna" ;;
+        gpt-5.6-luna)
+            agent_model="$model_gpt_56_luna"
+            agent_name=codex
+            if [[ ! -f "$codex_auth_path" ]]; then
+                printf 'error: Codex auth file not found: %s\n' "$codex_auth_path" >&2
+                exit 1
+            fi
+            model_agent_env_args=(
+                --ae "CODEX_AUTH_JSON_PATH=$codex_auth_path"
+            )
+            ;;
         sonnet-5) agent_model="$model_sonnet_5" ;;
+        *)
+            model_agent_env_args=()
+            ;;
     esac
 
-    printf 'Running Harbor benchmark with agent model: %s\n' "$agent_model"
+    if [[ "$agent_name" == claude-code ]]; then
+        model_agent_env_args=(
+            --ae CLAUDE_CODE_USE_BEDROCK=1
+            "${agent_auth_args[@]}"
+            --ae "AWS_REGION=$AWS_REGION"
+        )
+    fi
+
+    printf 'Running Harbor benchmark with %s agent and %s model\n' \
+        "$agent_name" "$agent_model"
     "$harbor_bin" run \
         -p "$tasks_path" \
-        -a claude-code \
+        -a "$agent_name" \
         -m "$agent_model" \
-        --ae CLAUDE_CODE_USE_BEDROCK=1 \
-        "${agent_auth_args[@]}" \
-        --ae "AWS_REGION=$AWS_REGION" \
+        "${model_agent_env_args[@]}" \
         --env docker \
         --n-concurrent "$concurrency" \
         "$@"

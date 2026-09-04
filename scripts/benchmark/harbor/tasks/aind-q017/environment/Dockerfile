@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 \
         python3-pip \
         python3-venv \
-    && npm install --global --no-audit --no-fund @anthropic-ai/claude-code \
+    && npm install --global --no-audit --no-fund @anthropic-ai/claude-code @openai/codex \
     && curl -LsSf https://astral.sh/uv/install.sh | sh \
     && /root/.local/bin/uv tool install --python 3.13 aind-data-mcp \
     && rm -rf /var/lib/apt/lists/*

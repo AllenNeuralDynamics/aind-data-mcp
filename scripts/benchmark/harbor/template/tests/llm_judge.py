@@ -37,6 +37,7 @@ GROUND_TRUTH_PATH = Path(
 REWARD_PATH = Path(os.environ.get("REWARD_PATH", "/logs/verifier/reward.json"))
 
 MAX_JUDGE_RAW_RECORDS = 500
+MAX_JUDGE_TOKENS = 4096
 MAX_JUDGE_ATTEMPTS = 2
 CRITERIA = ("factual_accuracy", "completeness", "relevance", "clarity")
 
@@ -66,7 +67,7 @@ def _build_user_prompt(
         )
         parts.append(
             f"## Raw Database Records (authoritative ground truth){note}\n"
-            + json.dumps(truncated, indent=2, default=str)
+            + json.dumps(truncated, separators=(",", ":"), default=str)
         )
     else:
         parts.append(
@@ -123,9 +124,11 @@ def _response_text(response) -> str:
         text_parts = []
         for block in content:
             if isinstance(block, dict):
-                text = block.get("text")
+                text = block.get("text") or block.get("output_text")
             else:
-                text = getattr(block, "text", None)
+                text = getattr(block, "text", None) or getattr(
+                    block, "output_text", None
+                )
             if text:
                 text_parts.append(text)
         return "".join(text_parts)
@@ -149,7 +152,7 @@ def _request_scores(litellm, model: str, prompt: str) -> dict:
         response = litellm.completion(
             model=model,
             messages=messages,
-            max_tokens=2048,
+            max_tokens=MAX_JUDGE_TOKENS,
         )
         try:
             return _parse_scores(_response_text(response))

@@ -1,6 +1,6 @@
 {
   "id": 8,
-  "question": "What are the parental (maternal and paternal) genotypes recorded for subject 690706?",
+  "question": "What are the subject IDs and genotypes of the maternal and paternal parents recorded for subject 690706? Identify which parent is maternal and which is paternal.",
   "must_include": [
     "Sst-IRES-Cre",
     "Ai32(RCL-ChR2(H134R)_EYFP)/Ai32(RCL-ChR2(H134R)_EYFP)",
