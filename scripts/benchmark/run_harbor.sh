@@ -7,21 +7,19 @@ cd "$repo_root"
 
 profile="${HARBOR_AWS_PROFILE:-aind_octo}"
 region="${AWS_REGION:-us-west-2}"
-model_haiku_45="bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0"
-model_sonnet_46="bedrock/us.anthropic.claude-sonnet-4-6"
 model_sonnet_5="bedrock/us.anthropic.claude-sonnet-5"
-agent_model="${HARBOR_AGENT_MODEL:-$model_sonnet_5}"
+model_gpt_56_luna="bedrock/openai.gpt-5.6-luna"
 judge_model="${JUDGE_MODEL:-$model_sonnet_5}"
 concurrency="${HARBOR_CONCURRENCY:-16}"
 tasks_path="${HARBOR_TASKS_PATH:-scripts/benchmark/harbor/tasks}"
 harbor_bin="${HARBOR_BIN:-$repo_root/.venv/bin/harbor}"
 aws_bin="${AWS_BIN:-$(command -v aws || true)}"
 
-case "$agent_model" in
-    haiku-4.5) agent_model="$model_haiku_45" ;;
-    sonnet-4.6) agent_model="$model_sonnet_46" ;;
-    sonnet-5) agent_model="$model_sonnet_5" ;;
-esac
+if [[ -n "${HARBOR_AGENT_MODEL:-}" ]]; then
+    agent_models=("$HARBOR_AGENT_MODEL")
+else
+    agent_models=("$model_sonnet_5" "$model_gpt_56_luna")
+fi
 
 if [[ -z "$aws_bin" && -x /usr/local/bin/aws ]]; then
     aws_bin=/usr/local/bin/aws
@@ -65,13 +63,21 @@ else
     )
 fi
 
-exec "$harbor_bin" run \
-    -p "$tasks_path" \
-    -a claude-code \
-    -m "$agent_model" \
-    --ae CLAUDE_CODE_USE_BEDROCK=1 \
-    "${agent_auth_args[@]}" \
-    --ae "AWS_REGION=$AWS_REGION" \
-    --env docker \
-    --n-concurrent "$concurrency" \
-    "$@"
+for agent_model in "${agent_models[@]}"; do
+    case "$agent_model" in
+        gpt-5.6-luna) agent_model="$model_gpt_56_luna" ;;
+        sonnet-5) agent_model="$model_sonnet_5" ;;
+    esac
+
+    printf 'Running Harbor benchmark with agent model: %s\n' "$agent_model"
+    "$harbor_bin" run \
+        -p "$tasks_path" \
+        -a claude-code \
+        -m "$agent_model" \
+        --ae CLAUDE_CODE_USE_BEDROCK=1 \
+        "${agent_auth_args[@]}" \
+        --ae "AWS_REGION=$AWS_REGION" \
+        --env docker \
+        --n-concurrent "$concurrency" \
+        "$@"
+done

@@ -83,9 +83,9 @@ class TestMcpRegressions(unittest.TestCase):
                 query_tools.get_records()
 
     def test_schema_context_returns_paths_and_small_examples(self):
-        top_level = schema_tools.get_schema_context()
+        top_level = schema_tools.get_schema_context(detail="paths")
         subject_paths = schema_tools.get_schema_context(
-            "subject", path="subject_details.breeding_info"
+            "subject", path="subject_details.breeding_info", detail="paths"
         )
         subject_example = schema_tools.get_schema_context(
             "subject", detail="example"
@@ -126,6 +126,31 @@ class TestMcpRegressions(unittest.TestCase):
             schema_tools.get_schema_context("unknown")
         with self.assertRaises(ValueError):
             schema_tools.get_schema_context(detail="invalid")
+
+    def test_schema_context_reveals_only_requested_depth(self):
+        root_tree = schema_tools.get_schema_context()
+        branch_tree = schema_tools.get_schema_context(
+            path="Acquisition.data_streams", max_depth=1
+        )
+
+        self.assertIn("- **Acquisition**", root_tree)
+        self.assertIn("`data_streams` (", root_tree)
+        self.assertNotIn("- **DataStream**", root_tree)
+        self.assertIn("- **DataStream**", branch_tree)
+        self.assertIn("- **ExternalDataStream**", branch_tree)
+        self.assertNotIn("`protocol_id` (", branch_tree)
+
+    def test_schema_context_requires_path_for_expansion(self):
+        with self.assertRaisesRegex(ValueError, "path is required"):
+            schema_tools.get_schema_context(max_depth=1)
+
+    def test_schema_context_rejects_unknown_path(self):
+        with self.assertRaisesRegex(ValueError, "unknown schema path"):
+            schema_tools.get_schema_context(path="Acquisition.no_such_field")
+
+    def test_schema_context_rejects_negative_depth(self):
+        with self.assertRaises(ValueError):
+            schema_tools.get_schema_context(max_depth=-1)
 
     def test_aggregation_aliases_and_metadata_are_opt_in(self):
         client = Mock()
@@ -186,6 +211,7 @@ class TestMcpRegressions(unittest.TestCase):
     def test_server_publishes_compact_initialized_manifest(self):
         tool_names = {tool.name for tool in asyncio.run(mcp.list_tools())}
         self.assertIn("get_schema_context", tool_names)
+        self.assertNotIn("get_schema_tree", tool_names)
         self.assertNotIn("get_subject_example", tool_names)
         self.assertIn("get_schema_context", mcp.instructions)
 

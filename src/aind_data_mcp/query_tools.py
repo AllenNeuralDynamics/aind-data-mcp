@@ -99,7 +99,7 @@ def aggregation_retrieval(
 ):
     """Run a MongoDB aggregation pipeline for transformed metadata queries.
 
-    Use ``get_schema_context`` for compact V2 field paths. Common grouping
+    Use ``get_schema_context(detail='paths')`` for compact V2 field paths. Common grouping
     fields are ``data_description.project_name``,
     ``data_description.data_level``,
     ``data_description.modalities.abbreviation``, and

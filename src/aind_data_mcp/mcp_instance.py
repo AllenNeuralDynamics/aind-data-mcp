@@ -15,8 +15,10 @@ Query tools:
 - flatten_records(records, depth): flatten returned nested records.
 
 Schema and discovery:
-- get_schema_context(node, path, detail): list compact V2 paths by default;
-    request detail="example" for a small opt-in example.
+- get_schema_context(node, path, detail, max_depth): complete typed schema by
+    default; use path="Acquisition.data_streams" and max_depth=1 to expand
+    only that branch. Use detail="paths" for compact query paths or
+    detail="example" for a small opt-in example.
 - get_modality_types(): list modality names and abbreviations.
 
 Routing rules:

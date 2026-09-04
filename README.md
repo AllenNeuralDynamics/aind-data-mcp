@@ -36,13 +36,19 @@ This MCP server provides the following tools:
 - `get_summary` — Generate an AI-powered summary for a specific data asset
 
 **Schema Navigation**
-- `get_schema_context` — Explore compact V2 field paths by node and opt-in small examples
+- `get_schema_context` — Explore the complete typed schema, compact query paths, and opt-in small examples
 - `get_modality_types` — List all available data modality names and abbreviations
 
 The MCP initialize response includes a ready tool manifest. Use
 `get_schema_context(node="subject", detail="example")` only when a compact
 synthetic example is needed; ordinary path discovery does not load bulky schema
 examples.
+
+Call `get_schema_context()` for complete root fields, then request a
+dot-separated branch such as
+`get_schema_context(path="Acquisition.data_streams", max_depth=1)` when nested
+model fields are needed. Use `detail="paths"` for compact query paths or
+`detail="example"` for a synthetic example.
 
 **NWB File Access**
 - `identify_nwb_contents_in_code_ocean` — Load an NWB file from the `/data` directory in a Code Ocean capsule
@@ -70,4 +76,10 @@ To run linting:
 
 ```bash
 uv run flake8 . && uv run interrogate --verbose .
+```
+
+To refresh the bundled schema snapshot after updating the dev dependency:
+
+```bash
+uv run python scripts/generate_schema_tree_snapshot.py
 ```

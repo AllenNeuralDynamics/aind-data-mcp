@@ -42,14 +42,15 @@ dev = [
     'interrogate',
     'isort',
     'Sphinx',
-    'furo'
+    'furo',
+    'aind-data-schema>=2.9.0'
 ]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-aind_data_mcp = ["resources/*.txt"]
+aind_data_mcp = ["resources/*.json", "resources/*.txt"]
 
 [tool.setuptools.dynamic]
 version = {attr = "aind_data_mcp.__version__"}

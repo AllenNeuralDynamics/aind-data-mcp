@@ -1,5 +1,7 @@
 """Compact schema navigation for AIND metadata queries."""
 
+import json
+from importlib.resources import files
 from typing import Any, Literal
 
 from .mcp_instance import mcp
@@ -190,26 +192,31 @@ _SCHEMA_EXAMPLES = {
     },
 }
 
+_SCHEMA_TREE = json.loads(
+    files("aind_data_mcp.resources")
+    .joinpath("schema_tree.json")
+    .read_text(encoding="utf-8")
+)
+_SCHEMA_MODELS = _SCHEMA_TREE["models"]
 
-@mcp.tool()
-def get_schema_context(
-    node: str = "top_level",
-    path: str | None = None,
-    detail: Literal["paths", "example"] = "paths",
+
+def _schema_tree_path(node: str, path: str | None) -> str:
+    if node == "top_level":
+        return path or ""
+    if not path:
+        return node
+
+    node_prefix = f"{node}."
+    if path.casefold() in {node.casefold(), node_prefix.casefold()}:
+        return node
+    if path.casefold().startswith(node_prefix.casefold()):
+        return path
+    return f"{node}.{path}"
+
+
+def _render_compact_schema_context(
+    node: str, path: str | None, detail: Literal["paths", "example"]
 ) -> dict[str, Any]:
-    """Return compact V2 schema paths or an opt-in small example.
-
-    Use this single hierarchy entry point before calling ``get_records`` or
-    ``aggregation_retrieval``. ``node`` is a top-level node such as
-    ``subject``, ``data_description``, ``acquisition``, or ``procedures``;
-    use ``top_level`` to list all nodes. ``path`` filters the returned paths,
-    for example ``subject_details.breeding_info``. ``detail`` is ``paths``
-    by default and can be ``example`` when a compact synthetic example is
-    needed. Examples are intentionally small and omit unrelated fields.
-    """
-    if detail not in {"paths", "example"}:
-        raise ValueError("detail must be 'paths' or 'example'")
-
     if node == "top_level":
         if detail == "example":
             raise ValueError("choose a schema node when detail='example'")
@@ -244,6 +251,183 @@ def get_schema_context(
             or schema_path.startswith(f"{path_prefix}.")
         ]
     return {"node": node, "path": path, "paths": node_paths}
+
+
+@mcp.tool()
+def get_schema_context(
+    node: str = "top_level",
+    path: str | None = None,
+    detail: Literal["tree", "paths", "example"] = "tree",
+    max_depth: int = 0,
+) -> dict[str, Any] | str:
+    """Reveal the complete schema or opt into compact query-oriented views.
+
+    The default tree is complete and shallow. Use a dot-separated ``path``
+    such as ``Acquisition.data_streams`` and increase ``max_depth`` to expand
+    one branch. Use ``detail='paths'`` for compact query paths or
+    ``detail='example'`` for a small synthetic example.
+    """
+    if detail not in {"tree", "paths", "example"}:
+        raise ValueError("detail must be 'tree', 'paths', or 'example'")
+
+    if detail == "tree":
+        return _render_schema_tree(_schema_tree_path(node, path), max_depth)
+
+    if max_depth:
+        raise ValueError("max_depth is only valid when detail='tree'")
+    return _render_compact_schema_context(node, path, detail)
+
+
+def _find_model(name: str) -> str | None:
+    name = name.casefold()
+    return next(
+        (
+            model_name
+            for model_name in _SCHEMA_MODELS
+            if model_name.casefold() == name
+        ),
+        None,
+    )
+
+
+def _find_field(model_name: str, name: str) -> dict[str, Any] | None:
+    name = name.casefold()
+    return next(
+        (
+            field
+            for field in _SCHEMA_MODELS[model_name]["fields"]
+            if field["name"].casefold() == name
+        ),
+        None,
+    )
+
+
+def _append_field(
+    lines: list[str],
+    field: dict[str, Any],
+    indent: str,
+    max_depth: int,
+    seen: frozenset[str],
+) -> None:
+    required = ", required" if field["required"] else ""
+    detail = field["title"]
+    if field["description"]:
+        detail += f": {field['description']}"
+    lines.append(
+        f"{indent}- `{field['name']}` "
+        f"({field['type']}{required}) — {detail}"
+    )
+    if max_depth > 0:
+        for child_name in field["children"]:
+            if child_name not in seen:
+                _append_model(
+                    lines,
+                    child_name,
+                    indent,
+                    max_depth - 1,
+                    seen,
+                )
+
+
+def _append_model(
+    lines: list[str],
+    model_name: str,
+    indent: str,
+    max_depth: int,
+    seen: frozenset[str] = frozenset(),
+    fields: list[dict[str, Any]] | None = None,
+) -> None:
+    if model_name in seen:
+        return
+    model = _SCHEMA_MODELS[model_name]
+    lines.append(f"{indent}- **{model_name}** — {model['description']}")
+    model_seen = seen | {model_name}
+    for field in fields or model["fields"]:
+        _append_field(
+            lines,
+            field,
+            indent + "  ",
+            max_depth,
+            model_seen,
+        )
+
+
+def _resolve_schema_path(
+    path: str,
+) -> tuple[str | None, list[tuple[str, dict[str, Any]]] | None]:
+    parts = [part for part in path.split(".") if part]
+    model_name = _find_model(parts[0]) if parts else None
+    if model_name is None:
+        valid_models = ", ".join(_SCHEMA_TREE["roots"])
+        raise ValueError(
+            f"unknown schema path '{path}'; choose a root model: "
+            f"{valid_models}"
+        )
+    if len(parts) == 1:
+        return model_name, None
+
+    current_models = [model_name]
+    for index, part in enumerate(parts[1:]):
+        is_last = index == len(parts) - 2
+        field_matches = []
+        child_models = []
+        for current_model in current_models:
+            field = _find_field(current_model, part)
+            if field is None:
+                continue
+            if is_last:
+                field_matches.append((current_model, field))
+            child_models.extend(field["children"])
+        if is_last and field_matches:
+            return None, field_matches
+        current_models = list(dict.fromkeys(child_models))
+        if not current_models:
+            break
+
+    raise ValueError(
+        f"unknown schema path '{path}'; use a model and dot-separated "
+        "field names"
+    )
+
+
+def _render_schema_tree(path: str = "", max_depth: int = 0) -> str:
+    """Render the bundled schema tree for one optional branch.
+
+    The default returns every root model and its direct fields. Use a
+    dot-separated path such as ``Acquisition.data_streams`` to inspect one
+    branch, and increase ``max_depth`` to reveal nested model fields below
+    that branch.
+    """
+    if max_depth < 0:
+        raise ValueError("max_depth must be non-negative")
+    if not isinstance(path, str):
+        raise ValueError("path must be a dot-separated schema path")
+
+    path = path.strip()
+    if path in {"", "top_level"}:
+        if max_depth:
+            raise ValueError(
+                "path is required when max_depth is greater than zero"
+            )
+        lines: list[str] = []
+        for model_name in _SCHEMA_TREE["roots"]:
+            _append_model(lines, model_name, "", max_depth)
+        return "\n".join(lines)
+
+    selected_model, field_matches = _resolve_schema_path(path)
+    lines = []
+    if selected_model is not None:
+        _append_model(lines, selected_model, "", max_depth)
+    else:
+        for parent_model, field in field_matches or []:
+            _append_model(
+                lines,
+                parent_model,
+                "",
+                max_depth,
+                fields=[field],
+            )
+    return "\n".join(lines)
 
 
 @mcp.tool()
